@@ -1,13 +1,18 @@
 <?php
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
+namespace Application;
 
+use Application\Entity\User;
+
+/**
+ * Konfigurasi untuk module Application.
+ */
 return array(
+	'controllers' => array(
+		'invokables' => array(
+			'Application\Controller\Index' => 'Application\Controller\IndexController',
+			'Application\Controller\Auth' => 'Application\Controller\AuthController'
+		),
+	),
     'router' => array(
         'routes' => array(
             'home' => array(
@@ -20,37 +25,27 @@ return array(
                     ),
                 ),
             ),
-            // The following is a route to simplify getting started creating
-            // new controllers and actions without needing to create a new
-            // module. Simply drop new controllers in, and you can access them
-            // using the path /application/:controller/:action
-            'application' => array(
-                'type'    => 'Literal',
-                'options' => array(
-                    'route'    => '/application',
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Application\Controller',
-                        'controller'    => 'Index',
-                        'action'        => 'index',
-                    ),
-                ),
-                'may_terminate' => true,
-                'child_routes' => array(
-                    'default' => array(
-                        'type'    => 'Segment',
-                        'options' => array(
-                            'route'    => '/[:controller[/:action]]',
-                            'constraints' => array(
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        ),
+        	'login' => array(
+				'type' => 'Zend\Mvc\Router\Http\Literal',
+        		'options' => array(
+        			'route' => '/login',
+        			'defaults' => array(
+        				'controller' => 'Application\Controller\Auth',
+        				'action' => 'login'
+        			)
+        		)
+			),
+			'logout' => array(
+				'type' => 'Zend\Mvc\Router\Http\Literal',
+        		'options' => array(
+        			'route' => '/logout',
+        			'defaults' => array(
+        				'controller' => 'Application\Controller\Auth',
+        				'action' => 'logout'
+        			)
+        		)
+			)  
+        )
     ),
     'service_manager' => array(
         'abstract_factories' => array(
@@ -59,7 +54,7 @@ return array(
         ),
         'aliases' => array(
             'translator' => 'MvcTranslator',
-        ),
+        )
     ),
     'translator' => array(
         'locale' => 'en_US',
@@ -69,12 +64,7 @@ return array(
                 'base_dir' => __DIR__ . '/../language',
                 'pattern'  => '%s.mo',
             ),
-        ),
-    ),
-    'controllers' => array(
-        'invokables' => array(
-            'Application\Controller\Index' => 'Application\Controller\IndexController'
-        ),
+        )
     ),
     'view_manager' => array(
         'display_not_found_reason' => true,
@@ -97,6 +87,39 @@ return array(
         'router' => array(
             'routes' => array(
             ),
-        ),
+        )
     ),
+    'doctrine' => array(
+    	'driver' => array(
+    		__NAMESPACE__ . '_driver' => array(
+    			'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+    			'cache' => 'array',
+    				'paths' => array(
+    					__DIR__ . '/../src/' . __NAMESPACE__ . '/Entity'
+    				)
+    			),
+    			'orm_default' => array (
+    				'drivers' => array (
+    					__NAMESPACE__ . '\Entity' => __NAMESPACE__ . '_driver'
+    				)
+    			)
+    	),
+    	'authentication' => array(
+    		'orm_default' => array(
+    			'object_manager' => 'Doctrine\ORM\EntityManager',
+    			'identity_class' => 'Application\Entity\User',
+    			'identity_property' => 'usercode',
+    			'credential_property' => 'password',
+    			/**
+    			 * Ini callable function untuk ngebandingin password yang diberikan dengan password yang tersimpan
+    			 * dalam database. Callable ini digunakan dalam kelas auth adapter bawaan doctrine-module.
+    			 * 
+    			 * @see https://github.com/doctrine/DoctrineModule/blob/master/docs/authentication.md
+    			 */
+    			'credential_callable' => function(User $user, $passwordGiven) {
+    				return true;
+    			}
+    		),
+    	)
+    )
 );
