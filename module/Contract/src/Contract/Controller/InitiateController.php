@@ -23,14 +23,20 @@ class InitiateController extends AbstractActionController {
 	 */
 	public function delegateAction() {
 		
+		if($this->getRequest()->isPost()) {
+			
+		}
+		
+		// Render form delegate.
 	}
 	
 	/**
 	 * Pembuatan draft kontrak baru
 	 */
 	public function createAction() {
+		
 		// Proses input data draft kontrak dari user.
-		if($this->input->post()) {
+		if($this->getRequest()->isPost()) {
 			
 		}
 		
@@ -47,12 +53,9 @@ class InitiateController extends AbstractActionController {
 	 */
 	public function reviewAction() {
 		// Render informasi dan form review draft kontrak.
-		$viewDatas = array(
+		return array(
 			"pageTitle" => "Kontrak - Review Draft",
-			"content" => "kontrak/inisiasi/review",
-			"contentData" => array()
 		);
-		$this->load->view("layout_kontrak", $viewDatas);
 	}
 	
 	/**
@@ -60,12 +63,9 @@ class InitiateController extends AbstractActionController {
 	 */
 	public function approvalAction() {
 		// Render informasi dan form approval draft kontrak.
-		$viewDatas = array(
-			"pageTitle" => "Kontrak - Persetujuan Draft",
-			"content" => "kontrak/inisiasi/approval",
-			"contentData" => array()
+		return array(
+			"pageTitle" => "Kontrak - Persetujuan Draft"
 		);
-		$this->load->view("layout_kontrak", $viewDatas);
 	}
 	
 	/**
@@ -73,12 +73,9 @@ class InitiateController extends AbstractActionController {
 	 */
 	public function kbhAction() {
 		// Render informasi dan form approval draft kontrak.
-		$viewDatas = array(
+		return array(
 			"pageTitle" => "Kontrak - Pembuatan KBH",
-			"content" => "kontrak/inisiasi/kbh",
-			"contentData" => array()
 		);
-		$this->load->view("layout_kontrak", $viewDatas);
 	}
 	
 	/**
@@ -88,11 +85,8 @@ class InitiateController extends AbstractActionController {
 	 */
 	public function finalizeAction() {
 		// Render informasi dan form inisiasi kontrak.
-		$viewDatas = array(
-			"pageTitle" => "Kontrak - Finalisasi Draft",
-			"content" => "kontrak/inisiasi/finalize",
-			"contentData" => array()
+		return array(
+			"pageTitle" => "Kontrak - Finalisasi Draft"
 		);
-		$this->load->view("layout_kontrak", $viewDatas);
 	}
 }
