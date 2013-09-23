@@ -1,5 +1,5 @@
 <?php
-namespace Workflow\Handler\Service;
+namespace Workflow\Execution\Handler\Service;
 
 use Zend\ServiceManager\AbstractFactoryInterface as AbstractFactory;
 use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;

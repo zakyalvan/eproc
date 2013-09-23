@@ -1,9 +1,9 @@
 <?php
-namespace Workflow\Router;
+namespace Workflow\Execution\Router;
 
 use Zend\ServiceManager\ServiceLocatorAwareInterface as ServiceLocatorAware;
 use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
-use Workflow\Router\Exception\RouterException;
+use Workflow\Execution\Router\Exception\RouterException;
 use Workflow\Entity\Token;
 
 /**

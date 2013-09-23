@@ -1,5 +1,5 @@
 <?php
-namespace Workflow\Handler\Service\Exception;
+namespace Workflow\Execution\Handler\Service\Exception;
 
 class RegistryItemAlreadyExistsException extends \RuntimeException {
 	

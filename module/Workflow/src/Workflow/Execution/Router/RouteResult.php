@@ -1,5 +1,5 @@
 <?php
-namespace Workflow\Router;
+namespace Workflow\Execution\Router;
 
 use Workflow\Entity\Place;
 use Workflow\Entity\Token;

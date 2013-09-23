@@ -1,5 +1,5 @@
 <?php
-namespace Workflow\Manager;
+namespace Workflow\Execution;
 
 use Workflow\Entity\Instance;
 use Workflow\Entity\Place;
@@ -9,7 +9,7 @@ use Workflow\Entity\Place;
  * 
  * @author zakyalvan
  */
-interface InstanceManagerInterface {
+interface ExecutionServiceInterface {
 	/**
 	 * Apakah workflow dapat distart atau tidak.
 	 * 

@@ -1,5 +1,5 @@
 <?php
-namespace Workflow\Handler;
+namespace Workflow\Execution\Handler;
 
 /**
  * Kontrak untuk transition handler.
@@ -7,6 +7,13 @@ namespace Workflow\Handler;
  * @author zakyalvan
  */
 interface TransitionHandler {
+	/**
+	 * Apakah handler dapat menghandle transisi yang diberikan.
+	 * 
+	 * @param Transition $transition
+	 */
+	public function canHandle(Transition $transition);
+	
 	/**
 	 * Handle sebuah transition.
 	 * 

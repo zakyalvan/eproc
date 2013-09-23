@@ -1,5 +1,5 @@
 <?php
-namespace Workflow\Handler;
+namespace Workflow\Execution\Handler;
 
 class TimeTriggeredTransitionHandler implements TransitionHandler {
 	

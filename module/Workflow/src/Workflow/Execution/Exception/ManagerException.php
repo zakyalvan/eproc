@@ -1,5 +1,5 @@
 <?php
-namespace Workflow\Manager\Exception;
+namespace Workflow\Execution\Manager\Exception;
 
 /**
  * Base class untuk submodul workflow manager.

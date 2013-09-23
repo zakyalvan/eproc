@@ -1,8 +1,8 @@
 <?php
-namespace Workflow\Handler\Service;
+namespace Workflow\Execution\Handler\Service;
 
-use Workflow\Handler\Service\Exception\RegistryItemNotFoundException;
-use Workflow\Handler\Service\Exception\RegistryItemAlreadyExistsException;
+use Workflow\Execution\Handler\Service\Exception\RegistryItemNotFoundException;
+use Workflow\Execution\Handler\Service\Exception\RegistryItemAlreadyExistsException;
 /**
  * Registry dari {@link TransitionHandler}.
  * Object dari kelas ini akan digunakan dalam kelas {@link TransitionHandlerAbstractFactory}

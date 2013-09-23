@@ -100,8 +100,8 @@ return array(
 			}
 		),
 		'invokables' => array(
-			'Workflow\Manager\InstanceManager' => 'Workflow\Manager\InstanceManager',
-			'Workflow\Router\TokenRouter' => 'Workflow\Router\TokenRouter'
+			'Workflow\Execution\Manager\InstanceManager' => 'Workflow\Manager\InstanceManager',
+			'Workflow\Execution\Router\TokenRouter' => 'Workflow\Router\TokenRouter'
 		)
 	)
 );

@@ -1,16 +1,16 @@
 <?php
-namespace Workflow\Manager;
+namespace Workflow\Execution;
 
 use Zend\ServiceManager\ServiceLocatorAwareInterface as ServiceLocatorAware;
 use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
 use Workflow\Entity\Instance;
 
 /**
- * Implementasi default dari InstanceManagerInterface
+ * Implementasi default dari ExecutionServiceInterface
  * 
  * @author zakyalvan
  */
-class InstanceManager implements InstanceManagerInterface, ServiceLocatorAware {
+class ExecutionServiceInterface implements ExecutionServiceInterface, ServiceLocatorAware {
 	/**
 	 * @var ServiceLocator
 	 */
