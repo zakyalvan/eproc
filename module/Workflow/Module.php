@@ -3,7 +3,6 @@ namespace Workflow;
 
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
-use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Feature\InitProviderInterface;
 use Zend\ModuleManager\ModuleManagerInterface;
 use Workflow\Service\DefaultDefinitionService;
@@ -13,7 +12,7 @@ use Workflow\Service\DefaultDefinitionService;
  * 
  * @author zakyalvan
  */
-class Module implements InitProviderInterface, AutoloaderProviderInterface, ConfigProviderInterface, ServiceProviderInterface {
+class Module implements InitProviderInterface, AutoloaderProviderInterface, ConfigProviderInterface {
 	/**
 	 * (non-PHPdoc)
 	 * @see \Zend\ModuleManager\Feature\InitProviderInterface::init()
@@ -43,20 +42,5 @@ class Module implements InitProviderInterface, AutoloaderProviderInterface, Conf
 	 */
 	public function getConfig() {
 		return include __DIR__ . '/config/module.config.php';
-	}
-	/**
-	 * (non-PHPdoc)
-	 * @see \Zend\ModuleManager\Feature\ServiceProviderInterface::getServiceConfig()
-	 */
-	public function getServiceConfig() {
-		return array(
-			'factories' => array(
-				'Workflow\Service\DefinitionService' => function($serviceManager) {
-					$entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
-					$service = new DefaultDefinitionService($entityManager);
-					return $service;
-				}
-			)
-		);
 	}
 }

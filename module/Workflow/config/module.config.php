@@ -8,7 +8,7 @@ return array(
 			'Workflow\Controller\Transition' => 'Workflow\Controller\TransitionController',
 			'Workflow\Controller\Place' => 'Workflow\Controller\PlaceController',
 			'Workflow\Controller\Arc' => 'Workflow\Controller\ArcController',
-		)	
+		)
 	),
 	'router' => array(
 		'routes' => array(
@@ -90,5 +90,18 @@ return array(
                 )
             )
         )
-    )
+    ),
+	'service_manager' => array(
+		'factories' => array(
+			'Workflow\Service\DefinitionService' => function($serviceManager) {
+				$entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
+				$service = new DefaultDefinitionService($entityManager);
+				return $service;
+			}
+		),
+		'invokables' => array(
+			'Workflow\Manager\InstanceManager',
+			'Workflow\Router\TokenRouter'
+		)
+	)
 );

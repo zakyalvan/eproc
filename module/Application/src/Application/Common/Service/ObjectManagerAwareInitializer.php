@@ -1,5 +1,5 @@
 <?php
-namespace Application\Persistence\Service;
+namespace Application\Common\Service;
 
 use Zend\ServiceManager\InitializerInterface;
 use DoctrineModule\Persistence\ObjectManagerAwareInterface;
