@@ -44,7 +44,8 @@ return array(
 	'todo_list' => array(),
 	'service_manager' => array(
 		'initializers' => array(
-			'Application\Persistence\Service\ObjectManagerAwareInitializer'
+			'Application\Common\Service\ObjectManagerAwareInitializer',
+			'Application\Common\Service\IdentityAwareInitializer'
 		),
 		'abstract_factories' => array(
 			'Application\Todo\Service\TodoListProviderAbstractFactory'

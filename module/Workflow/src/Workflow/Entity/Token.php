@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as Orm;
  */
 class Token {
 	/**
-	 * @Id
+	 * @Orm\Id
 	 * @Orm\Column(name="TOKEN_ID", type="integer")
 	 */
 	protected $id;
@@ -50,8 +50,8 @@ class Token {
 	protected $context;
 	
 	/**
-	 * Status dari token ini, menentukan apakah transition setelah place di mana token ini berada 
-	 * bisa difire atau tidak.
+	 * Status dari token ini, menentukan apakah transition setelah place (di mana token ini berada 
+	 * bisa difire atau tidak).
 	 * 
 	 * @Orm\Column(name="TOKEN_STATUS", type="string")
 	 */
@@ -60,17 +60,17 @@ class Token {
 	/**
 	 * Kapan token ini dibuat.
 	 * 
-	 * @Orm\Column(name="ENABLED_DATE")
+	 * @Orm\Column(name="ENABLED_DATE", type="datetime")
 	 */
 	protected $enabledDate;
 	
 	/**
-	 * @Orm\Column(name="CANCELED_DATE")
+	 * @Orm\Column(name="CANCELED_DATE", type="datetime")
 	 */
 	protected $canceledDate;
 	
 	/**
-	 * @Orm\Column(name="CONSUMED_DATE")
+	 * @Orm\Column(name="CONSUMED_DATE", type="datetime")
 	 */
 	protected $consumedDate;
 	
