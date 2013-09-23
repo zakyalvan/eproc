@@ -103,5 +103,10 @@ return array(
 			'Workflow\Execution\Manager\InstanceManager' => 'Workflow\Manager\InstanceManager',
 			'Workflow\Execution\Router\TokenRouter' => 'Workflow\Router\TokenRouter'
 		)
+	),
+	'workflow' => array(
+		'transition_handlers' => array(
+			
+		)
 	)
 );
