@@ -2,6 +2,7 @@
 namespace Contract\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
+use Contract\Form\DelegateCreationForm;
 
 /**
  * Kelas kontroler ini mewakili aktifitas-aktifitas dalam proses flow 
@@ -23,11 +24,15 @@ class InitiateController extends AbstractActionController {
 	 */
 	public function delegateAction() {
 		
+		
 		if($this->getRequest()->isPost()) {
 			
 		}
 		
-		// Render form delegate.
+		// Render form delegate, tampilin data pengadaan yang akan dibuatkan kontraknya.
+		return array(
+			
+		);
 	}
 	
 	/**

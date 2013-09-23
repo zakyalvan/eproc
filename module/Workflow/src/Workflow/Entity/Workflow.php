@@ -42,6 +42,78 @@ class Workflow implements InputFilterAwareInterface {
 	 */
 	protected $transitions;
 	
+	/**
+	 * @Orm\Column(name="TGL_REKAM")
+	 */
+	private $createdDate;
+	
+	/**
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
+	 * @Orm\JoinColumn(name="PETUGAS_REKAM", referencedColumnName="KODE_USER")
+	 */
+	private $createdBy;
+	
+	/**
+	 * @Orm\Column(name="TGL_UBAH")
+	 */
+	private $updatedDate;
+	
+	/**
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
+	 * @Orm\JoinColumn(name="PETUGAS_UBAH", referencedColumnName="KODE_USER")
+	 */
+	private $updatedBy;
+	
+	
+	public function getId() {
+		return $this->id;
+	}
+	public function setId($id) {
+		$this->id = $id;
+	}
+	
+	public function getName() {
+		return $this->name;
+	}
+	public function setName($name) {
+		$this->name = $name;
+	}
+	
+	public function getDescription() {
+		return $this->description;
+	}
+	public function setDescription($description) {
+		$this->description = $description;
+	}
+	
+	public function getPlaces() {
+		return $this->places;
+	}
+	public function setPlaces($places) {
+		$this->places = $places;
+	}
+	
+	public function getTransitions() {
+		return $this->transitions;
+	}
+	public function setTransitions($transitions) {
+		$this->transitions = $transitions;
+	}
+	
+	public function getCreatedDate() {
+		return $this->createdDate;
+	}
+	public function getCreatedBy() {
+		return $this->createdBy;
+	}
+	
+	public function getUpdatedDate() {
+		return $this->updatedDate;
+	}
+	public function getUpdatedBy() {
+		return $this->updatedBy;
+	}
+	
 	public function __get($property) {
 		return $this->{$property};
 	}

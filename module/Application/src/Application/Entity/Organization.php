@@ -26,6 +26,7 @@ class Organization {
 	
 	/**
 	 * @Orm\ManyToOne(targetEntity="Application\Entity\Organization", fetch="LAZY")
+	 * @Orm\JoinColumn(name="KODE_KANTOR_INDUK", referencedColumnName="KODE_KANTOR")
 	 * 
 	 * @var Organization
 	 */
