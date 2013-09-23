@@ -22,7 +22,7 @@ class TokenRouter implements ServiceLocatorAware {
 	 * Route sebuah token dari satu place ke place berikutnya.
 	 * 
 	 * @param Token $token
-	 * @return Result
+	 * @return RouteResult
 	 */
 	public function routeToNextPlace(Token $token) {
 		if($token == null) {
@@ -38,7 +38,8 @@ class TokenRouter implements ServiceLocatorAware {
 	 */
 	public function setServiceLocator(ServiceLocator $serviceLocator) {
 		$this->serviceLocator = $serviceLocator;
-	}	
+	}
+	
 	/**
 	 * (non-PHPdoc)
 	 * @see \Zend\ServiceManager\ServiceLocatorAwareInterface::getServiceLocator()

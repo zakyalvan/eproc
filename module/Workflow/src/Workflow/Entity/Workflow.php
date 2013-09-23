@@ -43,6 +43,13 @@ class Workflow implements InputFilterAwareInterface {
 	protected $transitions;
 	
 	/**
+	 * @Orm\OneToMany(targetEntity="Workflow\Entity\Instance", mappedBy="workflow")
+	 * 
+	 * @var unknown
+	 */
+	protected $instances;
+	
+	/**
 	 * @Orm\Column(name="TGL_REKAM")
 	 */
 	private $createdDate;

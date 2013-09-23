@@ -10,7 +10,7 @@ use Workflow\Entity\Transition;
  * 
  * @author zakyalvan
  */
-class Result {
+class RouteResult {
 	/**
 	 * Code jika routing gagal karena transisi yang dilewati harus ditrigger oleh user.
 	 * 

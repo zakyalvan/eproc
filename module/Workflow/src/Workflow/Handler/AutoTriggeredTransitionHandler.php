@@ -6,6 +6,6 @@ namespace Workflow\Handler;
  * 
  * @author zakyalvan
  */
-class AutoTriggeredTransitionHandler implements TransitionHandler {
+abstract class AutoTriggeredTransitionHandler implements TransitionHandler {
 	
 }

@@ -45,7 +45,7 @@ return array(
 	'service_manager' => array(
 		'initializers' => array(
 			'Application\Common\Service\ObjectManagerAwareInitializer',
-			'Application\Common\Service\IdentityAwareInitializer'
+			//'Application\Common\Service\IdentityAwareInitializer'
 		),
 		'abstract_factories' => array(
 			'Application\Todo\Service\TodoListProviderAbstractFactory'
@@ -53,7 +53,10 @@ return array(
 		'factories' => array(
 			'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
 			'Zend\Session\Config\ConfigInterface' => 'Zend\Session\Service\SessionConfigFactory',
-			'Zend\Session\SessionManager' => 'Zend\Session\Service\SessionManagerFactory'
+			'Zend\Session\SessionManager' => 'Zend\Session\Service\SessionManagerFactory',
+			'Zend\Authentication\AuthenticationService' => function($serviceManager) {
+				return $serviceManager->get('doctrine.authenticationservice.orm_default');
+			}
 		)
 	)
 );

@@ -3,9 +3,8 @@ namespace Application;
 
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
-use Zend\ModuleManager\Feature\ServiceProviderInterface;
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
+use Zend\ModuleManager\Feature\ConfigProviderInterface as ConfigProvider;
+use Zend\ModuleManager\Feature\AutoloaderProviderInterface as AutoloaderProvider;
 use Zend\Loader\AutoloaderFactory;
 use Zend\Session\Container;
 
@@ -14,7 +13,7 @@ use Zend\Session\Container;
  * 
  * @author zakyalvan
  */
-class Module implements ConfigProviderInterface, AutoloaderProviderInterface, ServiceProviderInterface {
+class Module implements ConfigProvider, AutoloaderProvider {
 	public function onBootstrap(MvcEvent $e) {
 		$eventManager        = $e->getApplication()->getEventManager();
 		$moduleRouteListener = new ModuleRouteListener();
@@ -46,24 +45,4 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
 			)
 		);
 	}
-    
-    /**
-     * (non-PHPdoc)
-     * @see \Zend\ModuleManager\Feature\ServiceProviderInterface::getServiceConfig()
-     */
-    public function getServiceConfig() {
-    	return array(
-    		'factories' => array(
-    			/**
-    			 * Seharusnya di simpan di application-wide config (di config/autoload/global.php bukan di sini,
-    			 * tapi ga apalah, toh dimerge juga).
-    			 * 
-    			 * @see https://github.com/doctrine/DoctrineModule/blob/master/docs/authentication.md
-    			 */
-    			'Zend\Authentication\AuthenticationService' => function($serviceManager) {
-    				return $serviceManager->get('doctrine.authenticationservice.orm_default');
-    			}
-    		)
-    	);
-    }
 }

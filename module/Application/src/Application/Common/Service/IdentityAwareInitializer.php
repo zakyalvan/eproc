@@ -1,8 +1,8 @@
 <?php
 namespace Application\Common\Service;
 
-use Zend\ServiceManager\InitializerInterface;
-use Application\Common\IdentityAwareInterface;
+use Zend\ServiceManager\InitializerInterface as Initializer;
+use Application\Common\IdentityAwareInterface as IdentityAware;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
 use Zend\Authentication\AuthenticationService;
@@ -13,7 +13,7 @@ use Application\Common\Service\Exception\AuthenticationServiceNotFoundException;
  * 
  * @author zakyalvan
  */
-class IdentityAwareInitializer implements InitializerInterface {
+class IdentityAwareInitializer implements Initializer {
 	/**
 	 * @var AuthenticationService
 	 */
@@ -32,7 +32,7 @@ class IdentityAwareInitializer implements InitializerInterface {
 			$this->authenticationService = $serviceLocator->get('Zend\Authentication\AuthenticationService');
 		}
 		
-		if($instance instanceof IdentityAwareInterface) {
+		if($instance instanceof IdentityAware) {
 			if($this->authenticationService->hasIdentity()) {
 				$instance->injectIdentity($this->authenticationService->getIdentity());
 			}

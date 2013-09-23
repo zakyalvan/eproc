@@ -40,13 +40,11 @@ class Organization {
 	public function getCode() {
 		return $this->code;
 	}
+	
 	public function getName() {
 		return $this->name;
 	}
 	
-	/**
-	 * @return \Application\Entity\Organization
-	 */
 	public function getParent() {
 		return $this->parent;
 	}

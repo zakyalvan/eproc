@@ -9,6 +9,6 @@ use Doctrine\ORM\Mapping;
  * 
  * @author zakyalvan
  */
-class Termin {
+class Term {
 	
 }

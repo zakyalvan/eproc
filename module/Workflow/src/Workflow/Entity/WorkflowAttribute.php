@@ -13,6 +13,11 @@ use Doctrine\ORM\Mapping as Orm;
  * @author zakyalvan
  */
 class WorkflowAttribute {
+	const TYPE_INTEGER = "INTEGER";
+	const TYPE_DOUBLE = "DOUBLE";
+	const TYPE_DATE = "DATE";
+	const TYPE_STRING = "STRING";
+	
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="WORKFLOW_ATTRIBUTE_ID", type="integer")

@@ -1,23 +1,22 @@
 <?php
 namespace Workflow;
 
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
-use Zend\ModuleManager\Feature\InitProviderInterface;
-use Zend\ModuleManager\ModuleManagerInterface;
-use Workflow\Service\DefaultDefinitionService;
+use Zend\ModuleManager\Feature\InitProviderInterface as InitProvider;
+use Zend\ModuleManager\Feature\ConfigProviderInterface as ConfigProvider;
+use Zend\ModuleManager\Feature\AutoloaderProviderInterface as AutoloaderProvider;
+use Zend\ModuleManager\ModuleManagerInterface as ModuleManager;
 
 /**
  * Definisi dan konfigurasi module workflow.
  * 
  * @author zakyalvan
  */
-class Module implements InitProviderInterface, AutoloaderProviderInterface, ConfigProviderInterface {
+class Module implements InitProvider, AutoloaderProvider, ConfigProvider {
 	/**
 	 * (non-PHPdoc)
 	 * @see \Zend\ModuleManager\Feature\InitProviderInterface::init()
 	 */
-	public function init(ModuleManagerInterface $manager) {
+	public function init(ModuleManager $manager) {
 		
 	}
 	/**
