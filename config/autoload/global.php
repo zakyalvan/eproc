@@ -15,7 +15,9 @@ return array(
 	'db' => array(
 		'driver' => 'OCI8',
 		'hostname' => '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SID=xe)))',
-		'character_set' => 'AL32UTF8'
+		'character_set' => 'AL32UTF8',
+		'username' => 'EP',
+		'password' => 'welcome_1'
 	),
 	'doctrine' => array(
 		'connection' => array(
