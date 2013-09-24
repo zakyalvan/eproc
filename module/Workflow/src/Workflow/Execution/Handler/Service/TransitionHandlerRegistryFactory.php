@@ -3,6 +3,7 @@ namespace Workflow\Execution\Handler\Service;
 
 use Zend\ServiceManager\FactoryInterface as Factory;
 use Workflow\Execution\Handler\TransitionHandlerRegistry;
+use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 
 /**
  * Factory untuk kelas TransitionHandlerRegistry
@@ -17,12 +18,17 @@ class TransitionHandlerRegistryFactory implements Factory {
 	public function createService(ServiceLocatorInterface $serviceLocator) {
 		$config = $serviceLocator->get('Config');
 		
-		$transitionHandlerRegister = new TransitionHandlerRegistry();
+		$transitionHandlerRegistry = new TransitionHandlerRegistry();
 		if(isset($config['workflow']['transition_handlers'])) {
-			foreach ($config['workflow']['transition_handlers'] as $name => $handler) {
-				$transitionHandlerRegister->add($name, $handler);
+			try {
+				foreach ($config['workflow']['transition_handlers'] as $name => $handler) {
+					$transitionHandlerRegistry->add($name, $handler);
+				}
+			}
+			catch(\Exception $e) {
+				throw new ServiceNotCreatedException("Object transition handler registry tidak dapat dibuat, terjadi eksepsi", 100, $e);
 			}
 		}
-		return $transitionHandlerRegister;
+		return $transitionHandlerRegistry;
 	}
 }

@@ -32,18 +32,15 @@ class TransitionHandlerAbstractFactory implements AbstractFactory, TransitionHan
 				$this->transitionHandlerRegistry = new TransitionHandlerRegistry();
 				
 				if(isset($config['workflow']['transition_handlers'])) {
-					foreach ($config['workflow']['transition_handlers'] as $name => $handler) {
-						$this->transitionHandlerRegistry->add($name, $handler);
+					foreach ($config['workflow']['transition_handlers'] as $alias => $handler) {
+						$this->transitionHandlerRegistry->add($alias, $handler);
 					}
 				}
 			}
 		}
 		
 		// Tidak perlu terlalu banyak cek, karena dari awal sudah dipaksa valid pada saat masukin ke registry.
-		if(!$this->transitionHandlerRegistry->has($requestedName)) {
-			return false;
-		}
-		return true;
+		return $this->transitionHandlerRegistry->has($requestedName);
 	}
 	/**
 	 * (non-PHPdoc)

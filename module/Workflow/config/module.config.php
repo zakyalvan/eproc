@@ -1,6 +1,7 @@
 <?php
 namespace Workflow;
 
+use Workflow\Execution\Evaluator\Service\SplitEvaluatorRegistryFactory;
 return array(
 	'controllers' => array(
 		'invokables' => array(
@@ -106,6 +107,9 @@ return array(
 	),
 	'workflow' => array(
 		'transition_handlers' => array(
+			
+		),
+		SplitEvaluatorRegistryFactory::DEFAULT_REGISTRY_CONFIG_KEY => array(
 			
 		)
 	)

@@ -2,10 +2,10 @@
 namespace Workflow\Definition;
 
 /**
- * Kontrak untuk definition service.
+ * Implementasi default dari {@link DefinitionServiceInterface}
  * 
  * @author zakyalvan
  */
-class DefinitionServiceInterface {
+class DefinitionService implements DefinitionServiceInterface {
 	
 }
