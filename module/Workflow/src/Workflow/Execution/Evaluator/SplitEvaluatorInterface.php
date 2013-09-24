@@ -2,8 +2,9 @@
 namespace Workflow\Execution\Evaluator;
 
 /**
- * Ini base interface untuk evaluator dalam percabangan atau split yang memerlukan 
+ * Ini base interface untuk evaluator dalam percabangan/split yang memerlukan 
  * (or split terjadi setelah transisi dieksekusi).
+ * Evalusi menggunakan attribute dari workflow atau lebih tepatnya instance datas.
  * 
  * @author zakyalvan
  */
