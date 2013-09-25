@@ -76,6 +76,7 @@ class ProcessRouter implements ServiceLocatorAware {
 					->setParameter('arcLabel', $evaluateResult)
 					->getSingleResult();
 			}
+			// Jika hanya ada satu arc yang keluar dari current place.
 			else if($inputArcsCount == 1) {
 				// Ambil arc yang keluar dari token/current place.
 				$inputArc = $this->entityManager
@@ -94,9 +95,9 @@ class ProcessRouter implements ServiceLocatorAware {
 			
 			if(strtoupper($transition->getType()) == Transition::TRIGGER_BY_USER) {
 				// Balikin hasil route.
-				return new RouteResult(false, "", RouteResult::WAIT_USER_TRANSITION_CODE, $inputPlace, $token, $transition);
+				return new RouteResult(false, "Menunggu transisi ditrigger oleh user", RouteResult::WAIT_USER_TRANSITION_CODE, $inputPlace, $token, $transition);
 			}
-			else {
+			else if(strtoupper($transition->getType()) == Transition::TRIGGER_BY_AUTO) {
 				// Ambil output arcs dari transition.
 				$outputArcs = $this->entityManager
 					->createQuery('SELECT arc, arc.place FROM Workflow\Entity\Arc AS arc JOIN arc.place JOIN arc.transition WITH arc.transition.id = :transitionId WHERE arc.direction = :arcDirection')
@@ -104,18 +105,20 @@ class ProcessRouter implements ServiceLocatorAware {
 					->setParameter('arcDirection', Arc::ARC_DIRECTION_OUTPUT)
 					->getResult();
 				
-				$this->entityManager->beginTransaction();
-				
-				// Consume token sebelumnya, sebelum buat token pada place berikutnya.
+				// Consume free token sebelumnya, kemudia buat free token baru pada place berikutnya.
 				$token->setStatus(Token::STATUS_CONSUMED);
 				/**
 				 * TODO Set consumed date.
 				 */
 				$this->entityManager->persist($token);
 				
-				// Create token pade masing-masin output place.
+				// Ini untuk kebutuhan routing-result.
+				$nextPlaces = array();
+				$nextTokens = array();
+				
 				foreach ($outputArcs as $outputArc) {
 					$outputPlace = $outputArc->getPlace();
+					$nextPlaces[] = $outputPlace;
 				
 					$newToken = new Token();
 					$newToken->setPlace($token->getPlace());
@@ -123,19 +126,20 @@ class ProcessRouter implements ServiceLocatorAware {
 					$newToken->setStatus(Token::STATUS_FREE);
 
 					$this->entityManager->persist($newToken);
+					
+					$nextTokens[] = $newToken;
 				}
-				$this->entityManager->commit();
 				
-				// Eksekusi seluruh perintah persist dan update
-				$this->entityManager->flush();
-				
-				// Balikin hasil route.
-				return new RouteResult(true, null, -1, $inputPlace, $token);
+				// Balikin route result.
+				return new RouteResult(true, null, -1, $inputPlace, $token, $transition, $nextPlaces, $nextTokens);
+			}
+			else {
+				throw new RouterException('Belum bisa routing type transisi selain USER dan AUTO');
 			}
 		}
 		catch(\Exception $e) {
-			$this->entityManager->rollback();
-			throw new RouterException("Process route gagal.", 200, $e);
+			$result = new RouteResult(false, 'Exception terjadi', RouteResult::EXCEPTION_ON_ROUTING_CODE, $inputPlace, $token);
+			$result->setException($e);
 		}
 	}
 	

@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as Orm;
 /**
  * Entity yang mewakili place dalam sebuah workflow.
  * 
- * @Orm\Entity
+ * @Orm\Entity(repositoryClass="Workflow\Entity\Repository\PlaceRepository")
  * @Orm\Table(name="EP_WF_PLACE")
  */
 class Place {

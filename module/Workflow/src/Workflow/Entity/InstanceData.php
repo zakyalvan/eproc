@@ -21,8 +21,8 @@ class InstanceData {
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\WorkflowAttribute", fetch="lazy")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", type="string", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="WORKFLOW_ATTR_ID", type="integer", referencedColumnName="WORKFLOW_ATTR_ID")})
+	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\WorkflowAttribute", fetch="eager")
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", type="string", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="WORKFLOW_ATTR_NAME", type="string", referencedColumnName="WORKFLOW_ATTR_NAME")})
 	 * 
 	 * @var WorkflowAttribute
 	 */

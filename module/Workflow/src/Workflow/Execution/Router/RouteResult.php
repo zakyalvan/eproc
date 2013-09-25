@@ -12,7 +12,7 @@ use Workflow\Entity\Transition;
  */
 class RouteResult {
 	/**
-	 * Code jika routing gagal karena transisi yang dilewati harus ditrigger oleh user.
+	 * Code jika routing gagal karena transisi yang dilewati harus menunggu ditrigger oleh user.
 	 * 
 	 * @var integer
 	 */
@@ -25,6 +25,13 @@ class RouteResult {
 	 */
 	const TOKEN_ON_END_PLACE_CODE = 112;
 	
+	/**
+	 * Code jika terjadi eksepsi dalam proses routing.
+	 * 
+	 * @var unknown
+	 */
+	const EXCEPTION_ON_ROUTING_CODE = 113;
+	
 	private $success = false;
 	private $message;
 	private $code;
@@ -32,7 +39,7 @@ class RouteResult {
 	/**
 	 * @var Place
 	 */
-	private $from;
+	private $fromPlace;
 	
 	/**
 	 * @var Token
@@ -40,40 +47,38 @@ class RouteResult {
 	private $fromToken;
 	
 	/**
+	 * Transisi yang dilewati dalam proses routing.
+	 * 
 	 * @var Transition
 	 */
 	private $transition;
 	
 	/**
-	 * @var Place
+	 * Place-place terakhir tempat token-token setelah routing berhasil.
 	 */
-	private $next;
+	private $nextPlaces;
 	
 	/**
-	 * @var Token
+	 * Token-token yang digenerate setelah routing berhasil.
 	 */
-	private $nextToken;
+	private $nextTokens;
 	
 	/**
-	 * Konstruktor
+	 * Exception yang ditangkap pada saat proses routing.
 	 * 
-	 * @param unknown $success
-	 * @param unknown $message
-	 * @param unknown $code
-	 * @param Place $from
-	 * @param Token $fromToken
-	 * @param Transition $transition Transisi yang dilewati.
-	 * @param Place $next
-	 * @param Token $nextToken
+	 * @var unknown
 	 */
-	public function __construct($success, $message, $code, Place $from, Token $fromToken, Transition $transition = null, Place $next = null, Token $nextToken = null) {
+	private $exception;
+	
+	public function __construct($success, $message, $code, Place $fromPlace, Token $fromToken, Transition $transition = null, $nextPlaces = array(), $nextTokens = array()) {
 		$this->success = $success;
 		$this->message = $message;
 		$this->code = $code;
-		$this->from = $from;
+		$this->fromPlace = $fromPlace;
 		$this->fromToken = $fromToken;
-		$this->next = $next;
-		$this->nextToken = $nextToken;
+		$this->transition = $transition;
+		$this->nextPlaces = $nextPlaces;
+		$this->nextTokens = $nextTokens;
 	}
 	
 	public function isSuccess() {
@@ -84,20 +89,37 @@ class RouteResult {
 	}
 	/**
 	 * Retrieve code jika routing ada error, jika tidak ada error balikin -1.
+	 * 
+	 * @return integer
 	 */
 	public function getCode() {
 		return $this->code;
 	}
-	public function getFrom() {
-		return $this->from;
+	public function getFromPlace() {
+		return $this->fromPlace;
 	}
 	public function getFromToken() {
 		return $this->fromToken;
 	}
-	public function getNext() {
-		return $this->next;
+	/**
+	 * Retrieve transition yang dilewati dalam proses rousing.
+	 * 
+	 * @return \Workflow\Entity\Transition
+	 */
+	public function getTransition() {
+		return $this->transition;
 	}
-	public function getNextToken() {
-		return $this->nextToken;
+	public function getNextPlaces() {
+		return $this->nextPlaces;
+	}
+	public function getNextTokens() {
+		return $this->nextTokens;
+	}
+	
+	public function getException() {
+		return $this->exception;
+	}
+	public function setException(Exception $exception) {
+		$this->exception = $exception;
 	}
 }

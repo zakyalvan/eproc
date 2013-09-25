@@ -16,16 +16,25 @@ interface ExecutionServiceInterface {
 	 * @param Workflow $workflow
 	 * @return boolean
 	 */
-	public function canStartWorkflow(Workflow $workflow);
+	public function canStartWorkflow(Workflow $workflow, array $datas);
 	
 	/**
 	 * Start instance workflow baru.
 	 * 
 	 * @param Workflow $workflow
+	 * @param array $datas
 	 * @throws WorkflowManager
 	 * @return Instance
 	 */
-	public function startWorkflow(Workflow $workflow);
+	public function startWorkflow(Workflow $workflow, array $datas);
+	
+	/**
+	 * Manage work item, didelegasiin ke object dari kelas {@link WorkitemManager}.
+	 *
+	 * @param Workitem $workitem
+	 * @return WorkitemManager
+	 */
+	public function manageWorkitem(Workitem $workitem);
 	
 	/**
 	 * Apakah instance sudah complete atau belum.

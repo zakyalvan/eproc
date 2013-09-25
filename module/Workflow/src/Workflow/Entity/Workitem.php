@@ -11,6 +11,10 @@ use Application\Entity\User;
  * @author zakyalvan
  */
 class Workitem {
+	const STATUS_ENABLED = 'EN';
+	const STATUS_CANCELED = 'CN';
+	const STATUS_FINISHED = 'FN';
+	
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="WORKITEM_ID", type="integer")

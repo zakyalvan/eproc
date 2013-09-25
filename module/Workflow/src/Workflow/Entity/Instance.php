@@ -12,6 +12,10 @@ use Doctrine\ORM\Mapping as Orm;
  * @author zakyalvan
  */
 class Instance {
+	const STATUS_OPERATED = 'OP';
+	const STATUS_FINISHED = 'FN';
+	const STATUS_CANCELED = 'CN';
+	
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="INSTANCE_ID")
