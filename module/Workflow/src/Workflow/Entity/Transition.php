@@ -46,7 +46,7 @@ class Transition {
 	protected $triggerType;
 	
 	/**
-	 * Context transisi (Misalnya Internal, External)
+	 * Context transisi (Misalnya Internal, External (atau bisa lebih detail misal vendor))
 	 * Dipake jika transisi bertype user triggered.
 	 * 
 	 * @Orm\Column(name="TRANSITION_CONTEXT", type="string")
@@ -55,7 +55,7 @@ class Transition {
 	
 	/**
 	 * Ini role yang harus mengeksekusi transisi ini 
-	 * (Jika transisi bertype user-triggered).
+	 * (Jika transisi bertype user-triggered dan context == user, selain itu null).
 	 *
 	 * @Orm\ManyToOne(targetEntity="Application\Entity\Role", fetch="lazy")
 	 * @Orm\JoinColumn(name="ROLE_ID", referencedColumnName="KODE_FUNGSI")
@@ -93,6 +93,13 @@ class Transition {
 	protected $description;
 	
 	/**
+	 * Transition handler untuk transition bersangkutan.
+	 * 
+	 * @Orm\Column(name="TRANSITION_HANDLER", type="string", nullable="false")
+	 */
+	protected $handlerName;
+	
+	/**
 	 * @Orm\OneToMany(targetEntity="Workflow\Entity\Arc", mappedBy="transition")
 	 */
 	protected $arcs;
@@ -104,7 +111,7 @@ class Transition {
 	
 	/**
 	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @Orm\JoinColumn(name="PETUGAS_REKAM", referencedColumnName="KODE_USER")
+	 * @Orm\JoinColumn(name="PETUGAS_REKAM", type="string", referencedColumnName="KODE_USER")
 	 */
 	protected $createdBy;
 	
@@ -115,7 +122,7 @@ class Transition {
 	
 	/**
 	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @Orm\JoinColumn(name="PETUGAS_UBAH", referencedColumnName="KODE_USER")
+	 * @Orm\JoinColumn(name="PETUGAS_UBAH", type="string", referencedColumnName="KODE_USER")
 	 */
 	protected $updatedBy;
 	
@@ -173,6 +180,13 @@ class Transition {
 	}
 	public function setDescription($description) {
 		$this->description = $description;
+	}
+	
+	public function getHandlerName() {
+		return $this->handlerName;
+	}
+	public function setHandlerName($handlerName) {
+		$this->handlerName = $handlerName;
 	}
 	
 	public function getArcs() {

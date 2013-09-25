@@ -18,6 +18,13 @@ interface SplitEvaluatorInterface {
 	public function getPossibleOutput();
 	
 	/**
+	 * Set instance data yang akan digunakan dalam evaluasi.
+	 * 
+	 * @param unknown $datas
+	 */
+	public function setDatas($datas);
+	
+	/**
 	 * Evaluasi apakah kondisi percabangan (fork) ke cabang atau arc yang mana.
 	 * 
 	 * @param array $datas

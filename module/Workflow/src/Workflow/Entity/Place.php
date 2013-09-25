@@ -4,6 +4,8 @@ namespace Workflow\Entity;
 use Doctrine\ORM\Mapping as Orm;
 
 /**
+ * Entity yang mewakili place dalam sebuah workflow.
+ * 
  * @Orm\Entity
  * @Orm\Table(name="EP_WF_PLACE")
  */
@@ -37,14 +39,19 @@ class Place {
 	protected $type;
 	
 	/**
-	 * @Orm\Column(name="PLACE_NAME", type="string")
+	 * @Orm\Column(name="PLACE_NAME", type="string", nullable=false)
 	 */
 	protected $name;
 	
 	/**
-	 * @Orm\Column(name="PLACE_DESC", type="string")
+	 * @Orm\Column(name="PLACE_DESC", type="string", nullable=true)
 	 */
 	protected $description;
+	
+	/**
+	 * @Orm\Column(name="SPLIT_EVALUATOR", type="string", nullable=true)
+	 */
+	protected $splitEvaluator;
 	
 	/**
 	 * @Orm\OneToMany(targetEntity="Workflow\Entity\Arc", mappedBy="place")
@@ -108,6 +115,13 @@ class Place {
 	}
 	public function setDescription($description) {
 		$this->description = $description;
+	}
+	
+	public function getSplitEvaluator() {
+		return $this->splitEvaluator;
+	}
+	public function setSplitEvaluator($splitEvaluator) {
+		$this->splitEvaluator = $splitEvaluator;
 	}
 	
 	public function getArcs() {

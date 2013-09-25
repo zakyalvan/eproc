@@ -18,6 +18,13 @@ class RouteResult {
 	 */
 	const WAIT_USER_TRANSITION_CODE = 111;
 	
+	/**
+	 * Jika routing gagal karena token sudah berada pada end place.
+	 * 
+	 * @var unknown
+	 */
+	const TOKEN_ON_END_PLACE_CODE = 112;
+	
 	private $success = false;
 	private $message;
 	private $code;

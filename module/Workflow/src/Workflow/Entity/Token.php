@@ -12,6 +12,10 @@ use Doctrine\ORM\Mapping as Orm;
  * @author zakyalvan
  */
 class Token {
+	const STATUS_FREE = 'FREE';
+	const STATUS_CONSUMED = 'CONS';
+	const STATUS_CANCELED = 'CANC';
+	
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="TOKEN_ID", type="integer")
@@ -54,11 +58,11 @@ class Token {
 	
 	/**
 	 * Status dari token ini, menentukan apakah transition setelah place (di mana token ini berada 
-	 * bisa difire atau tidak).
+	 * bisa difire atau tidak). Default value FREE.
 	 * 
 	 * @Orm\Column(name="TOKEN_STATUS", type="string")
 	 */
-	protected $status;
+	protected $status = self::STATUS_FREE;
 	
 	/**
 	 * Kapan token ini dibuat.
