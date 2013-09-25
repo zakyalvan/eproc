@@ -42,7 +42,7 @@ class Role {
 	/**
 	 * Kolom keterangan
 	 * 
-	 * @orm\Column(name="KETERANGAN", type="string")
+	 * @Orm\Column(name="KETERANGAN", type="string")
 	 */
 	protected $note;
 	
@@ -68,5 +68,8 @@ class Role {
 	}
 	public function getNote() {
 		return $this->note;
+	}
+	public function getUsers() {
+		return $this->users;
 	}
 }

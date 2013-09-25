@@ -15,7 +15,6 @@ class Workflow implements InputFilterAwareInterface {
 	/**
 	 * @ORM\Id
 	 * @ORM\Column(name="WORKFLOW_ID", type="string")
-	 * @ORM\GeneratedValue(strategy="AUTO")
 	 * @var string
 	 */
 	protected $id;
@@ -43,31 +42,31 @@ class Workflow implements InputFilterAwareInterface {
 	protected $transitions;
 	
 	/**
-	 * @Orm\OneToMany(targetEntity="Workflow\Entity\Instance", mappedBy="workflow")
+	 * @ORM\OneToMany(targetEntity="Workflow\Entity\Instance", mappedBy="workflow")
 	 * 
 	 * @var unknown
 	 */
 	protected $instances;
 	
 	/**
-	 * @Orm\Column(name="TGL_REKAM")
+	 * @ORM\Column(name="TGL_REKAM")
 	 */
 	private $createdDate;
 	
 	/**
-	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @Orm\JoinColumn(name="PETUGAS_REKAM", referencedColumnName="KODE_USER")
+	 * @ORM\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
+	 * @ORM\JoinColumn(name="PETUGAS_REKAM", referencedColumnName="KODE_USER")
 	 */
 	private $createdBy;
 	
 	/**
-	 * @Orm\Column(name="TGL_UBAH")
+	 * @ORM\Column(name="TGL_UBAH")
 	 */
 	private $updatedDate;
 	
 	/**
-	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @Orm\JoinColumn(name="PETUGAS_UBAH", referencedColumnName="KODE_USER")
+	 * @ORM\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
+	 * @ORM\JoinColumn(name="PETUGAS_UBAH", referencedColumnName="KODE_USER")
 	 */
 	private $updatedBy;
 	

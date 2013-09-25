@@ -12,9 +12,14 @@ use Doctrine\ORM\Mapping as Orm;
 class Task {
 	/**
 	 * @Orm\Id
-	 * @Orm\Column(name="TASK_ID", type="string")
+	 * @Orm\Column(name="TASK_ID", type="integer")
 	 */
 	private $id;
+	
+	/**
+	 * @Orm\Column(name="TASK_CONTEXT", type="string")
+	 */
+	private $context;
 	
 	/**
 	 * @Orm\Column(name="TASK_NAME", type="string")

@@ -20,20 +20,21 @@ class Place {
 	protected $id;
 	
 	/**
-	 * Jenis dari place, apakah start place, end place atau intermediate place.
-	 * Start place = 1, Intermediate place = 5 dan End place = 9
-	 * 
-	 * @Orm\Column(name="PLACE_TYPE", type="integer")
-	 */
-	protected $type;
-	
-	/**
+	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Workflow")
-	 * @Orm\JoinColumn(name="WORKFLOW_ID", type="string")
-	 * 
+	 * @Orm\JoinColumn(name="WORKFLOW_ID", type="string", referencedColumnName="WORKFLOW_ID")
+	 *
 	 * @var Workflow
 	 */
 	protected $workflow;
+	
+	/**
+	 * Jenis dari place, apakah start place, end place atau intermediate place.
+	 * Start place = 1, Intermediate place = 5 dan End place = 9
+	 * 
+	 * @Orm\Column(name="PLACE_TYPE", type="integer", nullable=false)
+	 */
+	protected $type;
 	
 	/**
 	 * @Orm\Column(name="PLACE_NAME", type="string")
@@ -44,6 +45,13 @@ class Place {
 	 * @Orm\Column(name="PLACE_DESC", type="string")
 	 */
 	protected $description;
+	
+	/**
+	 * @Orm\OneToMany(targetEntity="Workflow\Entity\Arc", mappedBy="place")
+	 * 
+	 * @var unknown
+	 */
+	protected $arcs;
 	
 	/**
 	 * @Orm\Column(name="TGL_REKAM")
@@ -65,7 +73,7 @@ class Place {
 	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
 	 * @Orm\JoinColumn(name="PETUGAS_UBAH", referencedColumnName="KODE_USER")
 	 */
-	private $updatedBy;
+	protected $updatedBy;
 	
 	public function getId() {
 		return $this->id;
@@ -74,18 +82,18 @@ class Place {
 		$this->id = $id;
 	}
 	
-	public function getType() {
-		return $this->type;
-	}
-	public function setType($type) {
-		$this->type = $type;
-	}
-	
 	public function getWorkflow() {
 		return $this->workflow;
 	}
 	public function setWorkflow(Workflow $workflow) {
 		$this->workflow = $workflow;
+	}
+	
+	public function getType() {
+		return $this->type;
+	}
+	public function setType($type) {
+		$this->type = $type;
 	}
 	
 	public function getName() {
@@ -100,6 +108,13 @@ class Place {
 	}
 	public function setDescription($description) {
 		$this->description = $description;
+	}
+	
+	public function getArcs() {
+		return $this->arcs;
+	}
+	public function setArcs($arcs) {
+		$this->arcs = $arcs;
 	}
 	
 	public function getCreatedDate() {

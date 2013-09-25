@@ -23,6 +23,7 @@ class Arc {
 	
 	
 	/**
+	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Workflow", fetch="LAZY")
 	 * @Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID")
 	 * 
@@ -31,18 +32,25 @@ class Arc {
 	private $workflow;
 	
 	/**
+	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Place", fetch="LAZY")
-	 * @Orm\JoinColumn(name="PLACE_ID", referencedColumnName="PLACE_ID")
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", type="string", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="PLACE_ID", type="integer", referencedColumnName="PLACE_ID")})
+	 * 
+	 * @var Place
 	 */
 	private $place;
 	
 	/**
+	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Transition", fetch="LAZY")
-	 * @Orm\JoinColumn(name="TRANSITION_ID", referencedColumnName="TRANSITION_ID")
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", type="string", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="TRANSITION_ID", type="integer", referencedColumnName="TRANSITION_ID")})
+	 * 
+	 * @var Transition
 	 */
 	private $transition;
 	
 	/**
+	 * @Orm\Id
 	 * @Orm\Column(name="DIRECTION", type="integer")
 	 */
 	private $direction;
@@ -69,7 +77,8 @@ class Arc {
 	private $createdDate;
 	
 	/**
-	 * @Orm\Column(name="PETUGAS_REKAM")
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
+	 * @Orm\JoinColumn(name="PETUGAS_REKAM", referencedColumnName="KODE_USER")
 	 */
 	private $createdBy;
 	
@@ -79,11 +88,10 @@ class Arc {
 	private $updatedDate;
 	
 	/**
-	 * @Orm\Column(name="PETUGAS_UBAH")
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
+	 * @Orm\JoinColumn(name="PETUGAS_UBAH", referencedColumnName="KODE_USER")
 	 */
 	private $updatedBy;
-	
-	
 	
 	public function getWorkflow() {
 		return $this->workflow;

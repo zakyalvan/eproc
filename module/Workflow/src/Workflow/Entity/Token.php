@@ -19,26 +19,29 @@ class Token {
 	protected $id;
 	
 	/**
+	 * @Orm\Id
+	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Workflow", fetch="LAZY")
+	 * @Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID")
+	 *
+	 * @var Workflow
+	 */
+	protected $workflow;
+	
+	/**
+	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Instance", fetch="LAZY")
-	 * @Orm\JoinColumn(name="INSTANCE_ID", referencedColumnName="INSTANCE_ID")
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="INSTANCE_ID", referencedColumnName="INSTANCE_ID")})
 	 * 
 	 * @var Instance
 	 */
 	protected $instance;
 	
 	/**
-	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Workflow", fetch="LAZY")
-	 * @Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID")
-	 * 
-	 * @var Workflow
-	 */
-	protected $workflow;
-	
-	/**
 	 * Di mana token ini berada.
 	 * 
+	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Place", fetch="LAZY")
-	 * @Orm\JoinColumn(name="PLACE_ID", referencedColumnName="PLACE_ID")
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="PLACE_ID", referencedColumnName="PLACE_ID")})
 	 * 
 	 * @var Place
 	 */

@@ -25,8 +25,9 @@ class WorkflowAttribute {
 	protected $id;
 	
 	/**
+	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Workflow", fetch="LAZY")
-	 * @Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID")
+	 * @Orm\JoinColumn(name="WORKFLOW_ID", type="string", referencedColumnName="WORKFLOW_ID")
 	 * 
 	 * @var Workflow
 	 */

@@ -4,18 +4,16 @@
 		<?php echo $this->headTitle('ZF2 '. $this->translate('Skeleton Application'))->setSeparator(' - ')->setAutoEscape(false) ?>
 		
 		<?php echo $this->headMeta()
-	            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
-	            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+			->appendName('viewport', 'width=device-width, initial-scale=1.0')
+			->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+			->appendHttpEquiv('Content-Type', 'text/html; charset=ISO-8859-1');
 	    ?>
-	    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-		
+	    
 		<?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
-			->prependStylesheet($this->basePath() . '/css/style.css')
 			->prependStylesheet($this->basePath() . '/css/bootstrap.min.css')
 			->prependStylesheet($this->basePath() . '/css/base.css')
-			->prependStylesheet($this->basePath() . '/css/style.css')
+			->prependStylesheet($this->basePath() . '/css/style.css');
 		?>
-				
 		
         <?php echo $this->headScript()
 			->prependFile($this->basePath() . '/js/bootstrap.min.js', 'text/javascript')
@@ -44,33 +42,20 @@
 			->prependFile($this->basePath() . '/js/jquery.jBreadCrumb.1.1.js', 'text/javascript')
 			
 			// Untuk kepentingan browser.
-			->prependFile($this->basePath() . '/js/jquery.browser.js', 'text/javascript')
+			->prependFile($this->basePath() . '/js/jquery.browser.js', 'text/javascript');
         ?>
 		
 		<script type="text/javascript">
-	    	jQuery(document).ready(function(){
-	    		jQuery(".breadCrumb").jBreadCrumb();
-
-	    		var top = $('nav').offset().top - parseFloat($('nav').css('marginTop').replace(/auto/, 0));
-    			$(window).scroll(function (event) {
-    				// what the y position of the scroll is
-    			    var y = $(this).scrollTop();
-    			  
-    			    // whether that's below the form
-    			    if (y >= top) {
-    			    	// if so, ad the fixed class
-    			    	$('nav').addClass('fixedNavigation');
-    			    }else {
-    			    	// otherwise remove it
-    			    	$('nav').removeClass('fixedNavigation');
-    			    }
-    			});
-	        });
+	    	$(function() {
+	    		
+		   	});
 	    </script>
 	    
 	    <!--[if IE]>
 		<script type="text/javascript">
-			$.ajaxSetup({ cache: false });
+			$(function() {
+		    	$.ajaxSetup({cache: false});
+		   	});
 		</script>
 		<![endif]-->
 	</head>
@@ -87,7 +72,7 @@
 			</div>
 		</div>
 		
-		<!-- Main Menu -->
+		<!-- Start Main Menu -->
 		<nav>
 			<ul>
 				<li><a href="#" id="m1">Dashboard</a></li>
@@ -130,15 +115,27 @@
 				</li>
 			</ul>
 		</nav>
-		<!-- End of Main Menu -->
+		<!-- End Main Menu -->
 		
+		<!-- Start Container Wrapper -->
 		<div id="wrapper">
-			<div id="container">
+			<div id="container" style="padding: 30px;">
+				<!-- Start BreadCrumbs -->
+				<!-- <div class="breadCrumb module">
+					<ul>
+						<li><a href="home">Home</a></li>
+						<li>Custom Report</li>
+						<li>Cetak Laporan</li>
+					</ul>
+				</div> -->
+				<!-- End BreadCrumbs -->
+				
 				<!-- Start Content -->			
 				<?php echo $this->content; ?>
 				<!-- End Content -->
 			</div>
 		</div> 
+		<!-- End Container Wrapper -->
 		
 		<div class="clear"></div>
 		<footer>

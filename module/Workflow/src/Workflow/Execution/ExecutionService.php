@@ -10,7 +10,7 @@ use Workflow\Entity\Instance;
  * 
  * @author zakyalvan
  */
-class ExecutionServiceInterface implements ExecutionServiceInterface, ServiceLocatorAware {
+class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware {
 	/**
 	 * @var ServiceLocator
 	 */

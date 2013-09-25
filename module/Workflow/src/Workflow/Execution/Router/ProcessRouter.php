@@ -8,12 +8,12 @@ use Workflow\Entity\Token;
 use Doctrine\ORM\EntityManager;
 
 /**
- * Router untuk token.
+ * Router untuk process.
  * Object dari kelas ini seharusnya dibikin instance-nya dalam ServiceManager.
  * 
  * @author zakyalvan
  */
-class TokenRouter implements ServiceLocatorAware {
+class ProcessRouter implements ServiceLocatorAware {
 	/**
 	 * @var ServiceLocator
 	 */

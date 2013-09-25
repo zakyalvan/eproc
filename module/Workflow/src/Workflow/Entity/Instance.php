@@ -19,6 +19,7 @@ class Instance {
 	protected $id;
 	
 	/**
+	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Workflow")
 	 * @Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID")
 	 * 
@@ -121,6 +122,12 @@ class Instance {
 		$this->endDate = $endDate;
 	}
 	
+	public function getCreatedDate() {
+		return $this->createdDate;
+	}
+	public function getCreatedBy() {
+		
+	}
 	public function getUpdatedDate() {
 		return $this->updatedDate;
 	}

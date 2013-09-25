@@ -2,8 +2,11 @@
 namespace Workflow\Entity;
 
 use Doctrine\ORM\Mapping as Orm;
+use Application\Entity\Role;
 
 /**
+ * Table yang nyimpan data transisi.
+ * 
  * @Orm\Entity
  * @Orm\Table(name="EP_WF_TRANSITION")
  * 
@@ -17,10 +20,18 @@ class Transition {
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\GeneratedValue(strategy="AUTO")
 	 * @Orm\Column(name="TRANSITION_ID", type="integer")
 	 */
 	protected $id;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\ManyToOne(targetEntity="\Workflow\Entity\Workflow")
+	 * @Orm\JoinColumn(name="WORKFLOW_ID", type="string", referencedColumnName="WORKFLOW_ID")
+	 * 
+	 * @var Workflow
+	 */
+	protected $workflow;
 	
 	/**
 	 * Ini jenis trigger dari transition ini.
@@ -35,10 +46,41 @@ class Transition {
 	protected $triggerType;
 	
 	/**
-	 * @Orm\ManyToOne(targetEntity="\Workflow\Entity\Workflow")
-	 * @Orm\JoinColumn(name="WORKFLOW_ID", type="string")
+	 * Context transisi (Misalnya Internal, External)
+	 * Dipake jika transisi bertype user triggered.
+	 * 
+	 * @Orm\Column(name="TRANSITION_CONTEXT", type="string")
 	 */
-	protected $workflow;
+	protected $context;
+	
+	/**
+	 * Ini role yang harus mengeksekusi transisi ini 
+	 * (Jika transisi bertype user-triggered).
+	 *
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\Role", fetch="lazy")
+	 * @Orm\JoinColumn(name="ROLE_ID", referencedColumnName="KODE_FUNGSI")
+	 * 
+	 * @var Role
+	 */
+	protected $role;
+	
+	/**
+	 * Task yang harus dieksekusi jika instance dari transisi bersangkutan dihandle.
+	 * (Jika transisi bertipe user-triggered).
+	 * 
+	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Task", fetch="lazy")
+	 * @Orm\JoinColumn(name="TASK_ID", referencedColumnName="TASK_ID")
+	 * 
+	 * @var Task
+	 */
+	protected $task;
+	
+	/**
+	 * Attribute untuk transisi bertipe time-triggered.
+	 * 
+	 * @Orm\Column(name="TIME_LIMIT", type="integer")
+	 */
+	protected $timeLimit;
 	
 	/**
 	 * @Orm\Column(name="TRANSITION_NAME", type="string")
@@ -49,6 +91,11 @@ class Transition {
 	 * @Orm\Column(name="TRANSITION_DESC", type="string")
 	 */
 	protected $description;
+	
+	/**
+	 * @Orm\OneToMany(targetEntity="Workflow\Entity\Arc", mappedBy="transition")
+	 */
+	protected $arcs;
 	
 	/**
 	 * @Orm\Column(name="TGL_REKAM")
@@ -86,6 +133,34 @@ class Transition {
 		$this->workflow = $workflow;
 	}
 	
+	public function getTriggerType() {
+		return $this->triggerType;
+	}
+	public function setTriggerType($triggerType) {
+		$this->triggerType = $triggerType;
+	}
+	
+	public function getRole() {
+		return $this->role;
+	}
+	public function setRole(Role $role) {
+		$this->role = $role;
+	}
+	
+	public function getTask() {
+		return $this->task;
+	}
+	public function setTask(Task $task) {
+		$this->task = $task;
+	}
+	
+	public function getTimeLimit() {
+		return $this->timeLimit;
+	}
+	public function setTimeLimit($timeLImit) {
+		$this->timeLimit = $timeLImit;
+	}
+	
 	public function getName() {
 		return $name;
 	}
@@ -98,6 +173,13 @@ class Transition {
 	}
 	public function setDescription($description) {
 		$this->description = $description;
+	}
+	
+	public function getArcs() {
+		return $this->arcs;
+	}
+	public function setArcs($arcs) {
+		$this->arcs = $arcs;
 	}
 	
 	public function getCreatedDate() {

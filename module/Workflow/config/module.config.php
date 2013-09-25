@@ -93,16 +93,10 @@ return array(
         )
     ),
 	'service_manager' => array(
-		'factories' => array(
-			'Workflow\Service\DefinitionService' => function($serviceManager) {
-				$entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
-				$service = new DefaultDefinitionService($entityManager);
-				return $service;
-			}
-		),
+		'factories' => array(),
 		'invokables' => array(
-			'Workflow\Execution\Manager\InstanceManager' => 'Workflow\Manager\InstanceManager',
-			'Workflow\Execution\Router\TokenRouter' => 'Workflow\Router\TokenRouter'
+			'Workflow\Execution\ExecutionServiceInterface' => 'Workflow\Execution\ExecutionService',
+			'Workflow\Execution\Router\ProcessRouter' => 'Workflow\Router\ProcessRouter'
 		)
 	),
 	'workflow' => array(
