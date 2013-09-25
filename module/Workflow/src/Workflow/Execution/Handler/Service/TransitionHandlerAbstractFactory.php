@@ -31,8 +31,8 @@ class TransitionHandlerAbstractFactory implements AbstractFactory, TransitionHan
 				$config = $serviceLocator->get('Config');
 				$this->transitionHandlerRegistry = new TransitionHandlerRegistry();
 				
-				if(isset($config['workflow']['transition_handlers'])) {
-					foreach ($config['workflow']['transition_handlers'] as $alias => $handler) {
+				if(isset($config['workflow'][TransitionHandlerRegistryFactory::DEFAULT_REGISTRY_CONFIG_KEY])) {
+					foreach ($config['workflow'][TransitionHandlerRegistryFactory::DEFAULT_REGISTRY_CONFIG_KEY] as $alias => $handler) {
 						$this->transitionHandlerRegistry->add($alias, $handler);
 					}
 				}

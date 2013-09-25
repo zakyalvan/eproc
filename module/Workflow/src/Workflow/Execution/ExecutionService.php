@@ -59,7 +59,7 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 				->getOneOrNullResult();
 			
 			if($persitedWorkflow == null) {
-				$this->entityManager->merge($workflow);
+				$workflow = $this->entityManager->merge($workflow);
 			}
 			else {
 				$workflow = $persitedWorkflow;
@@ -207,6 +207,7 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 			$this->processRouter = $this->serviceLocator->get('Workflow\Execution\Router\ProcessRouter');
 		}
 	}
+	
 	public function getServiceLocator() {
 		return $this->serviceLocator;
 	}

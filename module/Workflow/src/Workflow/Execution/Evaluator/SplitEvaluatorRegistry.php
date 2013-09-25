@@ -1,7 +1,17 @@
 <?php
 namespace Workflow\Execution\Evaluator;
 
+/**
+ * Registry yang nampung split evaluator.
+ * 
+ * @author zakyalvan
+ */
 class SplitEvaluatorRegistry {
+	/**
+	 * Ini isi registry.
+	 * 
+	 * @var unknown
+	 */
 	private $registry = array();
 	
 	/**
@@ -28,7 +38,7 @@ class SplitEvaluatorRegistry {
 		
 		$interfaces = class_implements($evaluator);
 		if(!array_key_exists('Workflow\Execution\Evaluator\SplitEvaluatorInterface', $interfaces)) {
-			throw new \InvalidArgumentException("Kelas split evaluator {$evaluator} tidak mengimplement interface 'Workflow\Execution\Evaluator\SplitEvaluatorInterface'", 100, null)
+			throw new \InvalidArgumentException("Kelas split evaluator {$evaluator} tidak mengimplement interface 'Workflow\Execution\Evaluator\SplitEvaluatorInterface'", 100, null);
 		}
 		
 		$this->registry[$name] = $evaluator;
@@ -40,7 +50,7 @@ class SplitEvaluatorRegistry {
 	
 	public function get($name) {
 		if(!$this->has($name)) {
-			throw new \InvalidArgumentException("Kelas split evalutor dengan yang diberikan {$name} tidak ditemukan dalam registry", $code, $previous)
+			throw new \InvalidArgumentException("Kelas split evalutor dengan yang diberikan {$name} tidak ditemukan dalam registry", $code, $previous);
 		}
 		return $this->registry[$name];
 	}

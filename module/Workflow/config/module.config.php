@@ -1,7 +1,6 @@
 <?php
 namespace Workflow;
 
-use Workflow\Execution\Evaluator\Service\SplitEvaluatorRegistryFactory;
 return array(
 	'controllers' => array(
 		'invokables' => array(
@@ -93,14 +92,23 @@ return array(
         )
     ),
 	'service_manager' => array(
-		'factories' => array(),
+		'abstract_factories' => array(
+			'Workflow\Execution\Handler\Service\TransitionHandlerAbstractFactory',
+			'Workflow\Execution\Evaluator\Service\SplitEvaluatorAbstractFactory'
+		),
+		'factories' => array(
+			'Workflow\Execution\Handler\Service\TransitionHandlerRegistry' => 'Workflow\Execution\Handler\Service\TransitionHandlerRegistryFactory',
+			'Workflow\Execution\Evaluator\Service\SplitEvaluatorRegistry' => 'Workflow\Execution\Evaluator\Service\SplitEvaluatorRegistryFactory'
+		),
 		'invokables' => array(
+			'Workflow\Definition\DefinitionServiceInterface' => 'Workflow\Definition\DefinitionService',
 			'Workflow\Execution\ExecutionServiceInterface' => 'Workflow\Execution\ExecutionService',
-			'Workflow\Execution\Router\ProcessRouter' => 'Workflow\Router\ProcessRouter'
+			'Workflow\Execution\Router\ProcessRouter' => 'Workflow\Router\ProcessRouter',
+			'Workflow\Execution\WorkitemManager' => 'Workflow\Execution\WorkitemManager'
 		)
 	),
 	'workflow' => array(
-		'transition_handlers' => array(
+		TransitionHandlerRegistryFactory::DEFAULT_REGISTRY_CONFIG_KEY => array(
 			
 		),
 		SplitEvaluatorRegistryFactory::DEFAULT_REGISTRY_CONFIG_KEY => array(

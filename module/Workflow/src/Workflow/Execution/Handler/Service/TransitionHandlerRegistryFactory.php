@@ -11,6 +11,8 @@ use Zend\ServiceManager\Exception\ServiceNotCreatedException;
  * @author zakyalvan
  */
 class TransitionHandlerRegistryFactory implements Factory {
+	const DEFAULT_REGISTRY_CONFIG_KEY = 'transition_handlers';
+	
 	/**
 	 * (non-PHPdoc)
 	 * @see \Zend\ServiceManager\FactoryInterface::createService()
@@ -19,9 +21,9 @@ class TransitionHandlerRegistryFactory implements Factory {
 		$config = $serviceLocator->get('Config');
 		
 		$transitionHandlerRegistry = new TransitionHandlerRegistry();
-		if(isset($config['workflow']['transition_handlers'])) {
+		if(isset($config['workflow'][self::DEFAULT_REGISTRY_CONFIG_KEY])) {
 			try {
-				foreach ($config['workflow']['transition_handlers'] as $name => $handler) {
+				foreach ($config['workflow'][self::DEFAULT_REGISTRY_CONFIG_KEY] as $name => $handler) {
 					$transitionHandlerRegistry->add($name, $handler);
 				}
 			}
