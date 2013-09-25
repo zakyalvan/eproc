@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as Orm;
 /**
  * Data sebuah token dari instance workflow tertentu.
  * 
- * @Orm\Entity
+ * @Orm\Entity(repositoryClass="Workflow\Entity\Repository\TokenRepository")
  * @Orm\Table(name="EP_WF_TOKEN")
  * 
  * @author zakyalvan

@@ -50,7 +50,7 @@ class SplitEvaluatorRegistry {
 	
 	public function get($name) {
 		if(!$this->has($name)) {
-			throw new \InvalidArgumentException("Kelas split evalutor dengan yang diberikan {$name} tidak ditemukan dalam registry", $code, $previous);
+			throw new \InvalidArgumentException("Kelas split evalutor dengan yang diberikan '{$name}' tidak ditemukan dalam registry", $code, $previous);
 		}
 		return $this->registry[$name];
 	}

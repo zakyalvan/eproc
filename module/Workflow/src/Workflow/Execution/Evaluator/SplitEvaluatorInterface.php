@@ -22,7 +22,7 @@ interface SplitEvaluatorInterface {
 	 * 
 	 * @param unknown $datas
 	 */
-	public function setDatas($datas);
+	public function setDatas(array $datas);
 	
 	/**
 	 * Evaluasi apakah kondisi percabangan (fork) ke cabang atau arc yang mana.
@@ -30,5 +30,5 @@ interface SplitEvaluatorInterface {
 	 * @param array $datas
 	 * @return string nama dari arc.
 	 */
-	public function eveluate(array $datas);
+	public function eveluate();
 }

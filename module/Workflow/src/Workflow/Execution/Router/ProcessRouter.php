@@ -3,9 +3,9 @@ namespace Workflow\Execution\Router;
 
 use Zend\ServiceManager\ServiceLocatorAwareInterface as ServiceLocatorAware;
 use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
+use Doctrine\ORM\EntityManager;
 use Workflow\Execution\Router\Exception\RouterException;
 use Workflow\Entity\Token;
-use Doctrine\ORM\EntityManager;
 use Workflow\Entity\Arc;
 use Workflow\Entity\Transition;
 use Workflow\Entity\Place;
@@ -43,9 +43,15 @@ class ProcessRouter implements ServiceLocatorAware {
 		}
 		
 		try {
+			// Ambil intance untuk token yang diberikan.
+			$instance = $this->entityManager
+				->createQuery('SELECT token.instance FROM Workflow\Entity\Token AS token INNER JOIN token.instance WHERE token.id = :tokenId')
+				->setParameter('tokenId', $token->getId())
+				->getSingleResult();
+			
 			// Ambil dulu input place, dimana token berada.
 			$inputPlace = $this->entityManager
-				->createQuery('SELECT t.place FROM Workflow\Entity\Token AS t INNER JOIN t.place WHERE t.id=:tokenId')
+				->createQuery('SELECT token.place FROM Workflow\Entity\Token AS token INNER JOIN token.place WHERE token.id=:tokenId')
 				->setParameter('tokenId', $token->getId())
 				->getSingleResult();
 	
@@ -60,30 +66,35 @@ class ProcessRouter implements ServiceLocatorAware {
 				->createQuery("SELECT COUNT(arc) FROM Workflow\Entity\Arc AS arc JOIN arc.place WITH arc.place.id = :placeId WHERE arc.direction = :arcDirection")
 				->setParameter('placeId', $inputPlace->getId())
 				->setParameter('arcDirection', Arc::ARC_DIRECTION_INPUT)
-				->getSingleResult();
+				->getScalarResult();
 			
-			// Jika ada lebih dari satu arc yang keluar dari current place.
+			// Jika ada lebih dari satu arc yang keluar dari input place.
 			if($inputArcsCount > 1) {
 				$splitEvaluator = $this->serviceLocator->get($inputPlace->getSplitEvaluator());
+				
+				$this->entityManager->getRepository('Workflow\Entity\Instance')->getDatasAsArray($instance);
 				$splitEvaluator->setDatas(array());
-				$evaluateResult = $splitEvaluator->evaluate();
+				$evaluationResult = $splitEvaluator->evaluate();
 				
 				// Ambil arc dengan arc.label sesuai dengan hasil evaluator di atas dan yang keluar dari place di atas.
 				$inputArc = $this->entityManager
-					->createQuery("SELECT arc, arc.transition FROM Workflow\Entity\Arc AS arc JOIN arc.transition JOIN arc.place AS place WITH place.id = :placeId WHERE arc.direction = :arcDirection AND arc.label = :arcLabel")
+					->createQuery("SELECT arc, arc.transition FROM Workflow\Entity\Arc arc JOIN arc.transition JOIN arc.place AS place WITH place.id = :placeId WHERE arc.direction = :arcDirection AND arc.label = :arcLabel")
 					->setParameter('placeId', $tokenPlace->getId())
 					->setParameter("arcDirection", Arc::ARC_DIRECTION_INPUT)
-					->setParameter('arcLabel', $evaluateResult)
+					->setParameter('arcLabel', $evaluationResult)
 					->getSingleResult();
 			}
-			// Jika hanya ada satu arc yang keluar dari current place.
+			// Jika hanya ada satu arc yang keluar dari input place.
 			else if($inputArcsCount == 1) {
 				// Ambil arc yang keluar dari token/current place.
 				$inputArc = $this->entityManager
-					->createQuery('SELECT arc, arc.transition FROM Workflow\Entity\Arc AS arc INNER JOIN arc.transition INNER JOIN arc.place AS place WITH arc.place.id = :placeId WHERE arc.direction = :arcDirection')
+					->createQuery('SELECT arc, arc.transition FROM Workflow\Entity\Arc arc INNER JOIN arc.transition INNER JOIN arc.place AS place WITH arc.place.id = :placeId WHERE arc.direction = :arcDirection')
 					->setParameter('placeId', $tokenPlace->getId())
 					->setParameter('arcDirection', Arc::ARC_DIRECTION_INPUT)
 					->getSingleResult();
+			}
+			else {
+				throw new \RuntimeException("Jumlah arc yang keluar dari input place (place-id{$inputPlace->getId()}) = 0.", 100, null);
 			}
 		
 			// Ambil transisi.
@@ -91,7 +102,7 @@ class ProcessRouter implements ServiceLocatorAware {
 			
 			// Eksekusi transition handler pada transisi.
 			$transitionHandler = $this->serviceLocator->get($transition->getHandlerName());
-			$transitionHandler->handle($transition);
+			$transitionHandler->handle($transition, $instance);
 			
 			if(strtoupper($transition->getType()) == Transition::TRIGGER_BY_USER) {
 				// Balikin hasil route.
@@ -100,12 +111,12 @@ class ProcessRouter implements ServiceLocatorAware {
 			else if(strtoupper($transition->getType()) == Transition::TRIGGER_BY_AUTO) {
 				// Ambil output arcs dari transition.
 				$outputArcs = $this->entityManager
-					->createQuery('SELECT arc, arc.place FROM Workflow\Entity\Arc AS arc JOIN arc.place JOIN arc.transition WITH arc.transition.id = :transitionId WHERE arc.direction = :arcDirection')
+					->createQuery('SELECT arc, arc.place FROM Workflow\Entity\Arc arc JOIN arc.place JOIN arc.transition WITH arc.transition.id = :transitionId WHERE arc.direction = :arcDirection')
 					->setParameter('transitionId', $nextTransition->getId)
 					->setParameter('arcDirection', Arc::ARC_DIRECTION_OUTPUT)
 					->getResult();
 				
-				// Consume free token sebelumnya, kemudia buat free token baru pada place berikutnya.
+				// Consume free token sebelumnya, kemudian buat free token baru pada place berikutnya.
 				$token->setStatus(Token::STATUS_CONSUMED);
 				/**
 				 * TODO Set consumed date.
@@ -134,7 +145,7 @@ class ProcessRouter implements ServiceLocatorAware {
 				return new RouteResult(true, null, -1, $inputPlace, $token, $transition, $nextPlaces, $nextTokens);
 			}
 			else {
-				throw new RouterException('Belum bisa routing type transisi selain USER dan AUTO');
+				throw new RouterException('Belum bisa routing melalui transition dengan type transisi MESG dan TIME');
 			}
 		}
 		catch(\Exception $e) {

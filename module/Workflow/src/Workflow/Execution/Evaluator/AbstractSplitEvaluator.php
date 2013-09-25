@@ -48,7 +48,7 @@ abstract class AbstractSplitEvaluator implements SplitEvaluatorInterface {
 	
 	/**
 	 * Method ini yang perlu diimpelementasi dalam kelas konkrit split-evaluator.
-	 * Sebenarnya cuma maksa developer untuk ingat setup required-datas (Kalau hanya di konstruktor takut lupa).
+	 * Sebenarnya cuma maksa developer untuk ingat untuk setup required-datas (Kalau hanya di konstruktor,takut lupa).
 	 */
 	protected function initialize();
 	
