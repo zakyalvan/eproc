@@ -24,10 +24,10 @@ class TransitionHandlerAbstractFactory implements AbstractFactory, TransitionHan
 	 */
 	public function canCreateServiceWithName(ServiceLocator $serviceLocator, $name, $requestedName) {
 		if($this->transitionHandlerRegistry == null) {
-			if($serviceLocator->has('Workflow\Execution\Handler\Service\TransitionHandlerRegistry')) {
-				$this->transitionHandlerRegistry = $serviceLocator->get('Workflow\Execution\Handler\Service\TransitionHandlerRegistry');
-			}
-			else {
+			//if($serviceLocator->has('Workflow\Execution\Handler\Service\TransitionHandlerRegistry')) {
+			//	$this->transitionHandlerRegistry = $serviceLocator->get('Workflow\Execution\Handler\Service\TransitionHandlerRegistry');
+			//}
+			//else {
 				$config = $serviceLocator->get('Config');
 				$this->transitionHandlerRegistry = new TransitionHandlerRegistry();
 				
@@ -36,7 +36,7 @@ class TransitionHandlerAbstractFactory implements AbstractFactory, TransitionHan
 						$this->transitionHandlerRegistry->add($alias, $handler);
 					}
 				}
-			}
+			//}
 		}
 		
 		// Tidak perlu terlalu banyak cek, karena dari awal sudah dipaksa valid pada saat masukin ke registry.

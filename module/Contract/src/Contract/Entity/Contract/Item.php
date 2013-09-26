@@ -12,5 +12,5 @@ use Doctrine\ORM\Mapping as Orm;
  * @author zakyalvan
  */
 class Item {
-
+	
 }

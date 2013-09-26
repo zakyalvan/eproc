@@ -1,6 +1,9 @@
 <?php
 namespace Workflow;
 
+use Workflow\Execution\Handler\Service\TransitionHandlerRegistryFactory;
+use Workflow\Execution\Evaluator\Service\SplitEvaluatorRegistryFactory;
+
 return array(
 	'controllers' => array(
 		'invokables' => array(

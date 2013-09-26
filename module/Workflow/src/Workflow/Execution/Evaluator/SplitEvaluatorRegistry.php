@@ -33,16 +33,16 @@ class SplitEvaluatorRegistry {
 		}
 		
 		// Jika yang diberikan bukan closure (hanya string).
-		if(!$evaluator instanceof  \Closure) {
-			if(!class_exists($evaluator, true)) {
-				throw new \InvalidArgumentException("Kelas split evaluator yang diberikan {$evaluator} tidak ditemuakan");
-			}
+ 		if(!$evaluator instanceof  \Closure) {
+ 			if(!class_exists($evaluator, true)) {
+ 				throw new \InvalidArgumentException("Kelas split evaluator yang diberikan {$evaluator} tidak ditemuakan");
+ 			}
 		
-			$interfaces = class_implements($evaluator);
-			if(!array_key_exists('Workflow\Execution\Evaluator\SplitEvaluatorInterface', $interfaces)) {
-				throw new \InvalidArgumentException("Kelas split evaluator {$evaluator} tidak mengimplement interface 'Workflow\Execution\Evaluator\SplitEvaluatorInterface'", 100, null);
-			}
-		}
+ 			$interfaces = class_implements($evaluator);
+ 			if(!array_key_exists('Workflow\Execution\Evaluator\SplitEvaluatorInterface', $interfaces)) {
+ 				throw new \InvalidArgumentException("Kelas split evaluator {$evaluator} tidak mengimplement interface 'Workflow\Execution\Evaluator\SplitEvaluatorInterface'", 100, null);
+ 			}
+ 		}
 		$this->registry[$name] = $evaluator;
 	}
 	

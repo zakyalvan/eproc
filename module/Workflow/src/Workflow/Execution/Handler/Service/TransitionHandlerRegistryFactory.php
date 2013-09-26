@@ -4,6 +4,7 @@ namespace Workflow\Execution\Handler\Service;
 use Zend\ServiceManager\FactoryInterface as Factory;
 use Workflow\Execution\Handler\TransitionHandlerRegistry;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
 
 /**
  * Factory untuk kelas TransitionHandlerRegistry
@@ -17,7 +18,7 @@ class TransitionHandlerRegistryFactory implements Factory {
 	 * (non-PHPdoc)
 	 * @see \Zend\ServiceManager\FactoryInterface::createService()
 	 */
-	public function createService(ServiceLocatorInterface $serviceLocator) {
+	public function createService(ServiceLocator $serviceLocator) {
 		$config = $serviceLocator->get('Config');
 		
 		$transitionHandlerRegistry = new TransitionHandlerRegistry();

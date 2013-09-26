@@ -8,8 +8,7 @@ return array(
     	'Vendor',
     	'Workflow',
     	'DoctrineORMModule',
-    	'DoctrineModule',
-    	'ZendDeveloperTools'
+    	'DoctrineModule'
     ),
 
     // These are various options for the listeners attached to the ModuleManager

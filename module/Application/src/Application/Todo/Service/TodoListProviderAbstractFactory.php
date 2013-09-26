@@ -33,10 +33,10 @@ class TodoListProviderAbstractFactory implements AbstractFactoryInterface {
 		
 		// Jika belum pernah dipanggil sebelumnya, inisiasi dulu provider config.
 		if($this->providerConfig == null) {
-			if($serviceLocator->has('Application\Todo\TodoListProviderConfig')) {				
-				$this->providerConfig = $serviceLocator->get('Application\Todo\TodoListProviderConfig');
-			}
-			else  {
+			//if($serviceLocator->has('Application\Todo\TodoListProviderConfig')) {				
+			//	$this->providerConfig = $serviceLocator->get('Application\Todo\TodoListProviderConfig');
+			//}
+			//else  {
 				$config = $serviceLocator->get('Config');
 				
 				if(!isset($config[TodoListProviderConfigFactory::DEFAULT_TODO_CONFIG_KEY])) {
@@ -47,7 +47,7 @@ class TodoListProviderAbstractFactory implements AbstractFactoryInterface {
 				if(isset($config[TodoListProviderConfigFactory::DEFAULT_TODO_CONFIG_KEY]['providers'])) {
 					$this->providerConfig->setProviders($config[TodoListProviderConfigFactory::DEFAULT_TODO_CONFIG_KEY]['providers']);
 				}
-			}
+			//}
 		}
 		// Sekarang baru evaluasi apakah service yang diminta bisa dibuat atau tidak.
 		return $this->providerConfig->hasProvider($requestedName);
