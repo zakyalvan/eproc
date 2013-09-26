@@ -6,7 +6,7 @@ namespace Application\Todo;
  * 
  * @author zakyalvan
  */
-interface TodoItem {
+interface TodoItemInterface {
 	/**
 	 * Context dari todo.
 	 */
