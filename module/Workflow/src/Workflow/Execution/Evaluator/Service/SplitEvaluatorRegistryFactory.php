@@ -31,7 +31,7 @@ class SplitEvaluatorRegistryFactory implements Factory {
 		$config = $serviceLocator->get('Config');
 		
 		$splitEvaluatorRegistry = new SplitEvaluatorRegistry();
-		if(isset($config['workflow']['split_evaluators'])) {
+		if(isset($config['workflow'][self::DEFAULT_REGISTRY_CONFIG_KEY])) {
 			try {
 				foreach ($config['workflow'][self::DEFAULT_REGISTRY_CONFIG_KEY] as $name => $evaluator) {
 					$splitEvaluatorRegistry->add($name, $evaluator);

@@ -3,6 +3,7 @@ namespace Workflow\Execution\Evaluator\Service;
 
 use Zend\ServiceManager\AbstractFactoryInterface as AbstractFactory;
 use Workflow\Execution\Evaluator\SplitEvaluatorRegistry;
+use Workflow\Execution\Evaluator\ClosureSplitEvaluator;
 
 /**
  * Kelas abstract factory untuk object kelas yang mengimplement SplitEvalutorInterface.
@@ -32,7 +33,6 @@ class SplitEvaluatorAbstractFactory implements AbstractFactory {
 				}
 			}
 		}
-		
 		return $this->evaluatorRegistry->has($requestedName);
 	}
 	
@@ -41,7 +41,12 @@ class SplitEvaluatorAbstractFactory implements AbstractFactory {
 			throw new ServiceNotCreatedException("Object split evaluator dengan nama {$requestedName} tidak dapat dicrete (tidak ditemukan dalam registry)", 0, null);
 		}
 		
-		$class = $this->evaluatorRegistry->get($requestedName);
-		return new $class();
+		$evaluator = $this->evaluatorRegistry->get($requestedName);
+		if($evaluator instanceof  \Closure) {
+			return new ClosureSplitEvaluator($evaluator);
+		}
+		else {
+			return new $evaluator;
+		}
 	}
 }

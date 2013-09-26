@@ -25,22 +25,24 @@ class SplitEvaluatorRegistry {
 	public function add($name, $evaluator, $overwrite = false) {
 		// Kalau diberikan array evaluator saja
 		if(is_int($name)) {
-			$name = $evaluator;
+			throw new \InvalidArgumentException("Definisi nama split evaluator harus diberikan. (Tidak boleh dengan index angka)", 100, null);
 		}
 		
 		if($this->has($name) && !$overwrite) {
 			throw new \InvalidArgumentException("Split evaluator dengan nama {$name} didefinisikan lebih dari sekali, silahkan cek lagi", 0, 0);
 		}
 		
-		if(!class_exists($evaluator, true)) {
-			throw new \InvalidArgumentException("Kelas split evaluator yang diberikan {$evaluator} tidak ditemuakan");
-		}
+		// Jika yang diberikan bukan closure (hanya string).
+		if(!$evaluator instanceof  \Closure) {
+			if(!class_exists($evaluator, true)) {
+				throw new \InvalidArgumentException("Kelas split evaluator yang diberikan {$evaluator} tidak ditemuakan");
+			}
 		
-		$interfaces = class_implements($evaluator);
-		if(!array_key_exists('Workflow\Execution\Evaluator\SplitEvaluatorInterface', $interfaces)) {
-			throw new \InvalidArgumentException("Kelas split evaluator {$evaluator} tidak mengimplement interface 'Workflow\Execution\Evaluator\SplitEvaluatorInterface'", 100, null);
+			$interfaces = class_implements($evaluator);
+			if(!array_key_exists('Workflow\Execution\Evaluator\SplitEvaluatorInterface', $interfaces)) {
+				throw new \InvalidArgumentException("Kelas split evaluator {$evaluator} tidak mengimplement interface 'Workflow\Execution\Evaluator\SplitEvaluatorInterface'", 100, null);
+			}
 		}
-		
 		$this->registry[$name] = $evaluator;
 	}
 	
@@ -55,6 +57,11 @@ class SplitEvaluatorRegistry {
 		return $this->registry[$name];
 	}
 	
+	/**
+	 * Retrieve seluruh isi registry, tapi copyannya aja.
+	 * 
+	 * @return multitype:
+	 */
 	public function getAll() {
 		return array_merge(array(), $this->registry);
 	}

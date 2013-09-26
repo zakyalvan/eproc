@@ -52,6 +52,10 @@ return array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
             'Zend\Log\LoggerAbstractServiceFactory',
         ),
+        'invokables' => array(
+        	// Key generator.
+        	'Application\Common\KeyGeneratatorInterface' => 'Application\Common\TableKeyGenerator'
+        ),
         'aliases' => array(
             'translator' => 'MvcTranslator',
         )

@@ -1,13 +1,13 @@
 <?php
 namespace Workflow\Execution\Handler;
 
+use Zend\ServiceManager\ServiceLocatorAwareInterface as ServiceLocatorAware;
+use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
+use Doctrine\ORM\EntityManager;
 use Workflow\Execution\Handler\Exception\InvalidHandlerParameterException;
 use Workflow\Entity\Instance;
 use Workflow\Entity\Transition;
-use Zend\ServiceManager\ServiceLocatorAwareInterface as ServiceLocatorAware;
-use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
 use Workflow\Entity\Workitem;
-use Doctrine\ORM\EntityManager;
 
 /**
  * Handler untuk transisi dengan trigger jenis 'USER'.
@@ -47,7 +47,7 @@ class UserTriggeredTransitionHandler implements TransitionHandler, ServiceLocato
 		}
 		
 		if($transition->getWorkflow()->getId() != $instance->getWorkflow()->getId()) {
-			throw new \InvalidArgumentException('', 102, null);
+			throw new \InvalidArgumentException('Transition dan instance tidak menunjuk pada workflow yang sama', 102, null);
 		}
 		
 		// Create new workitem.

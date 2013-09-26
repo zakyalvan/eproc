@@ -12,17 +12,17 @@ interface TodoItem {
 	 */
 	public function getContext();
 	/**
-	 * Kapan todo ini dibuat.
+	 * Ambil data dari todo.
+	 *
+	 * @param unknown $name
 	 */
-	public function getCreatedDate();
+	public function getData($name);
 	/**
 	 * Action url untuk eksekusi todo item bersangkutan.
 	 */
 	public function getActionUrl();
 	/**
-	 * Ambil data dari todo.
-	 * 
-	 * @param unknown $name
+	 * Kapan todo ini dibuat.
 	 */
-	public function getData($name);
+	public function getCreatedDate();
 }
