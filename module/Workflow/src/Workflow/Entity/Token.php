@@ -21,15 +21,26 @@ class Token {
 	 * @Orm\Column(name="TOKEN_ID", type="integer")
 	 */
 	protected $id;
+	public function getId() {
+		return $this->id;
+	}
+	public function setId($id) {
+		$this->id = $id;
+	}
 	
 	/**
-	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Workflow", fetch="LAZY")
 	 * @Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID")
 	 *
 	 * @var Workflow
 	 */
 	protected $workflow;
+	public function getWorkflow() {
+		return $this->workflow;
+	}
+	public function setWorkflow(Workflow $workflow) {
+		$this->workflow = $workflow;
+	}
 	
 	/**
 	 * @Orm\Id
@@ -39,55 +50,6 @@ class Token {
 	 * @var Instance
 	 */
 	protected $instance;
-	
-	/**
-	 * Di mana token ini berada.
-	 * 
-	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Place", fetch="LAZY")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="PLACE_ID", referencedColumnName="PLACE_ID")})
-	 * 
-	 * @var Place
-	 */
-	protected $place;
-	
-	/**
-	 * @Orm\Column(name="TOKEN_CONTEXT", type="string")
-	 */
-	protected $context;
-	
-	/**
-	 * Status dari token ini, menentukan apakah transition setelah place (di mana token ini berada 
-	 * bisa difire atau tidak). Default value FREE.
-	 * 
-	 * @Orm\Column(name="TOKEN_STATUS", type="string")
-	 */
-	protected $status = self::STATUS_FREE;
-	
-	/**
-	 * Kapan token ini dibuat.
-	 * 
-	 * @Orm\Column(name="ENABLED_DATE", type="datetime")
-	 */
-	protected $enabledDate;
-	
-	/**
-	 * @Orm\Column(name="CANCELED_DATE", type="datetime")
-	 */
-	protected $canceledDate;
-	
-	/**
-	 * @Orm\Column(name="CONSUMED_DATE", type="datetime")
-	 */
-	protected $consumedDate;
-	
-	public function getId() {
-		return $this->id;
-	}
-	public function setId($id) {
-		$this->id = $id;
-	}
-	
 	public function getInstance() {
 		return $this->instance;
 	}
@@ -95,13 +57,16 @@ class Token {
 		$this->instance = $instance;
 	}
 	
-	public function getWorkflow() {
-		return $this->workflow;
-	}
-	public function setWorkflow(Workflow $workflow) {
-		$this->workflow = $workflow;
-	}
-	
+	/**
+	 * Di mana token ini berada.
+	 * 
+	 * @Orm\Id
+	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Place", fetch="LAZY")
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", type="string", length="5", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="PLACE_ID", type="integer", referencedColumnName="PLACE_ID")})
+	 * 
+	 * @var Place
+	 */
+	protected $place;
 	public function getPlace() {
 		return $this->place;
 	}
@@ -109,6 +74,10 @@ class Token {
 		$this->place = $place;
 	}
 	
+	/**
+	 * @Orm\Column(name="TOKEN_CONTEXT", type="string", nullable=true)
+	 */
+	protected $context;
 	public function getContext() {
 		return $this->context;
 	}
@@ -116,6 +85,13 @@ class Token {
 		$this->context = $context;
 	}
 	
+	/**
+	 * Status dari token ini, menentukan apakah transition setelah place (di mana token ini berada 
+	 * bisa difire atau tidak). Default value FREE.
+	 * 
+	 * @Orm\Column(name="TOKEN_STATUS", type="string", nullable=false)
+	 */
+	protected $status = self::STATUS_FREE;
 	public function getStatus() {
 		return $this->status;
 	}
@@ -123,6 +99,12 @@ class Token {
 		$this->status = $status;
 	}
 	
+	/**
+	 * Kapan token ini dibuat.
+	 * 
+	 * @Orm\Column(name="ENABLED_DATE", type="datetime", nullable=false)
+	 */
+	protected $enabledDate;
 	public function getEnabledDate() {
 		return $this->enabledDate;
 	}
@@ -130,6 +112,10 @@ class Token {
 		$this->enabledDate = $enabledDate;
 	}
 	
+	/**
+	 * @Orm\Column(name="CANCELED_DATE", type="datetime", nullable=true)
+	 */
+	protected $canceledDate;
 	public function getCanceledDate() {
 		return $this->canceledDate;
 	}
@@ -137,6 +123,10 @@ class Token {
 		$this->canceledDate = $canceledDate;
 	}
 	
+	/**
+	 * @Orm\Column(name="CONSUMED_DATE", type="datetime", nullable=true)
+	 */
+	protected $consumedDate;
 	public function getConsumedDate() {
 		return $this->consumedDate;
 	}

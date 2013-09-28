@@ -26,15 +26,27 @@ class Transition {
 	 * @Orm\Column(name="TRANSITION_ID", type="integer", nullable=false)
 	 */
 	protected $id;
+	public function getId() {
+		return $id;
+	}
+	public function setId($id) {
+		$this->id = $id;
+	}
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="\Workflow\Entity\Workflow")
+	 * @Orm\ManyToOne(targetEntity="\Workflow\Entity\Workflow", fetch="lazy", inversedBy="transitions")
 	 * @Orm\JoinColumn(name="WORKFLOW_ID", type="string", referencedColumnName="WORKFLOW_ID")
 	 * 
 	 * @var Workflow
 	 */
 	protected $workflow;
+	public function getWorkflow() {
+		return $this->workflow;
+	}
+	public function setWorkflow(Workflow $workflow) {
+		$this->workflow = $workflow;
+	}
 	
 	/**
 	 * Ini jenis trigger dari transition ini.
@@ -47,16 +59,34 @@ class Transition {
 	 * @Orm\Column(name="TRANSITION_TRIGGER", type="string", length="4", nullable=false)
 	 */
 	protected $triggerType;
+	public function getTriggerType() {
+		return $this->triggerType;
+	}
+	public function setTriggerType($triggerType) {
+		$this->triggerType = $triggerType;
+	}
 	
 	/**
 	 * @Orm\Column(name="TRANSITION_NAME", type="string", length="50", nullable=false)
 	 */
 	protected $name;
+	public function getName() {
+		return $name;
+	}
+	public function setName($name) {
+		$this->name = $name;
+	}
 	
 	/**
 	 * @Orm\Column(name="TRANSITION_DESC", type="string", length="500", nullable=false)
 	 */
 	protected $description;
+	public function getDescription() {
+		return $this->description;
+	}
+	public function setDescription($description) {
+		$this->description = $description;
+	}
 	
 	/**
 	 * @Orm\OneToMany(targetEntity="Workflow\Entity\Arc", mappedBy="transition")
@@ -64,6 +94,12 @@ class Transition {
 	 * @var array
 	 */
 	protected $arcs;
+	public function getArcs() {
+		return $this->arcs;
+	}
+	public function setArcs($arcs) {
+		$this->arcs = $arcs;
+	}
 	
 	/**
 	 * Transition handler untuk transition bersangkutan.
@@ -73,78 +109,6 @@ class Transition {
 	 * @var string
 	 */
 	protected $handler;
-	
-	/**
-	 * @Orm\OneToMany(targetEntity="Workflow\Entity\TransitionTrail", fetch="lazy", mappedBy="transition")
-	 * 
-	 * @var array
-	 */
-	protected $auditTrails;
-	
-	/**
-	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
-	 */
-	protected $createdDate;
-	
-	/**
-	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @Orm\JoinColumn(name="PETUGAS_REKAM", type="string", referencedColumnName="KODE_USER", nullable=true)
-	 */
-	protected $createdBy;
-	
-	/**
-	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
-	 */
-	protected $updatedDate;
-	
-	/**
-	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @Orm\JoinColumn(name="PETUGAS_UBAH", type="string", referencedColumnName="KODE_USER", nullable=true)
-	 */
-	protected $updatedBy;
-	
-	public function getId() {
-		return $id;
-	}
-	public function setId($id) {
-		$this->id = $id;
-	}
-	
-	public function getWorkflow() {
-		return $this->workflow;
-	}
-	public function setWorkflow(Workflow $workflow) {
-		$this->workflow = $workflow;
-	}
-	
-	public function getTriggerType() {
-		return $this->triggerType;
-	}
-	public function setTriggerType($triggerType) {
-		$this->triggerType = $triggerType;
-	}
-	
-	public function getName() {
-		return $name;
-	}
-	public function setName($name) {
-		$this->name = $name;
-	}
-	
-	public function getDescription() {
-		return $this->description;
-	}
-	public function setDescription($description) {
-		$this->description = $description;
-	}
-	
-	public function getArcs() {
-		return $this->arcs;
-	}
-	public function setArcs($arcs) {
-		$this->arcs = $arcs;
-	}
-	
 	public function getHandler() {
 		return $this->handler;
 	}
@@ -152,23 +116,49 @@ class Transition {
 		$this->handler = $handler;
 	}
 	
+	/**
+	 * Audit trails dari sebuah transisi untuk setiap instance/case.
+	 * Dari sini bisa tau sebuah transisi pernah (minimal) dienable dalam instance mana saja.
+	 * 
+	 * @Orm\OneToMany(targetEntity="Workflow\Entity\TransitionTrail", fetch="lazy", mappedBy="transition")
+	 * 
+	 * @var array
+	 */
+	protected $auditTrails;
 	public function getAuditTrails() {
 		return $this->auditTrails;
 	}
-	public function setAuditTrails($auditTrails) {
-		$this->auditTrails = $auditTrails;
-	}
 	
+	/**
+	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
+	 */
+	protected $createdDate;
 	public function getCreatedDate() {
 		return $this->createdDate;
 	}
+	
+	/**
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
+	 * @Orm\JoinColumn(name="PETUGAS_REKAM", type="string", referencedColumnName="KODE_USER", nullable=true)
+	 */
+	protected $createdBy;
 	public function getCreatedBy() {
 		return $this->createdBy;
 	}
 	
+	/**
+	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
+	 */
+	protected $updatedDate;
 	public function getUpdatedDate() {
 		return $this->updatedDate;
 	}
+	
+	/**
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
+	 * @Orm\JoinColumn(name="PETUGAS_UBAH", type="string", referencedColumnName="KODE_USER", nullable=true)
+	 */
+	protected $updatedBy;
 	public function getUpdatedBy() {
 		return $this->updatedBy;
 	}

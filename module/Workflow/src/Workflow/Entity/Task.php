@@ -15,27 +15,6 @@ class Task {
 	 * @Orm\Column(name="TASK_ID", type="integer")
 	 */
 	private $id;
-	
-	/**
-	 * @Orm\Column(name="TASK_CONTEXT", type="string")
-	 */
-	private $context;
-	
-	/**
-	 * @Orm\Column(name="TASK_NAME", type="string")
-	 */
-	private $name;
-	
-	/**
-	 * @Orm\Column(name="TASK_DESC", type="string")
-	 */
-	private $description;
-	
-	/**
-	 * @Orm\Column(name="TASK_URL", type="string")
-	 */
-	private $url;
-	
 	public function getId() {
 		return $this->id;
 	}
@@ -43,6 +22,21 @@ class Task {
 		$this->id = $id;
 	}
 	
+	/**
+	 * @Orm\Column(name="TASK_CONTEXT", type="string", nullable=false)
+	 */
+	private $context;
+	public function getContext() {
+		return $this->context;
+	}
+	public function setContext($context) {
+		$this->context = $context;
+	}
+	
+	/**
+	 * @Orm\Column(name="TASK_NAME", type="string", nullable=false)
+	 */
+	private $name;
 	public function getName() {
 		return $this->name;
 	}
@@ -50,6 +44,10 @@ class Task {
 		$this->name = $name;
 	}
 	
+	/**
+	 * @Orm\Column(name="TASK_DESC", type="string", nullable=true)
+	 */
+	private $description;
 	public function getDescription() {
 		return $this->description;
 	}
@@ -57,6 +55,10 @@ class Task {
 		$this->description = $description;
 	}
 	
+	/**
+	 * @Orm\Column(name="TASK_URL", type="string", nullable=false)
+	 */
+	private $url;
 	public function getUrl() {
 		return $this->url;
 	}

@@ -18,72 +18,9 @@ class Instance {
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\Column(name="INSTANCE_ID")
+	 * @Orm\Column(name="INSTANCE_ID", type="integer")
 	 */
 	protected $id;
-	
-	/**
-	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Workflow")
-	 * @Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID")
-	 * 
-	 * @var Workflow
-	 */
-	protected $workflow;
-	
-	/**
-	 * @Orm\Column(name="INSTANCE_CONTEXT", type="string")
-	 */
-	protected $context;
-	
-	/**
-	 * @Orm\Column(name="INSTANCE_STATUS", type="string")
-	 */
-	protected $status;
-	
-	/**
-	 * @Orm\OneToMany(targetEntity="Workflow\Entity\InstanceData", mappedBy="instance", fetch="lazy")
-	 * 
-	 * @var array
-	 */
-	protected $datas;
-	
-	/**
-	 * Attribute tanggal start dari eksekusi instance workflow.
-	 * 
-	 * @Orm\Column(name="START_DATE")
-	 */
-	protected $startDate;
-	
-	/**
-	 * Attribute tanggal berakhirnya eksekusi instance workflow.
-	 * 
-	 * @Orm\Column(name="END_DATE")
-	 */
-	protected $endDate;
-	
-	/**
-	 * @Orm\Column(name="TGL_REKAM")
-	 */
-	protected $createdDate;
-	
-	/**
-	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @Orm\JoinColumn(name="PETUGAS_REKAM", referencedColumnName="KODE_USER")
-	 */
-	protected $createdBy;
-	
-	/**
-	 * @Orm\Column(name="TGL_UBAH")
-	 */
-	protected $updatedDate;
-	
-	/**
-	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @Orm\JoinColumn(name="PETUGAS_UBAH", referencedColumnName="KODE_USER")
-	 */
-	protected $updatedBy;
-	
 	public function getId() {
 		return $this->id;
 	}
@@ -91,6 +28,14 @@ class Instance {
 		$this->id = $id;
 	}
 	
+	/**
+	 * @Orm\Id
+	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Workflow", fetch="lazy", inversedBy="instances")
+	 * @Orm\JoinColumn(name="WORKFLOW_ID", type="string", length="5", referencedColumnName="WORKFLOW_ID")
+	 * 
+	 * @var Workflow
+	 */
+	protected $workflow;
 	public function getWorkflow() {
 		return $this->workflow;
 	}
@@ -98,20 +43,10 @@ class Instance {
 		$this->workflow = $workflow;
 	}
 	
-	public function getStatus() {
-		return $this->status;
-	}
-	public function setStatus($status) {
-		$this->status = $status;
-	}
-	
-	public function getDatas() {
-		return $this->datas;
-	}
-	public function setDatas(array $datas) {
-		$this->datas = $datas;
-	}
-	
+	/**
+	 * @Orm\Column(name="INSTANCE_CONTEXT", type="string", nullable=false)
+	 */
+	protected $context;
 	public function getContext() {
 		return $this->context;
 	}
@@ -119,6 +54,49 @@ class Instance {
 		$this->context = $context;
 	}
 	
+	/**
+	 * @Orm\Column(name="INSTANCE_STATUS", type="string", nullable=false)
+	 */
+	protected $status;
+	public function getStatus() {
+		return $this->status;
+	}
+	public function setStatus($status) {
+		$this->status = $status;
+	}
+	
+	/**
+	 * @Orm\OneToMany(targetEntity="Workflow\Entity\InstanceData", mappedBy="instance", fetch="lazy")
+	 * 
+	 * @var array
+	 */
+	protected $datas;
+	public function getDatas() {
+		return $this->datas;
+	}
+	public function setDatas(array $datas) {
+		$this->datas = $datas;
+	}
+	
+	/**
+	 * @Orm\OneToMany(targetEntity="Workflow\Entity\TransitionTrail", mappedBy="instance", fetch="lazy")
+	 * 
+	 * @var TransitionTrail
+	 */
+	protected $transitionTrails;
+	public function getTransitionTrails() {
+		return $this->transitionTrails;
+	}
+	public function setTransitionTrails($transitionTrails) {
+		$this->transitionTrails = $transitionTrails;
+	}
+	
+	/**
+	 * Attribute tanggal start dari eksekusi instance workflow.
+	 * 
+	 * @Orm\Column(name="START_DATE", type="datetime", nullable=false)
+	 */
+	protected $startDate;
 	public function getStartDate() {
 		return $this->startDate;
 	}
@@ -126,23 +104,64 @@ class Instance {
 		$this->startDate = $startDate;
 	}
 	
-	public function getEndDate() {
-		return $this->endDate;
+	/**
+	 * Attribute tanggal berakhirnya eksekusi instance workflow.
+	 * 
+	 * @Orm\Column(name="FINISH_DATE", type="datetime", nullable=true)
+	 * 
+	 * @var date
+	 */
+	protected $finishDate;
+	public function getFinishDate() {
+		return $this->finishDate;
 	}
-	public function setEndDate($endDate) {
-		$this->endDate = $endDate;
+	public function setFinishDate($finishDate) {
+		$this->finishDate = $finishDate;
 	}
 	
+	/**
+	 * @Orm\Column(name="CANCEL_DATE", type="datetime", nullable=true)
+	 * 
+	 * @var date
+	 */
+	protected $cancelDate;
+	public function getCancelDate() {
+		return $this->cancelDate;
+	}
+	public function setCancelDate($cancelDate) {
+		$this->cancelDate = $cancelDate;
+	}
+	
+	/**
+	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
+	 */
+	protected $createdDate;
 	public function getCreatedDate() {
 		return $this->createdDate;
 	}
+	
+	/**
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
+	 * @Orm\JoinColumn(name="PETUGAS_REKAM", referencedColumnName="KODE_USER", nullable=true)
+	 */
+	protected $createdBy;
 	public function getCreatedBy() {
 		return $this->createdBy;
 	}
 	
+	/**
+	 * @Orm\Column(name="TGL_UBAH")
+	 */
+	protected $updatedDate;
 	public function getUpdatedDate() {
 		return $this->updatedDate;
 	}
+	
+	/**
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
+	 * @Orm\JoinColumn(name="PETUGAS_UBAH", referencedColumnName="KODE_USER")
+	 */
+	protected $updatedBy;
 	public function getUpdatedBy() {
 		return $this->updatedBy;
 	}

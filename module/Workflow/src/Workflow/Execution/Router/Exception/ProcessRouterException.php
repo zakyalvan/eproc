@@ -1,6 +1,6 @@
 <?php
 namespace Workflow\Execution\Router\Exception;
 
-class RouterException extends \RuntimeException {
+class ProcessRouterException extends \RuntimeException {
 	
 }

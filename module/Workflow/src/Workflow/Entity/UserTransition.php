@@ -19,6 +19,12 @@ class UserTransition extends Transition {
 	 * @var string
 	 */
 	protected $userContext;
+	public function getUserContext() {
+		return $this->userContext;
+	}
+	public function setUserContext($userContext) {
+		$this->userContext = $userContext;
+	}
 	
 	/**
 	 * Ini role yang harus mengeksekusi transisi ini

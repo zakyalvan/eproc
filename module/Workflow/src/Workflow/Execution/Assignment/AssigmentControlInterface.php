@@ -2,11 +2,11 @@
 namespace Workflow\Execution\Assignment;
 
 /**
- * Kontrak untuk assignment kontrok.
+ * Kontrak untuk assignment kontrol.
  * Assigment kontrol menentukan assignment workitem kepada user/kelompok user.
  * 
  * @author zakyalvan
  */
-interface AssignmentRuleInterface {
+interface AssignmentControlInterface {
 	public function assign();
 }

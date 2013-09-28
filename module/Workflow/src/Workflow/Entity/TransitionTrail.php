@@ -4,7 +4,7 @@ namespace Workflow\Entity;
 use Doctrine\ORM\Mapping as Orm;
 
 /**
- * Entity audit trail dari enable dan eksekusi dari sebuah transition dalam instance tertentu.
+ * Entity audit trail enable dan eksekusi dari sebuah transition dalam instance tertentu.
  * 
  * @Orm\Entity
  * @Orm\Table(name="EP_WF_TRANSITION_TRAIL")
@@ -57,6 +57,8 @@ class TransitionTrail {
 	}
 	
 	/**
+	 * Kapan sebuah transisi dari sebuah instance workflow dienable.
+	 * 
 	 * @Orm\Column(name="ENABLED_TIME", type="datetime", nullable=false)
 	 * 
 	 * @var date
@@ -80,5 +82,22 @@ class TransitionTrail {
 	}
 	public function setExecutedTime($executedTime) {
 		$this->executedTime = $executedTime;
+	}
+	
+	/**
+	 * Attribute canceled date, ini menentukan kapan sebuah transisi (yang sudah di-enable) tapi
+	 * tidak jadi dieksekusi. Misalnya dalam kasus or-split implisit (as-late-as-possible) dimana salah satu 
+	 * trnasisi ditrigger oleh waktu dan waktunya timeout.
+	 * 
+	 * @Orm\Column(name="CANCELED_TIME", type="datetime", nullable=true)
+	 * 
+	 * @var date
+	 */
+	private $canceledTime;
+	public function getCanceledTime() {
+		return $this->canceledTime;
+	}
+	public function setCanceledTime($canceledTime) {
+		$this->canceledTime = $canceledTime;
 	}
 }

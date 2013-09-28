@@ -18,59 +18,6 @@ class Workflow implements InputFilterAwareInterface {
 	 * @var string
 	 */
 	protected $id;
-	
-	/**
-	 * @ORM\Column(name="WORKFLOW_NAME", type="string")
-	 * @var string
-	 */
-	protected $name;
-	
-	/**
-	 * @ORM\Column(name="WORKFLOW_DESC", type="string")
-	 * @var string
-	 */
-	protected $description;
-	
-	/**
-	 * @ORM\OneToMany(targetEntity="\Workflow\Entity\Place", mappedBy="workflow")
-	 */
-	protected $places;
-	
-	/**
-	 * @ORM\OneToMany(targetEntity="\Workflow\Entity\Transition", mappedBy="workflow")
-	 */
-	protected $transitions;
-	
-	/**
-	 * @ORM\OneToMany(targetEntity="Workflow\Entity\Instance", mappedBy="workflow")
-	 * 
-	 * @var unknown
-	 */
-	protected $instances;
-	
-	/**
-	 * @ORM\Column(name="TGL_REKAM")
-	 */
-	private $createdDate;
-	
-	/**
-	 * @ORM\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @ORM\JoinColumn(name="PETUGAS_REKAM", referencedColumnName="KODE_USER")
-	 */
-	private $createdBy;
-	
-	/**
-	 * @ORM\Column(name="TGL_UBAH")
-	 */
-	private $updatedDate;
-	
-	/**
-	 * @ORM\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @ORM\JoinColumn(name="PETUGAS_UBAH", referencedColumnName="KODE_USER")
-	 */
-	private $updatedBy;
-	
-	
 	public function getId() {
 		return $this->id;
 	}
@@ -78,6 +25,12 @@ class Workflow implements InputFilterAwareInterface {
 		$this->id = $id;
 	}
 	
+	/**
+	 * @ORM\Column(name="WORKFLOW_NAME", type="string", length="50", nullable=false)
+	 * 
+	 * @var string
+	 */
+	protected $name;
 	public function getName() {
 		return $this->name;
 	}
@@ -85,6 +38,12 @@ class Workflow implements InputFilterAwareInterface {
 		$this->name = $name;
 	}
 	
+	/**
+	 * @ORM\Column(name="WORKFLOW_DESC", type="string", length="500", nullable=true)
+	 * 
+	 * @var string
+	 */
+	protected $description;
 	public function getDescription() {
 		return $this->description;
 	}
@@ -92,33 +51,66 @@ class Workflow implements InputFilterAwareInterface {
 		$this->description = $description;
 	}
 	
+	/**
+	 * @ORM\OneToMany(targetEntity="\Workflow\Entity\Place", mappedBy="workflow")
+	 */
+	protected $places;
 	public function getPlaces() {
 		return $this->places;
 	}
-	public function setPlaces($places) {
-		$this->places = $places;
-	}
 	
+	/**
+	 * @ORM\OneToMany(targetEntity="\Workflow\Entity\Transition", mappedBy="workflow")
+	 */
+	protected $transitions;
 	public function getTransitions() {
 		return $this->transitions;
 	}
-	public function setTransitions($transitions) {
-		$this->transitions = $transitions;
+	
+	/**
+	 * @ORM\OneToMany(targetEntity="Workflow\Entity\Instance", mappedBy="workflow")
+	 * 
+	 * @var array
+	 */
+	protected $instances;
+	public function getInstances() {
+		return $this->instances;
 	}
 	
+	/**
+	 * @ORM\Column(name="TGL_REKAM", type="datetime", nullable=true)
+	 */
+	private $createdDate;
 	public function getCreatedDate() {
 		return $this->createdDate;
 	}
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
+	 * @ORM\JoinColumn(name="PETUGAS_REKAM", referencedColumnName="KODE_USER")
+	 */
+	private $createdBy;
 	public function getCreatedBy() {
 		return $this->createdBy;
 	}
 	
+	/**
+	 * @ORM\Column(name="TGL_UBAH")
+	 */
+	private $updatedDate;
 	public function getUpdatedDate() {
 		return $this->updatedDate;
 	}
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
+	 * @ORM\JoinColumn(name="PETUGAS_UBAH", referencedColumnName="KODE_USER")
+	 */
+	private $updatedBy;
 	public function getUpdatedBy() {
 		return $this->updatedBy;
 	}
+
 	
 	public function __get($property) {
 		return $this->{$property};

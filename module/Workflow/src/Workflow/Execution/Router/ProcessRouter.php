@@ -9,6 +9,7 @@ use Workflow\Entity\Token;
 use Workflow\Entity\Arc;
 use Workflow\Entity\Transition;
 use Workflow\Entity\Place;
+use Workflow\Execution\Router\Exception\ProcessRouterException;
 
 /**
  * Router untuk process.
@@ -35,15 +36,11 @@ class ProcessRouter implements ServiceLocatorAware {
 	 */
 	public function routeToNextPlace(Token $token) {
 		if($token == null || $token->getId() == null) {
-			throw new RouterException("Invalid parameter, token tidak boleh null atau token yang diberikan harus dipersist (id != null).", 100, null);
-		}
-		
-		if($this->entityManager == null) {
-			$this->entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
+			throw new ProcessRouterException("Invalid parameter, token tidak boleh null atau token yang diberikan harus dipersist (id != null).", 100, null);
 		}
 		
 		try {
-			// Ambil intance untuk token yang diberikan.
+			// Ambil instance untuk token yang diberikan.
 			$instance = $this->entityManager
 				->createQuery('SELECT token.instance FROM Workflow\Entity\Token AS token INNER JOIN token.instance WHERE token.id = :tokenId')
 				->setParameter('tokenId', $token->getId())
@@ -94,7 +91,7 @@ class ProcessRouter implements ServiceLocatorAware {
 					->getSingleResult();
 			}
 			else {
-				throw new \RuntimeException("Jumlah arc yang keluar dari input place (place-id{$inputPlace->getId()}) = 0.", 100, null);
+				throw new ProcessRouterException("Jumlah arc yang keluar dari input place (place-id : {$inputPlace->getId()}) = 0.", 100, null);
 			}
 		
 			// Ambil transisi.
@@ -160,6 +157,10 @@ class ProcessRouter implements ServiceLocatorAware {
 	 */
 	public function setServiceLocator(ServiceLocator $serviceLocator) {
 		$this->serviceLocator = $serviceLocator;
+		
+		if($this->entityManager == null) {
+			$this->entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
+		}
 	}
 	
 	/**

@@ -11,8 +11,6 @@ use Doctrine\ORM\Mapping as Orm;
  * @author zakyalvan
  */
 class TimeTransition extends Transition {
-	protected $id;
-	
 	/**
 	 * Kapan deadline transition ini harus dieksekusi.
 	 * 
@@ -20,7 +18,7 @@ class TimeTransition extends Transition {
 	 * 
 	 * @var date
 	 */
-	private $timeLimit;
+	protected $timeLimit;
 	public function getTimeLimit() {
 		return $this->timeLimit;
 	}

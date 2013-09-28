@@ -20,6 +20,12 @@ class Workitem {
 	 * @Orm\Column(name="WORKITEM_ID", type="integer")
 	 */
 	private $id;
+	public function getId() {
+		return $this->id;
+	}
+	public function setId($id) {
+		$this->id = $id;
+	}
 	
 	/**
 	 * @Orm\Id
@@ -29,6 +35,12 @@ class Workitem {
 	 * @var Workflow
 	 */
 	protected $workflow;
+	public function getWorkflow() {
+		return $this->workflow;
+	}
+	public function setWorkflow(Workflow $workflow) {
+		$this->workflow = $workflow;
+	}
 	
 	/**
 	 * Instance referensi dari workitem.
@@ -40,6 +52,12 @@ class Workitem {
 	 * @var Instance
 	 */
 	protected $instance;
+	public function getInstance() {
+		return $this->instance;
+	}
+	public function setInstance(Instance $instance) {
+		$this->instance = $instance;
+	}
 	
 	/**
 	 * @Orm\Id
@@ -49,31 +67,67 @@ class Workitem {
 	 * @var Transition
 	 */
 	protected $transition;
-
-	/**
-	 * @Orm\Column(name="WORKITEM_CONTEXT", type="string")
-	 */
-	protected $context;
+	public function getTransition() {
+		return $this->transition;
+	}
+	public function setTransition(Transition $transition) {
+		$this->transition = $transition;
+	}
 	
 	/**
 	 * @Orm\Column(name="WORKITEM_STATUS", type="string")
 	 */
 	protected $status;
+	public function getStatus() {
+		return $this->status;
+	}
+	public function setStatus($status) {
+		$this->status = $status;
+	}
 	
 	/**
-	 * @Orm\Column(name="ENABLED_DATE")
+	 * @Orm\Column(name="ENABLED_DATE", type="datetime", nullable=false)
 	 */
 	protected $enabledDate;
+	public function getEnabledDate() {
+		return $this->enabledDate;
+	}
+	public function setEnabledDate($enabledDate) {
+		$this->enabledDate = $enabledDate;
+	}
 	
 	/**
-	 * @Orm\Column(name="CANCELED_DATE")
+	 * @Orm\Column(name="CANCELED_DATE", type="datetime", nullable=true)
 	 */
 	protected $cancledDate;
+	public function getCanceledDate() {
+		return $this->cancledDate;
+	}
+	public function setCanceledDate($canceledDate) {
+		$this->cancledDate = $canceledDate;
+	}
 	
 	/**
-	 * @Orm\Column(name="FINISHED_DATE")
+	 * @Orm\Column(name="FINISHED_DATE", type="datetime", nullable=true)
 	 */
 	protected $finishedDate;
+	public function getFinishedDate() {
+		return $this->finishedDate;
+	}
+	public function setFinishedDate($finishedDate) {
+		$this->finishedDate = $finishedDate;
+	}
+	
+	/**
+	 * @Orm\Column(name="WORKITEM_CONTEXT", type="string", nullable=false)
+	 */
+	protected $context;
+	public function getContext() {
+		return $this->context;
+	}
+	public function setContext($context) {
+		$this->context = $context;
+	}
 	
 	/**
 	 * Eksekutor workitem.
@@ -84,70 +138,6 @@ class Workitem {
 	 * @var User
 	 */
 	protected $executor;
-	
-	public function getId() {
-		return $this->id;
-	}
-	public function setId($id) {
-		$this->id = $id;
-	}
-	
-	public function getWorkflow() {
-		return $this->workflow;
-	}
-	public function setWorkflow(Workflow $workflow) {
-		$this->workflow = $workflow;
-	}
-	
-	public function getInstance() {
-		return $this->instance;
-	}
-	public function setInstance(Instance $instance) {
-		$this->instance = $instance;
-	}
-	
-	public function getTransition() {
-		return $this->transition;
-	}
-	public function setTransition(Transition $transition) {
-		$this->transition = $transition;
-	}
-	
-	public function getContext() {
-		return $this->context;
-	}
-	public function setContext($context) {
-		$this->context = $context;
-	}
-	
-	public function getStatus() {
-		return $this->status;
-	}
-	public function setStatus($status) {
-		$this->status = $status;
-	}
-	
-	public function getEnabledDate() {
-		return $this->enabledDate;
-	}
-	public function setEnabledDate($enabledDate) {
-		$this->enabledDate = $enabledDate;
-	}
-	
-	public function getCanceledDate() {
-		return $this->cancledDate;
-	}
-	public function setCanceledDate($canceledDate) {
-		$this->cancledDate = $canceledDate;
-	}
-	
-	public function getFinishedDate() {
-		return $this->finishedDate;
-	}
-	public function setFinishedDate($finishedDate) {
-		$this->finishedDate = $finishedDate;
-	}
-	
 	public function getExecutor() {
 		return $this->executor;
 	}
