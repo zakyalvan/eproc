@@ -17,7 +17,9 @@ class Perubahan {
 	/**
 	 * Kode perubahan
 	 * 
+	 * @Orm\Id
 	 * @Orm\Column(name="KODE_PERUBAHAN", type="integer", nullable=true)
+	 * @Orm\GeneratedValue(strategy="NONE")
 	 * 
 	 * @var integer
 	 */
@@ -30,6 +32,7 @@ class Perubahan {
 	}
 	
 	/**
+	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Kontrak\Kontrak", fetch="lazy")
 	 * @Orm\JoinColumns({@JoinColumn(name="KODE_KANTOR", type="string", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", type="string", referencedColumnName="KODE_KONTRAK")})
 	 * 
@@ -45,6 +48,8 @@ class Perubahan {
 	
 	/**
 	 * @Orm\Column(name="TGL_MULAI", type="date", nullable=true)
+	 * 
+	 * @var date
 	 */
 	private $tanggalMulai;
 	public function getTanggalMulai() {
@@ -56,6 +61,8 @@ class Perubahan {
 	
 	/**
 	 * @Orm\Column(name="TGL_MULAI_SEBELUM", type="date", nullable=true)
+	 * 
+	 * @var date
 	 */
 	private $tanggalMulaiSebelum;
 	public function getTanggalMulaiSebelum() {
@@ -67,6 +74,8 @@ class Perubahan {
 	
 	/**
 	 * @Orm\Column(name="TGL_AKHIR", type="date", nullable=true)
+	 * 
+	 * @var date
 	 */
 	private $tanggalAkhir;
 	public function getTanggalAlhir() {
@@ -78,6 +87,8 @@ class Perubahan {
 	
 	/**
 	 * @Orm\Column(name="TGL_AKHIR_SEBELUM", type="date", nullable=true)
+	 * 
+	 * @var date
 	 */
 	private $tanggalAkhirSebelum;
 	public function getTanggalAkhirSebelum() {
@@ -90,6 +101,8 @@ class Perubahan {
 	/**
 	 * @Orm\ManyToOne(targetEntity="Master\Entity\MataUang", fetch="eager")
 	 * @Orm\JoinColumn(name="TGL_MULAI", type="string", referencedColumnName="MATA_UANG", nullable=true)
+	 * 
+	 * @var date
 	 */
 	private $mataUang;
 	public function getMataUang() {
@@ -101,6 +114,8 @@ class Perubahan {
 	
 	/**
 	 * @Orm\Column(name="NILAI_KONTRAK", type="double", nullable=true)
+	 * 
+	 * @var double
 	 */
 	private $nilaiKontrak;
 	public function getNilaiKontrak() {
@@ -112,6 +127,8 @@ class Perubahan {
 	
 	/**
 	 * @Orm\Column(name="NILAI_KONTRAK_SEBELUM", type="double", nullable=true)
+	 * 
+	 * @var double
 	 */
 	private $nilaiKontrakSebelum;
 	public function getNilaiKontrakSebelum() {
@@ -123,6 +140,8 @@ class Perubahan {
 	
 	/**
 	 * @Orm\Column(name="STATUS", type="string", length="2", nullable=true)
+	 * 
+	 * @var string
 	 */
 	private $status;
 	public function getStatus() {
@@ -134,6 +153,8 @@ class Perubahan {
 	
 	/**
 	 * @Orm\Column(name="POSISI_PERSETUJUAN", type="string", length="50", nullable=true)
+	 * 
+	 * @var string
 	 */
 	private $posisiPersetujuan;
 	public function getPosisiPersetujuan() {
@@ -145,6 +166,8 @@ class Perubahan {
 	
 	/**
 	 * @Orm\Column(name="TGL_PERUBAHAN", type="date", nullable=true)
+	 * 
+	 * @var string
 	 */
 	private $tanggalPerubahan;
 	public function getTanggalPerubahan() {
@@ -156,6 +179,8 @@ class Perubahan {
 	
 	/**
 	 * @Orm\Column(name="TIPE_"KONTRAK, type="string", length="50", nullable=true)
+	 * 
+	 * @var string
 	 */
 	private $tipeKontrak;
 	public function getTipeKontrak() {
@@ -167,6 +192,8 @@ class Perubahan {
 	
 	/**
 	 * @Orm\Column(name="JENIS_KONTRAK", type="string", length="50", nullable=true)
+	 * 
+	 * @var string
 	 */
 	private $jenisKontrak;
 	public function getJenisKontrak() {
@@ -178,6 +205,8 @@ class Perubahan {
 	
 	/**
 	 * @Orm\Column(name="NO_KONTRAK", type="string", length="50", nullable=true)
+	 * 
+	 * @var string
 	 */
 	private $nomorKontrak;
 	public function getNomorKontrak() {
@@ -189,6 +218,8 @@ class Perubahan {
 	
 	/**
 	 * @Orm\Column(name="PERIODE_BAYAR_SEWA", type="integer", nullable=true)
+	 * 
+	 * @var integer
 	 */
 	private $periodeBayarSewa;
 	public function getPeriodeBayarSewa() {
@@ -200,6 +231,8 @@ class Perubahan {
 	
 	/**
 	 * @Orm\Column(name="UNIT_BAYAR_SEWA", type="string", length="50", nullable=true)
+	 * 
+	 * @var string
 	 */
 	private $unitBayarSewa;
 	public function getUnitBayarSewa() {
@@ -211,6 +244,8 @@ class Perubahan {
 	
 	/**
 	 * @Orm\Column(name="TERMIN_BAYAR_SEWA", type="string", length="100", nullable=true)
+	 * 
+	 * @var string
 	 */
 	private $terminBayarSewa;
 	public function getTerminBayarSewa() {

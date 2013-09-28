@@ -12,29 +12,34 @@ use Doctrine\ORM\Mapping as Orm;
 class Vendor {
 	/**
 	 * @Orm\Id
-	 * @Orm\Column(name="KODE_VENDOR", nullable=false)
+	 * @Orm\Column(name="KODE_VENDOR", type="integer")
+	 * @Orm\GeneratedValue(strategy="NONE")
+	 * 
+	 * @var integer
 	 */
-	private $kodeVendor;
-	public function getKodeVendor() {
-		return $this->kodeVendor;
+	private $kode;
+	public function getKode() {
+		return $this->kode;
 	}
-	public function setKodeVendor($kodeVendor) {
-		$this->kodeVendor = $kodeVendor;
+	public function setKode($kode) {
+		$this->kode = $kode;
 	}
 	
 	/**
-	 * @Orm\Column(name="NAMA_VENDOR", nullable=true)
+	 * @Orm\Column(name="NAMA_VENDOR", type="string", length="50", nullable=true)
+	 * 
+	 * @var string
 	 */
-	private $namaVendor;
-	public function getNamaVendor() {
-		return $this->namaVendor;
+	private $nama;
+	public function getNama() {
+		return $this->nama;
 	}
-	public function setNamaVendor($namaVendor) {
-		$this->namaVendor = $namaVendor;
+	public function setNama($nama) {
+		$this->nama = $nama;
 	}
 	
 	/**
-	 * @Orm\Column(name="KODE_LOGIN", nullable=true)
+	 * @Orm\Column(name="KODE_LOGIN", type="string", length="50", nullable=true)
 	 */
 	private $kodeLogin;
 	public function getKodeLogin() {
@@ -45,7 +50,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="PASSWRD", nullable=true)
+	 * @Orm\Column(name="PASSWRD", type="string", length="255", nullable=true)
 	 */
 	private $password;
 	public function getPassword() {
@@ -56,7 +61,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="ALAMAT_EMAIL", nullable=true)
+	 * @Orm\Column(name="ALAMAT_EMAIL", type="string", length="255", nullable=true)
 	 */
 	private $alamatEmail;
 	public function getAlamatEmail() {
@@ -67,7 +72,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="AWALAN", nullable=true)
+	 * @Orm\Column(name="AWALAN", type="string", length="50", nullable=true)
 	 */
 	private $awalan;
 	public function getAwalan() {
@@ -78,7 +83,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="AWALAN_LAIN", nullable=true)
+	 * @Orm\Column(name="AWALAN_LAIN", type="string", length="50", nullable=true)
 	 */
 	private $awalanLain;
 	public function getAwalanLain() {
@@ -89,7 +94,9 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="AKHIRAN", nullable=true)
+	 * @Orm\Column(name="AKHIRAN", type="string", length="50", nullable=true)
+	 * 
+	 * @var string
 	 */
 	private $akhiran;
 	public function getAkhiran() {
@@ -100,7 +107,9 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="AKHIRAN_LAIN", nullable=true)
+	 * @Orm\Column(name="AKHIRAN_LAIN", type="string", length="50", nullable=true)
+	 * 
+	 * @var string
 	 */
 	private $akhiranLain;
 	public function getAkhiranLain() {
@@ -111,7 +120,9 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="ALAMAT", nullable=true)
+	 * @Orm\Column(name="ALAMAT", type="string", length="512", nullable=true)
+	 * 
+	 * @var string
 	 */
 	private $alamat;
 	public function getAlamat() {
@@ -122,7 +133,9 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="KOTA", nullable=true)
+	 * @Orm\Column(name="KOTA", type="string", length="512", nullable=true)
+	 * 
+	 * @var string
 	 */
 	private $kota;
 	public function getKota() {
@@ -482,7 +495,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="PETUGAS_REKAM", nullable=true)
+	 * @Orm\Column(name="PETUGAS_REKAM", type="string", length="50", nullable=true)
 	 */
 	private $petugasRekam;
 	public function getPetugasRekam() {
@@ -493,7 +506,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_UBAH", nullable=true)
+	 * @Orm\Column(name="TGL_UBAH", nullable=true, type="date", nullable=true)
 	 */
 	private $tanggalUbah;
 	public function getTanggalUbah() {
@@ -504,7 +517,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="PETUGAS_UBAH", nullable=true)
+	 * @Orm\Column(name="PETUGAS_UBAH", type="string", length="50", nullable=true)
 	 */
 	private $petugasUbah;
 	public function getPetugasUbah() {
