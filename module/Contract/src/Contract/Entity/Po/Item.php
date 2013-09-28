@@ -42,12 +42,83 @@ class Item {
 		$this->po = $po;
 	}
 	
+	/**
+	 * @Orm\Column(name="KETERNGAN", type="string", length="255", nullable=true)
+	 * 
+	 * @var string
+	 */
 	private $keterangan;
+	public function getKeterangan() {
+		return $this->keterangan;
+	}
+	public function setKeterangan($keterangan) {
+		$this->keterangan = $keterangan;
+	}
+	
+	/**
+	 * @Orm\Column(name="HARGA", type="double", nullable=true)
+	 *
+	 * @var double
+	 */
 	private $harga;
+	public function getHarga() {
+		return $this->harga;
+	}
+	public function setHarga($harga) {
+		$this->harga = $harga;
+	}
+	
+	/**
+	 * @Orm\Column(name="QTY", type="integer", nullable=true)
+	 *
+	 * @var integer
+	 */
 	private $quantity;
+	public function getQuantity() {
+		return $this->quantity;
+	}
+	public function setQuantity($quantity) {
+		$this->quantity = $quantity;
+	}
+	
+	/**
+	 * @Orm\Column(name="SATUAN", type="string", length="10", nullable=true)
+	 *
+	 * @var string
+	 */
 	private $satuan;
+	public function getSatuan() {
+		return $this->satuan;
+	}
+	public function setSatuan($satuan) {
+		$this->satuan = $satuan;
+	}
+	
+	/**
+	 * @Orm\Column(name="SUB_TOTAL", type="double", nullable=true)
+	 *
+	 * @var double
+	 */
 	private $subTotal;
+	public function getSubTotal() {
+		return $this->subTotal;
+	}
+	public function setSubTotal($subTotal) {
+		$this->subTotal = $subTotal;
+	}
+	
+	/**
+	 * @Orm\Column(name="KETERNGAN_LENGKAP", type="string", length="4000", nullable=true)
+	 *
+	 * @var string
+	 */
 	private $keteranganLengkap;
+	public function getKeteranganLengkap() {
+		return $this->keteranganLengkap;
+	}
+	public function setKeteranganLengkap($keteranganLengkap) {
+		$this->keteranganLengkap = $keteranganLengkap;
+	}
 	
 	/**
 	 * @Orm\Column(name="TGL_REKAM", type="date", nullable=true)
