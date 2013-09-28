@@ -1,5 +1,5 @@
 <?php
-namespace Contract\Entity\Amend;
+namespace Contract\Entity\Perubahan;
 
 use Doctrine\ORM\Mapping as Orm;
 
@@ -11,6 +11,6 @@ use Doctrine\ORM\Mapping as Orm;
  * 
  * @author zakyalvan
  */
-class Comment {
+class Komentar {
 	
 }

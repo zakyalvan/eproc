@@ -1,5 +1,5 @@
 <?php
-namespace Contract\Entity\Term;
+namespace Contract\Entity\Termin;
 
 use Doctrine\ORM\Mapping as Orm;
 

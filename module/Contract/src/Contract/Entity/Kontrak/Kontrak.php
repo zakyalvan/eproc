@@ -1,9 +1,10 @@
 <?php
-namespace Contract\Entity\Contract;
+namespace Contract\Entity\Kontrak;
 
 use Doctrine\ORM\Mapping as Orm;
 use Vendor\Entity\Vendor;
 use Procurement\Entity\Tender\Tender;
+use Application\Entity\MataUang;
 
 /**
  * Entity header dari sebuah kontrak.
@@ -13,7 +14,7 @@ use Procurement\Entity\Tender\Tender;
  * 
  * @author zakyalvan
  */
-class Contract {
+class Kontrak {
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="KODE_KONTRAK", type="string")
@@ -199,7 +200,10 @@ class Contract {
 	}
 	
 	/**
-	 * @Orm\Column(name="MATA_UANG", type="string", nullable=true)
+	 * @ManyToOne(targetEntity="Master\Entity\MataUang" fetch="lazy")
+	 * @Orm\JoinColumn(name="MATA_UANG", type="string", referencedColumnName="MATA_UANG" nullable=true)
+	 * 
+	 * @var MataUang
 	 */
 	private $mataUang;
 	public function getMataUang() {

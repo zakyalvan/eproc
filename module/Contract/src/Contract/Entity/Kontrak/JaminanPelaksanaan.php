@@ -1,5 +1,5 @@
 <?php
-namespace Contract\Entity\Contract;
+namespace Contract\Entity\Kontrak;
 
 use Doctrine\ORM\Mapping as Orm;
 
@@ -11,6 +11,6 @@ use Doctrine\ORM\Mapping as Orm;
  * 
  * @author zakyalvan
  */
-class WorkAssurance {
+class JaminanPelaksanaan {
 	
 }
