@@ -16,6 +16,9 @@ class User {
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="KODE_USER", type="string")
+	 * @Orm\GeneratedValue(strategy="NONE")
+	 * 
+	 * @var string
 	 */
 	protected $usercode;
 	

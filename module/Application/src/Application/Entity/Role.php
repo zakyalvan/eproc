@@ -17,6 +17,9 @@ class Role {
 	 * 
 	 * @Orm\Id
 	 * @Orm\Column(name="KODE_FUNGSI", type="string")
+	 * @Orm\GeneratedValue(strategy="NONE")
+	 * 
+	 * @var string
 	 */
 	protected $code;
 	

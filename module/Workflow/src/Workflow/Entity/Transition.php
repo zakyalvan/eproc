@@ -48,10 +48,20 @@ class Transition {
 	/**
 	 * Context transisi (Misalnya Internal, External (atau bisa lebih detail misal vendor))
 	 * Dipake jika transisi bertype user triggered.
-	 * 
+	 *
 	 * @Orm\Column(name="TRANSITION_CONTEXT", type="string")
 	 */
 	protected $context;
+	
+	/**
+	 * @Orm\Column(name="TRANSITION_NAME", type="string", nullable="false")
+	 */
+	protected $name;
+	
+	/**
+	 * @Orm\Column(name="TRANSITION_DESC", type="string")
+	 */
+	protected $description;
 	
 	/**
 	 * Ini role yang harus mengeksekusi transisi ini 
@@ -78,19 +88,9 @@ class Transition {
 	/**
 	 * Attribute untuk transisi bertipe time-triggered.
 	 * 
-	 * @Orm\Column(name="TIME_LIMIT", type="integer")
+	 * @Orm\Column(name="TIME_LIMIT", type="integer", nullable="true")
 	 */
 	protected $timeLimit;
-	
-	/**
-	 * @Orm\Column(name="TRANSITION_NAME", type="string")
-	 */
-	protected $name;
-	
-	/**
-	 * @Orm\Column(name="TRANSITION_DESC", type="string")
-	 */
-	protected $description;
 	
 	/**
 	 * Transition handler untuk transition bersangkutan.
@@ -98,6 +98,13 @@ class Transition {
 	 * @Orm\Column(name="TRANSITION_HANDLER", type="string", nullable="false")
 	 */
 	protected $handlerName;
+	
+	/**
+	 * @Orm\Column(name="SPLIT_EVALUATOR", type="string", length="255", nullable="true")
+	 * 
+	 * @var string
+	 */
+	protected $splitEvaluatorName;
 	
 	/**
 	 * @Orm\OneToMany(targetEntity="Workflow\Entity\Arc", mappedBy="transition")
@@ -187,6 +194,13 @@ class Transition {
 	}
 	public function setHandlerName($handlerName) {
 		$this->handlerName = $handlerName;
+	}
+	
+	public function getSplitEvaluatorName() {
+		return $this->splitEvaluatorName;
+	}
+	public function setSplitEvaluatorName($splitEvaluatorName) {
+		$this->splitEvaluatorName = $splitEvaluatorName;
 	}
 	
 	public function getArcs() {

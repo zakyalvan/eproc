@@ -16,6 +16,7 @@ class Organization {
 	 * 
 	 * @Orm\Id
 	 * @Orm\Column(name="KODE_KANTOR", type="string")
+	 * @Orm\GeneratedValue(strategy="NONE")
 	 */
 	protected $code;
 	
