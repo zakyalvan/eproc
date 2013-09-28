@@ -7,7 +7,10 @@ use Application\Entity\Role;
 /**
  * Table yang nyimpan data transisi.
  * 
- * @Orm\Entity
+ * @Orm\Entity(repositoryClass="Workflow\Entity\Repository\TransitionRepository")
+ * @Orm\InheritanceType("SINGLE_TABLE")
+ * @Orm\DiscriminatorColumn(name="TRANSITION_TRIGGER", type="string", length="255")
+ * @Orm\DiscriminatorMap({"AUTO" = "Workflow\Entity\AutoTransition", "USER" = "Workflow\Entity\UserTransition", "TIME" = "Workflow\Entity\TimeTransition", "MESG" = "Workflow\Entity\MesgTransition, })
  * @Orm\Table(name="EP_WF_TRANSITION")
  * 
  * @author zakyalvan
@@ -20,7 +23,7 @@ class Transition {
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\Column(name="TRANSITION_ID", type="integer")
+	 * @Orm\Column(name="TRANSITION_ID", type="integer", nullable=false)
 	 */
 	protected $id;
 	
@@ -41,95 +44,62 @@ class Transition {
 	 * TIME jika transisi ini ditrigger oleh waktu (contoh dalam percabangan implisit join).
 	 * Perlu dicatat, untuk setiap transisi yang harus ditrigger oleh user maka sebelum
 	 * 
-	 * @Orm\Column(name="TRANSITION_TRIGGER", type="string")
+	 * @Orm\Column(name="TRANSITION_TRIGGER", type="string", length="4", nullable=false)
 	 */
 	protected $triggerType;
 	
 	/**
-	 * Context transisi (Misalnya Internal, External (atau bisa lebih detail misal vendor))
-	 * Dipake jika transisi bertype user triggered.
-	 *
-	 * @Orm\Column(name="TRANSITION_CONTEXT", type="string")
-	 */
-	protected $context;
-	
-	/**
-	 * @Orm\Column(name="TRANSITION_NAME", type="string", nullable="false")
+	 * @Orm\Column(name="TRANSITION_NAME", type="string", length="50", nullable=false)
 	 */
 	protected $name;
 	
 	/**
-	 * @Orm\Column(name="TRANSITION_DESC", type="string")
+	 * @Orm\Column(name="TRANSITION_DESC", type="string", length="500", nullable=false)
 	 */
 	protected $description;
 	
 	/**
-	 * Ini role yang harus mengeksekusi transisi ini 
-	 * (Jika transisi bertype user-triggered dan context == user, selain itu null).
-	 *
-	 * @Orm\ManyToOne(targetEntity="Application\Entity\Role", fetch="lazy")
-	 * @Orm\JoinColumn(name="ROLE_ID", referencedColumnName="KODE_FUNGSI")
-	 * 
-	 * @var Role
-	 */
-	protected $role;
-	
-	/**
-	 * Task yang harus dieksekusi jika instance dari transisi bersangkutan dihandle.
-	 * (Jika transisi bertipe user-triggered).
-	 * 
-	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Task", fetch="lazy")
-	 * @Orm\JoinColumn(name="TASK_ID", referencedColumnName="TASK_ID")
-	 * 
-	 * @var Task
-	 */
-	protected $task;
-	
-	/**
-	 * Attribute untuk transisi bertipe time-triggered.
-	 * 
-	 * @Orm\Column(name="TIME_LIMIT", type="integer", nullable="true")
-	 */
-	protected $timeLimit;
-	
-	/**
-	 * Transition handler untuk transition bersangkutan.
-	 * 
-	 * @Orm\Column(name="TRANSITION_HANDLER", type="string", nullable="false")
-	 */
-	protected $handlerName;
-	
-	/**
-	 * @Orm\Column(name="SPLIT_EVALUATOR", type="string", length="255", nullable="true")
-	 * 
-	 * @var string
-	 */
-	protected $splitEvaluatorName;
-	
-	/**
 	 * @Orm\OneToMany(targetEntity="Workflow\Entity\Arc", mappedBy="transition")
+	 * 
+	 * @var array
 	 */
 	protected $arcs;
 	
 	/**
-	 * @Orm\Column(name="TGL_REKAM")
+	 * Transition handler untuk transition bersangkutan.
+	 * 
+	 * @Orm\Column(name="TRANSITION_HANDLER", type="string", length="100", nullable="false")
+	 * 
+	 * @var string
+	 */
+	protected $handler;
+	
+	/**
+	 * @Orm\OneToMany(targetEntity="Workflow\Entity\TransitionTrail", fetch="lazy", mappedBy="transition")
+	 * 
+	 * @var array
+	 */
+	protected $auditTrails;
+	
+	/**
+	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
 	 */
 	protected $createdDate;
 	
 	/**
 	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @Orm\JoinColumn(name="PETUGAS_REKAM", type="string", referencedColumnName="KODE_USER")
+	 * @Orm\JoinColumn(name="PETUGAS_REKAM", type="string", referencedColumnName="KODE_USER", nullable=true)
 	 */
 	protected $createdBy;
 	
 	/**
-	 * @Orm\Column(name="TGL_UBAH")
+	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
 	 */
 	protected $updatedDate;
 	
 	/**
 	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @Orm\JoinColumn(name="PETUGAS_UBAH", type="string", referencedColumnName="KODE_USER")
+	 * @Orm\JoinColumn(name="PETUGAS_UBAH", type="string", referencedColumnName="KODE_USER", nullable=true)
 	 */
 	protected $updatedBy;
 	
@@ -143,7 +113,7 @@ class Transition {
 	public function getWorkflow() {
 		return $this->workflow;
 	}
-	public function setWorkflow($workflow) {
+	public function setWorkflow(Workflow $workflow) {
 		$this->workflow = $workflow;
 	}
 	
@@ -152,27 +122,6 @@ class Transition {
 	}
 	public function setTriggerType($triggerType) {
 		$this->triggerType = $triggerType;
-	}
-	
-	public function getRole() {
-		return $this->role;
-	}
-	public function setRole(Role $role) {
-		$this->role = $role;
-	}
-	
-	public function getTask() {
-		return $this->task;
-	}
-	public function setTask(Task $task) {
-		$this->task = $task;
-	}
-	
-	public function getTimeLimit() {
-		return $this->timeLimit;
-	}
-	public function setTimeLimit($timeLImit) {
-		$this->timeLimit = $timeLImit;
 	}
 	
 	public function getName() {
@@ -189,25 +138,25 @@ class Transition {
 		$this->description = $description;
 	}
 	
-	public function getHandlerName() {
-		return $this->handlerName;
-	}
-	public function setHandlerName($handlerName) {
-		$this->handlerName = $handlerName;
-	}
-	
-	public function getSplitEvaluatorName() {
-		return $this->splitEvaluatorName;
-	}
-	public function setSplitEvaluatorName($splitEvaluatorName) {
-		$this->splitEvaluatorName = $splitEvaluatorName;
-	}
-	
 	public function getArcs() {
 		return $this->arcs;
 	}
 	public function setArcs($arcs) {
 		$this->arcs = $arcs;
+	}
+	
+	public function getHandler() {
+		return $this->handler;
+	}
+	public function setHandler($handler) {
+		$this->handler = $handler;
+	}
+	
+	public function getAuditTrails() {
+		return $this->auditTrails;
+	}
+	public function setAuditTrails($auditTrails) {
+		$this->auditTrails = $auditTrails;
 	}
 	
 	public function getCreatedDate() {

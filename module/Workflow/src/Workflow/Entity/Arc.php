@@ -33,7 +33,7 @@ class Arc {
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Place", fetch="LAZY")
+	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Place", fetch="LAZY", inversedBy="arcs")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", type="string", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="PLACE_ID", type="integer", referencedColumnName="PLACE_ID")})
 	 * 
 	 * @var Place
@@ -42,7 +42,7 @@ class Arc {
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Transition", fetch="LAZY")
+	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Transition", fetch="LAZY", inversedBy="arcs")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", type="string", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="TRANSITION_ID", type="integer", referencedColumnName="TRANSITION_ID")})
 	 * 
 	 * @var Transition
@@ -51,12 +51,12 @@ class Arc {
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\Column(name="DIRECTION", type="integer")
+	 * @Orm\Column(name="DIRECTION", type="integer", nullable="false")
 	 */
 	private $direction;
 	
 	/**
-	 * @Orm\Column(name="ARC_TYPE", type="integer")
+	 * @Orm\Column(name="ARC_TYPE", type="string", length="50", nullable=true)
 	 * 
 	 * @var string
 	 */
@@ -67,7 +67,7 @@ class Arc {
 	 * lalu flow berikutnya mengikuti label ini.
 	 * Label arc ini harus unik dalam scope sebuah proses workflow. 
 	 * 
-	 * @Orm\Column(name="ARC_LABEL", type="string")
+	 * @Orm\Column(name="ARC_LABEL", type="string", length="50", nullable=false)
 	 */
 	private $label;
 	
