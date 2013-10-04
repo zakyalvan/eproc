@@ -20,6 +20,10 @@ class AssignManagerTodoListProvider implements TodoListProvider, ServiceLocatorA
 	 */
 	private $serviceLocator;
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see \Application\Todo\TodoListProvider::getTodoList()
+	 */
 	public function getTodoList($pageNumber, $itemCountPerPage, $additionalDatas = array()) {
 		/* @var $entityManager EntityManager */
 		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
@@ -36,9 +40,17 @@ class AssignManagerTodoListProvider implements TodoListProvider, ServiceLocatorA
 		return $paginator;
 	}
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see \Zend\ServiceManager\ServiceLocatorAwareInterface::setServiceLocator()
+	 */
 	public function setServiceLocator(ServiceLocator $serviceLocator) {
 		$this->serviceLocator = $serviceLocator;
 	}
+	/**
+	 * (non-PHPdoc)
+	 * @see \Zend\ServiceManager\ServiceLocatorAwareInterface::getServiceLocator()
+	 */
 	public function getServiceLocator() {
 		return $this->serviceLocator;
 	}

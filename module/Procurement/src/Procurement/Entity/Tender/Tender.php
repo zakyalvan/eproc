@@ -15,7 +15,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 class Tender {
 	/**
 	 * @Orm\Id
-	 * @Orm\Column(name="KODE_TENDER", type="string", nullable=false)
+	 * @Orm\Column(name="KODE_TENDER", type="string", length="50", nullable=false)
+	 * 
+	 * @string
 	 */
 	private $kode;
 	public function getKode() {

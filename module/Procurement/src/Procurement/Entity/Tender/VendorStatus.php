@@ -13,7 +13,7 @@ class VendorStatus {
 	/**
 	 * @Orm\Id
 	 * @Orm\OneToOne(targetEntity="Procurement\Entity\Tender\TenderVendor", fetch="lazy", inversedBy="vendorStatus")
-	 * @Orm\JoinColumns({@JoinColumn(name="KODE_TENDER", type="string", referencedColumnName="KODE_TENDER"), @JoinColumn(name="KODE_KANTOR", type="string", referencedColumnName="KODE_KANTOR"), , @JoinColumn(name="KODE_VENDOR", type="string", referencedColumnName="KODE_VENDOR")})
+	 * @Orm\JoinColumns({@JoinColumn(name="KODE_TENDER", referencedColumnName="KODE_TENDER", type="string", length="50"), @JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR", type="string", length="5"), @JoinColumn(name="KODE_VENDOR", referencedColumnName="KODE_VENDOR", type="integer")})
 	 * 
 	 * @var TenderVendor
 	 */
@@ -39,12 +39,12 @@ class VendorStatus {
 	/**
 	 * @Orm\Column(name="TEKNIKAL_STATUS", type="integer", nullable=true)
 	 */
-	private $teknikalStatus;
-	public function setTeknikalStatus() {
-		return $this->teknikalStatus;
+	private $statusTeknikal;
+	public function setStatusTeknikal() {
+		return $this->statusTeknikal;
 	}
-	public function setTeknikalStatus($teknikalStatus) {
-		$this->teknikalStatus = $teknikalStatus;
+	public function setStatusTeknikal($statusTeknikal) {
+		$this->statusTeknikal = $statusTeknikal;
 	}
 	
 	/**
@@ -61,12 +61,12 @@ class VendorStatus {
 	/**
 	 * @Orm\Column(name="KOMERSIAL_STATUS", type="integer", nullable=true)
 	 */
-	private $komersialStatus;
-	public function getKomersialStatus() {
-		return $this->komersialStatus;
+	private $statusKomersial;
+	public function getStatusKomersial() {
+		return $this->statusKomersial;
 	}
-	public function setKomersialStatus($komersialStatus) {
-		$this->komersialStatus = $komersialStatus;
+	public function setStatusKomersial($statusKomersial) {
+		$this->statusKomersial = $statusKomersial;
 	}
 	
 	/**
@@ -81,18 +81,25 @@ class VendorStatus {
 	}
 	
 	/**
-	 * @Orm\Column(name="PEMENANG", type="string", nullable=true)
+	 * @Orm\Column(name="PEMENANG", type="string", length="1", nullable=true)
+	 * 
+	 * @var string
 	 */
 	private $pemenang;
 	public function getPemenang() {
 		return $this->pemenang;
+	}
+	public function isPemenang() {
+		return (!is_null($this->pemenang) && $this->pemenang == '1') ? true : false;
 	}
 	public function setPemenang($pemenang) {
 		$this->pemenang = $pemenang;
 	}
 	
 	/**
-	 * @Orm\Column(name="NEGOSIASI", type="integer", nullable=true)
+	 * @Orm\Column(name="NEGOSIASI", type="string", length="1", nullable=true)
+	 * 
+	 * @var string
 	 */
 	private $negosiasi;
 	public function getNegosiasi() {
