@@ -2,8 +2,8 @@
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as Orm;
-use Zend\Cache\Pattern\ObjectCache;
 use Doctrine\Common\Collections\ArrayCollection;
+use Zend\Cache\Pattern\ObjectCache;
 
 /**
  * Entity mapping ke user sipt.
@@ -120,6 +120,8 @@ class User {
  	 * 		joinColumns={@Orm\JoinColumn(name="KODE_USER", type="string", referencedColumnName="KODE_USER")},
 	 *		inverseJoinColumns={@Orm\JoinColumn(name="KODE_FUNGSI", type="string", referencedColumnName="KODE_FUNGSI")}
 	 * )
+	 * 
+	 * @var ArrayCollection
 	 */
 	protected $roles;
 	public function getRoles() {

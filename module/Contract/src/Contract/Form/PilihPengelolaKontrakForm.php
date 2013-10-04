@@ -9,7 +9,7 @@ use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
  * 
  * @author zakyalvan
  */
-class DelegateCreationForm extends Form {
+class PilihPengelolaKontrakForm extends Form {
 	/**
 	 * @var ServiceLocator
 	 */
@@ -20,7 +20,5 @@ class DelegateCreationForm extends Form {
 		if($serviceLocator == null) {
 			throw new \InvalidArgumentException('Parameter service-locator harus diberikan', 100, null);
 		}
-		
-		
 	}
 }

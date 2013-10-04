@@ -8,7 +8,7 @@ use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
  * 
  * @author zakyalvan
  */
-class CreateContractForm extends Form {
+class PembuatanKontrakForm extends Form {
 	/**
 	 * @var ServiceLocator
 	 */
