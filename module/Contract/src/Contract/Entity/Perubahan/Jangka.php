@@ -11,12 +11,19 @@ use Doctrine\ORM\Mapping as Orm;
  */
 class Jangka {
 	/**
-	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Perubahan\Perubahan")
+	 * @Orm\Id
+	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Perubahan\Perubahan", fetch="lazy")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_PERUBAHAN", type="integer", referencedColumnName="KODE_PERUBAHAN"), @Orm\JoinColumn(name="KODE_KANTOR", type="string", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", type="string", referencedColumnName="KODE_KONTRAK")})
 	 *
 	 * @var Perubahan
 	 */
 	private $perubahan;
+	public function getPerubahan() {
+		return $this->perubahan;
+	}
+	public function setPerubahan(Perubahan $perubahan) {
+		$this->perubahan = $perubahan;
+	}
 	
 	/**
 	 * @Orm\Column(name="TGL_REKAM", type="date", nullable=true)

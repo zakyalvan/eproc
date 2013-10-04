@@ -3,7 +3,7 @@ namespace Contract\Entity\Perubahan;
 
 use Doctrine\ORM\Mapping as Orm;
 use Contract\Entity\Kontrak\Kontrak;
-use Application\Entity\MataUang;
+use Master\Entity\MataUang;
 
 /**
  * Entity yang mewakili table header sebuah adendum.
@@ -32,6 +32,8 @@ class Perubahan {
 	}
 	
 	/**
+	 * Kontrak entity yang dirubah.
+	 * 
 	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Kontrak\Kontrak", fetch="lazy")
 	 * @Orm\JoinColumns({@JoinColumn(name="KODE_KANTOR", type="string", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", type="string", referencedColumnName="KODE_KONTRAK")})
@@ -100,9 +102,9 @@ class Perubahan {
 	
 	/**
 	 * @Orm\ManyToOne(targetEntity="Master\Entity\MataUang", fetch="eager")
-	 * @Orm\JoinColumn(name="TGL_MULAI", type="string", referencedColumnName="MATA_UANG", nullable=true)
+	 * @Orm\JoinColumn(name="MATA_UANG", type="string", referencedColumnName="MATA_UANG", nullable=true)
 	 * 
-	 * @var date
+	 * @var MataUang
 	 */
 	private $mataUang;
 	public function getMataUang() {
@@ -201,7 +203,7 @@ class Perubahan {
 	}
 	public function setJenisKontrak($jenisKontrak) {
 		$this->jenisKontrak = $jenisKontrak;
-	} 
+	}
 	
 	/**
 	 * @Orm\Column(name="NO_KONTRAK", type="string", length="50", nullable=true)

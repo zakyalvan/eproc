@@ -12,10 +12,10 @@ interface TodoListProvider {
 	/**
 	 * Retrieve todo list.
 	 * 
-	 * @param unknown $page
-	 * @param unknown $rows
-	 * 
+	 * @param unknown $pageNumber
+	 * @param unknown $itemCountPerPage
+	 * @param unknown $additionalDatas
 	 * @return Paginator
 	 */
-	public function getTodoList($page, $rowNums);
+	public function getTodoList($pageNumber, $itemCountPerPage, $additionalDatas = array());
 }

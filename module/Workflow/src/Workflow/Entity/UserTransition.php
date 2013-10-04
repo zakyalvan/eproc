@@ -27,15 +27,20 @@ class UserTransition extends Transition {
 	}
 	
 	/**
-	 * Ini role yang harus mengeksekusi transisi ini
-	 * (Jika transisi bertype user-triggered dan context == user, selain itu null).
+	 * Ini role yang harus mengeksekusi transisi ini.
 	 *
 	 * @Orm\ManyToOne(targetEntity="Application\Entity\Role", fetch="lazy")
-	 * @Orm\JoinColumn(name="ROLE_ID", type="string", referencedColumnName="KODE_FUNGSI")
+	 * @Orm\JoinColumn(name="ROLE_ID", type="string", referencedColumnName="KODE_FUNGSI", nullable=true)
 	 *
 	 * @var Role
 	 */
 	protected $role;
+	public function getRole() {
+		return $this->role;
+	}
+	public function setRole($role) {
+		$this->role = $role;
+	}
 	
 	
 	/**
@@ -57,8 +62,8 @@ class UserTransition extends Transition {
 	
 	/**
 	 * Nama dari kelas split evaluator jika transisi ini merupakan tempat eksplisit or-split.
-	 * Dengan kata lain, jika atribut ini tidak diberikan dan jika ada split maka split tersebut
-	 * adalah and-split.
+	 * Dengan kata lain, jika atribut ini tidak diberikan dan jika ada split (arc ke output place lebih dari satu) 
+	 * maka split tersebut adalah and-split.
 	 * 
 	 * @Orm\Column(name="SPLIT_EVALUATOR", type="string", length="255", nullable=true)
 	 * 

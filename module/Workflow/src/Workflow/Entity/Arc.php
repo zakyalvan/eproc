@@ -21,16 +21,6 @@ class Arc {
 	 */
 	const ARC_DIRECTION_OUTPUT = 2;
 	
-	
-	/**
-	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Workflow", fetch="LAZY")
-	 * @Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID")
-	 * 
-	 * @var Workflow
-	 */
-	private $workflow;
-	
 	/**
 	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Place", fetch="LAZY", inversedBy="arcs")
@@ -39,6 +29,12 @@ class Arc {
 	 * @var Place
 	 */
 	private $place;
+	public function getPlace() {
+		return $this->place;
+	}
+	public function setPlace(Place $place) {
+		$this->place = $place;
+	}
 	
 	/**
 	 * @Orm\Id
@@ -48,12 +44,24 @@ class Arc {
 	 * @var Transition
 	 */
 	private $transition;
+	public function getTransition() {
+		return $this->transition;
+	}
+	public function setTransition(Transition $transition) {
+		$this->transition = $transition;
+	}
 	
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="DIRECTION", type="integer", nullable="false")
 	 */
 	private $direction;
+	public function getDirection() {
+		return $this->direction;
+	}
+	public function setDirection($direction) {
+		$this->direction = $direction;
+	}
 	
 	/**
 	 * @Orm\Column(name="ARC_TYPE", type="string", length="50", nullable=true)
@@ -61,6 +69,12 @@ class Arc {
 	 * @var string
 	 */
 	private $type;
+	public function getType() {
+		return $this->type;
+	}
+	public function setType($type) {
+		$this->type = $type;
+	}
 	
 	/**
 	 * Label adalah pembantu jika kondisional transition harus dipilih, workitem handler harus return label arc ini
@@ -70,64 +84,6 @@ class Arc {
 	 * @Orm\Column(name="ARC_LABEL", type="string", length="50", nullable=false)
 	 */
 	private $label;
-	
-	/**
-	 * @Orm\Column(name="TGL_REKAM")
-	 */
-	private $createdDate;
-	
-	/**
-	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @Orm\JoinColumn(name="PETUGAS_REKAM", referencedColumnName="KODE_USER")
-	 */
-	private $createdBy;
-	
-	/**
-	 * @Orm\Column(name="TGL_UBAH")
-	 */
-	private $updatedDate;
-	
-	/**
-	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @Orm\JoinColumn(name="PETUGAS_UBAH", referencedColumnName="KODE_USER")
-	 */
-	private $updatedBy;
-	
-	public function getWorkflow() {
-		return $this->workflow;
-	}
-	public function setWorkflow(Workflow $workflow) {
-		$this->workflow = $workflow;
-	}
-	
-	public function getPlace() {
-		return $this->place;
-	}
-	public function setPlace(Place $place) {
-		$this->place = $place;
-	}
-	
-	public function getTransition() {
-		return $this->transition;
-	}
-	public function setTransition(Transition $transition) {
-		$this->transition = $transition;
-	}
-	
-	public function getDirection() {
-		return $this->direction;
-	}
-	public function setDirection($direction) {
-		$this->direction = $direction;
-	}
-	
-	public function getType() {
-		return $this->type; 
-	}
-	public function setType($type) {
-		$this->type = $type;
-	}
-	
 	public function getLabel() {
 		return $this->label;
 	}
@@ -135,16 +91,36 @@ class Arc {
 		$this->label = $label;
 	}
 	
+	/**
+	 * @Orm\Column(name="TGL_REKAM")
+	 */
+	private $createdDate;
 	public function getCreatedDate() {
 		return $this->createdDate;
 	}
+	
+	/**
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
+	 * @Orm\JoinColumn(name="PETUGAS_REKAM", referencedColumnName="KODE_USER")
+	 */
+	private $createdBy;
 	public function getCreatedBy() {
 		return $this->createdBy;
 	}
 	
+	/**
+	 * @Orm\Column(name="TGL_UBAH")
+	 */
+	private $updatedDate;
 	public function getUpdatedDate() {
 		return $this->updatedDate;
 	}
+	
+	/**
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
+	 * @Orm\JoinColumn(name="PETUGAS_UBAH", referencedColumnName="KODE_USER")
+	 */
+	private $updatedBy;	
 	public function getUpdatedBy() {
 		return $this->updatedBy;
 	}

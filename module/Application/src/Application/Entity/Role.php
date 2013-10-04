@@ -2,6 +2,7 @@
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as Orm;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Entity yang nyimpan user fungsi, dari sipt.
@@ -13,7 +14,7 @@ use Doctrine\ORM\Mapping as Orm;
  */
 class Role {
 	/**
-	 * Kode fungsi.
+	 * Kode fungsi/role.
 	 * 
 	 * @Orm\Id
 	 * @Orm\Column(name="KODE_FUNGSI", type="string")
@@ -21,57 +22,57 @@ class Role {
 	 * 
 	 * @var string
 	 */
-	protected $code;
+	protected $kode;
+	public function getKode() {
+		return $this->kode;
+	}
 	
 	/**
+	 * Nama fungsi/role.
+	 * 
 	 * @Orm\Column(name="NAMA_FUNGSI", type="string")
 	 */
-	protected $name;
+	protected $nama;
+	public function getNama() {
+		return $this->nama;
+	}
 	
 	/**
-	 * Inisial atau akronim untuk fungsi ini.
+	 * Inisial atau akronim untuk fungsi/role.
 	 * 
 	 * @Orm\Column(name="INISIAL_FUNGSI", type="string")
 	 */
-	protected $acronym;
+	protected $inisial;
+	public function getInisial() {
+		return $this->inisial;
+	}
 	
 	/**
 	 * Status aktif atau tidak.
 	 * 
-	 * @Orm\Column(name="AKTIF", type="string")
+	 * @Orm\Column(name="AKTIF", type="string", nullable=true)
 	 */
-	protected $active;
+	protected $aktif;
+	public function getAktif() {
+		return $this->aktif;
+	}
 	
 	/**
 	 * Kolom keterangan
 	 * 
-	 * @Orm\Column(name="KETERANGAN", type="string")
+	 * @Orm\Column(name="KETERANGAN", type="string", nullable=true)
 	 */
-	protected $note;
+	protected $keterangan;
+	public function getKeterangan() {
+		return $this->keterangan;
+	}
 	
 	/**
-	 * @Orm\ManyToMany(targetEntity="\Application\Entity\User", inversedBy="roles")
+	 * List user yang berada dalam role ini.
+	 * 
+	 * @Orm\ManyToMany(targetEntity="Application\Entity\User", mappedBy="roles")
 	 */
 	protected $users;
-	
-	public function getCode() {
-		return $this->code;
-	}
-	public function getName() {
-		return $this->name;
-	}
-	public function getAcronym() {
-		return $this->acronym;
-	}
-	public function getActive() {
-		return $this->active;
-	}
-	public function isActive() {
-		return ($this->active == 'Y' ? true : false);
-	}
-	public function getNote() {
-		return $this->note;
-	}
 	public function getUsers() {
 		return $this->users;
 	}

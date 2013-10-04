@@ -3,8 +3,8 @@ namespace Workflow\Execution;
 
 use Zend\ServiceManager\ServiceLocatorAwareInterface as ServiceLocatorAware;
 use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
-use Doctrine\ORM\EntityManager;
-use Workflow\Execution\Router\ProcessRouter;
+use Doctrine\ORM\EntityManagerInterface as EntityManager;
+use Workflow\Execution\Router\ProcessRouterInterface as ProcessRouter;
 use Workflow\Execution\Router\RouteResult;
 use Workflow\Entity\Instance;
 use Workflow\Entity\Place;
@@ -25,16 +25,6 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 	private $serviceLocator;
 	
 	/**
-	 * @var EntityManager
-	 */
-	private $entityManager;
-	
-	/**
-	 * @var ProcessRouter
-	 */
-	private $processRouter;
-	
-	/**
 	 * (non-PHPdoc)
 	 * @see \Workflow\Manager\InstanceManagerInterface::canStartWorkflow()
 	 */
@@ -51,25 +41,30 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 			throw new \InvalidArgumentException('Parameter workflow yang diberikan tidak valid', 100, null);
 		}
 		
+		/* @var $entityManager EntityManager */
+		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
+		
+		/* @var $processRouter ProcessRouter */
+		$processRouter = $this->serviceLocator->get('Workflow\Execution\Router\ProcessRouter');
+		
 		try {
 			// Ambil ulang data workflow dari database.
-			$persitedWorkflow = $this->entityManager
-				->createQuery('SELECT workflow FROM Workflow\Entity\Workflow AS workflow WHERE workflow.id = :workflowId')
+			$persitedWorkflow = $entityManager->createQuery('SELECT workflow FROM Workflow\Entity\Workflow workflow WHERE workflow.id = :workflowId')
 				->setParameter('workflowId', $workflow->getId())
 				->getOneOrNullResult();
 			
 			if($persitedWorkflow == null) {
-				$workflow = $this->entityManager->merge($workflow);
+				$workflow = $entityManager->merge($workflow);
 			}
 			else {
 				$workflow = $persitedWorkflow;
 			}
 			
 			// Ambil start place dari workflow.
-			$startPlace = $this->entityManager->getRepository('Workflow\Entity\Place')->getStartPlace($workflow->getId());
+			$startPlace = $entityManager->getRepository('Workflow\Entity\Place')->getStartPlace($workflow->getId());
 			
 			// Start transaksi.
-			$this->entityManager->beginTransaction();
+			$entityManager->beginTransaction();
 			
 			// Pertama create instance.
 			$instance = new Instance();
@@ -80,7 +75,7 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 			 * TODO Set start data untuk instance.
 			 */
 			
-			$this->entityManager->persist($instance);
+			$entityManager->persist($instance);
 			
 			// Masukin instance datas.
 			foreach ($datas as $key => $value) {
@@ -99,14 +94,14 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 					$workflowAttribute->setType(WorkflowAttribute::TYPE_STRING);
 				}
 				
-				$this->entityManager->persist($workflowAttribute);
+				$entityManager->persist($workflowAttribute);
 				
 				$instanceData = new InstanceData();
 				$instanceData->setInstance($instance);
 				$instanceData->setAttribute($workflowAttribute);
 				$instanceData->setValue($value);
 				
-				$this->entityManager->persist($instanceData);
+				$entityManager->persist($instanceData);
 			}
 			
 			// Create token pada start place.
@@ -115,7 +110,7 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 			$token->setPlace($startPlace);
 			$token->setStatus(Token::STATUS_FREE);
 			
-			$this->entityManager->persist($token);
+			$entityManager->persist($token);
 			
 			$routeSuccess = true;
 			$tokenToRoute = $token;
@@ -147,16 +142,16 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 			}
 			
 			// Flush seluruh perubahan.
-			$this->entityManager->flush();
+			$entityManager->flush();
 			
 			// Commit transaksi.
-			$this->entityManager->commit();
+			$entityManager->commit();
 			
 			return $instance;
 		}
 		catch (\Exception $e) {
 			// Rollback transaksi.
-			$this->entityManager->rollback();
+			$entityManager->rollback();
 		}
 	}
 	
@@ -199,13 +194,6 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 	
 	public function setServiceLocator(ServiceLocator $serviceLocator) {
 		$this->serviceLocator = $serviceLocator;
-		
-		if($this->entityManager == null) {
-			$this->entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
-		}
-		if($this->processRouter == null) {
-			$this->processRouter = $this->serviceLocator->get('Workflow\Execution\Router\ProcessRouter');
-		}
 	}
 	
 	public function getServiceLocator() {

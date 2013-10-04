@@ -32,7 +32,7 @@ class TransitionRepository extends EntityRepository {
 		}
 	}
 	
-	public function getTypeOfTransition($transition) {
+	public function getTransitionType($transition) {
 		
 	}
 }

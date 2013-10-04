@@ -2,6 +2,9 @@
 namespace Procurement\Entity\Tender;
 
 use Doctrine\ORM\Mapping as Orm;
+use Application\Entity\Kantor;
+use Contract\Entity\Kontrak\Kontrak;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @Orm\Entity
@@ -14,12 +17,27 @@ class Tender {
 	 * @Orm\Id
 	 * @Orm\Column(name="KODE_TENDER", type="string", nullable=false)
 	 */
-	private $kodeTender;
-	public function getKodeTender() {
-		return $this->kodeTender;
+	private $kode;
+	public function getKode() {
+		return $this->kode;
 	}
-	public function setKodeTender($kodeTender) {
-		$this->kodeTender = $kodeTender;
+	public function setKode($kode) {
+		$this->kode = $kode;
+	}
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\Kantor", fetch="lazy")
+	 * @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR", type="string", nullable=false)
+	 *
+	 * @var Kantor
+	 */
+	private $kantor;
+	public function getKantor() {
+		return $this->kantor;
+	}
+	public function setKantor(Kantor $kantor) {
+		$this->kantor = $kantor;
 	}
 	
 	/**
@@ -28,17 +46,24 @@ class Tender {
 	 * Array dari vendor untuk tender ini.
 	 */
 	private $tenderVendors;
+	public function getTenderVendors() {
+		return $this->tenderVendors;
+	}
+	public function setTenderVendors($tenderVendors) {
+		$this->tenderVendors = $tenderVendors;
+	}
 	
 	/**
-	 * @Orm\Id
-	 * @Orm\Column(name="KODE_KANTOR", type="string", nullable=false)
+	 * @Orm\OneToMany(targetEntity="Procurement\Entity\Tender\Item", fetch="lazy", mappedBy="tender")
+	 *
+	 * @var ArrayCollection
 	 */
-	private $kodeKantor;
-	public function getKodeKantor() {
-		return $this->kodeKantor;
+	private $items;
+	public function getItems() {
+		return $this->items;
 	}
-	public function setKodeKantor($kodeKantor) {
-		$this->kodeKantor = $kodeKantor;
+	public function setItems(ArrayCollection $items) {
+		$this->items = $items;
 	}
 	
 	/**
@@ -62,6 +87,19 @@ class Tender {
 	public function setKodeTenderSesudah($kodeTenderSesudah) {
 		$this->kodeTenderSesudah = $kodeTenderSesudah;
 	}
+	
+	/**
+	 * Kode user pemohon.
+	 * 
+	 * @Orm\Column(name="KODE_USER_PEMOHON", type="string", nullable=true)
+	 */
+	private $kodePemohon;
+	public function getKodePemohon() {
+		return $this->kodePemohon;
+	}
+	public function setKodePemohon($kodePemohon) {
+		$this->kodePemohon = $kodePemohon;
+	}
 	/**
 	 * @Orm\Column(name="NAMA_PEMOHON", type="string", nullable=true)
 	 */
@@ -84,6 +122,19 @@ class Tender {
 		$this->kodeJabatanPemohon = $kodeJabatanPemohon;
 	}
 	
+	
+	/**
+	 * Kode user perencana.
+	 * 
+	 * @Orm\Column(name="KODE_USER_PERENCANA", type="string", nullable=true)
+	 */
+	private $kodePerencana;
+	public function getKodePerencana() {
+		return $this->kodePerencana;
+	}
+	public function setKodePerencana($kodePerencana) {
+		$this->kodePerencana = $kodePerencana;
+	}
 	/**
 	 * @Orm\Column(name="NAMA_PERENCANA", type="string", nullable=true)
 	 */
@@ -106,6 +157,19 @@ class Tender {
 		$this->kodeJabatanPerencana;
 	}
 	
+	
+	/**
+	 * Kode user pelaksana.
+	 * 
+	 * @Orm\Column(name="KODE_USER_PELAKSANA", type="string", nullable=true)
+	 */
+	private $kodePelaksana;
+	public function getKodePelaksana() {
+		return $this->kodePelaksana;
+	}
+	public function setKodePelaksana($kodePelaksana) {
+		$this->kodePelaksana = $kodePelaksana;
+	}
 	/**
 	 * @Orm\Column(name="NAMA_PELAKSANA", type="string", nullable=true)
 	 */
@@ -380,38 +444,4 @@ class Tender {
 	public function setKegiatanId($kegiatanId) {
 		$this->kegiatanId = $kegiatanId;
 	}
-	
-	/**
-	 * @Orm\Column(name="KODE_USER_PERENCANA", type="string", nullable=true)
-	 */
-	private $kodeUserPerencana;
-	public function getKodeUserPerencana() {
-		return $this->kodeUserPerencana;
-	}
-	public function setKodeUserPerencana($kodeUserPerencana) {
-		$this->kodeUserPerencana = $kodeUserPerencana;
-	}
-	
-	/**
-	 * @Orm\Column(name="KODE_USER_PELAKSANA", type="string", nullable=true)
-	 */
-	private $kodeUserPelaksana;
-	public function getKodeUserPelaksana() {
-		return $this->kodeUserPelaksana;
-	}
-	public function setKodeUserPelaksana($kodeUserPelaksana) {
-		$this->kodeUserPelaksana = $kodeUserPelaksana;
-	}
-	
-	/**
-	 * @Orm\Column(name="KODE_USER_PEMOHON", type="string", nullable=true)
-	 */
-	private $kodeUserPemohon;
-	public function getKodeUserPemohon() {
-		return $this->kodeUserPemohon;
-	}
-	public function setKodeUserPemohon($kodeUserPemohon) {
-		$this->kodeUserPemohon = $kodeUserPemohon;
-	}
-	
 }

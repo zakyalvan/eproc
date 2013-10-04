@@ -5,11 +5,12 @@ use Doctrine\ORM\Mapping as Orm;
 use Vendor\Entity\Vendor;
 use Procurement\Entity\Tender\Tender;
 use Application\Entity\MataUang;
+use Application\Entity\Kantor;
 
 /**
  * Entity header dari sebuah kontrak.
  * 
- * @Orm\Entity
+ * @Orm\Entity(repositoryClass="Contract\Entity\Kontrak\Repository\KontrakRepository")
  * @Orm\Table(name="EP_KTR_KONTRAK")
  * 
  * @author zakyalvan
@@ -19,16 +20,30 @@ class Kontrak {
 	 * @Orm\Id
 	 * @Orm\Column(name="KODE_KONTRAK", type="string")
 	 */
-	private $kodeKontrak;
-	public function getKodeKontrak() {
-		return $this->kodeKontrak;
+	private $kode;
+	public function getKode() {
+		return $this->kode;
 	}
-	public function setKodeKontrak($kodeKontrak) {
-		$this->kodeKontrak = $kodeKontrak;
+	public function setKode($kode) {
+		$this->kode = $kode;
 	}
 	
 	/**
 	 * @Orm\Id
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\Kantor", fetch="lazy")
+	 * @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR", type="string")
+	 * 
+	 * @var Kantor
+	 */
+	private $kantor;
+	public function getKantor() {
+		return $this->kantor;
+	}
+	public function setKantor(Kantor $kantor) {
+		$this->kantor = $kantor;
+	}
+	
+	/**
 	 * @Orm\ManyToOne(targetEntity="Procurement\Entity\Tender\Tender", fetch="lazy")
 	 * @Orm\JoinColumns({@JoinColumn(name="KODE_TENDER", type="string", referencedColumnName="KODE_TENDER"), @Orm\JoinColumn(name="KODE_KANTOR", type="string", referencedColumnName="KODE_KANTOR")})
 	 * 
@@ -379,25 +394,25 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="UM_PERSENTASI", type="double", nullable=true)
+	 * @Orm\Column(name="UM_PERSENTASI", type="integer", nullable=true)
 	 */
-	private $umPersentasi;
-	public function getUmPersentasi() {
-		return $this->umPersentasi;
+	private $persentasiUangMuka;
+	public function getPersentasiUangMuka() {
+		return $this->persentasiUangMuka;
 	}
-	public function setUmPersentasi($umPersentasi) {
-		$this->umPersentasi = $umPersentasi;
+	public function setPersentasiUangMuka($persentasiUangMuka) {
+		$this->persentasiUangMuka = $persentasiUangMuka;
 	}
 	
 	/**
 	 * @Orm\Column(name="UM_NILAI", type="double", nullable=true)
 	 */
-	private $umNilai;
-	public function getUmNilai() {
-		return $this->umNilai;
+	private $nilaiUangMuka;
+	public function getNilaiUangMuka() {
+		return $this->nilaiUangMuka;
 	}
-	public function setUmNilai($umNilai) {
-		$this->umNilai = $umNilai;
+	public function setNilaiUangMuka($nilaiUangMuka) {
+		$this->nilaiUangMuka = $nilaiUangMuka;
 	}
 	
 	/**
@@ -458,12 +473,12 @@ class Kontrak {
 	/**
 	 * @Orm\Column(name="DP_CATATAN", type="string", nullable=true)
 	 */
-	private $dpCatatan;
-	public function getDpCatatan() {
-		return $this->dpCatatan;
+	private $catatanUangMuka;
+	public function getCatatanUangMuka() {
+		return $this->catatanUangMuka;
 	}
-	public function setDpCatatan($dpCatatan) {
-		$this->dpCatatan = $dpCatatan;
+	public function setCatatanUangMuka($catatanUangMuka) {
+		$this->catatanUangMuka = $catatanUangMuka;
 	}
 	
 	/**

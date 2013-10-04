@@ -5,12 +5,12 @@ use Doctrine\ORM\Mapping as Orm;
 /**
  * Kelas entity yang menyimpan informasi kantor.
  * 
- * @Orm\Entity
+ * @Orm\Entity(repositoryClass="Application\Entity\Repository\KantorRepository")
  * @Orm\Table(name="SC.MS_KANTOR")
  * 
  * @author zakyalvan
  */
-class Organization {
+class Kantor {
 	/**
 	 * Kode unit kerja.
 	 * 
@@ -18,38 +18,34 @@ class Organization {
 	 * @Orm\Column(name="KODE_KANTOR", type="string")
 	 * @Orm\GeneratedValue(strategy="NONE")
 	 */
-	protected $code;
+	protected $kode;
+	public function getKode() {
+		return $this->kode;
+	}
 	
 	/**
 	 * @Orm\Column(name="NAMA_KANTOR", type="string")
 	 */
-	protected $name;
+	protected $nama;
+	public function getNama() {
+		return $this->nama;
+	}
 	
 	/**
-	 * @Orm\ManyToOne(targetEntity="Application\Entity\Organization", fetch="LAZY")
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\Kantor", fetch="LAZY")
 	 * @Orm\JoinColumn(name="KODE_KANTOR_INDUK", referencedColumnName="KODE_KANTOR")
 	 * 
-	 * @var Organization
+	 * @var Kantor
 	 */
-	protected $parent;
+	protected $kantorInduk;
+	public function getKantorInduk() {
+		return $this->kantorInduk;
+	}
 	
 	/**
 	 * List user dalam organisasi ini.
 	 */
 	protected $users;
-	
-	public function getCode() {
-		return $this->code;
-	}
-	
-	public function getName() {
-		return $this->name;
-	}
-	
-	public function getParent() {
-		return $this->parent;
-	}
-	
 	public function getUsers() {
 		return $this->users;
 	}

@@ -146,7 +146,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="PROPINSI", nullable=true)
+	 * @Orm\Column(name="PROPINSI", type="string", nullable=true)
 	 */
 	private $propinsi;
 	public function getPropinsi() {
@@ -157,7 +157,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="KODE_POS", nullable=true)
+	 * @Orm\Column(name="KODE_POS", type="string", nullable=true)
 	 */
 	private $kodePos;
 	public function getKodePos() {
@@ -168,7 +168,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="NEGARA", nullable=true)
+	 * @Orm\Column(name="NEGARA", type="string", nullable=true)
 	 */
 	private $negara;
 	public function getNegara() {
@@ -179,7 +179,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="NO_TELP", nullable=true)
+	 * @Orm\Column(name="NO_TELP", type="string", nullable=true)
 	 */
 	private $nomorTelepon;
 	public function getNomorTelepon() {
@@ -190,7 +190,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="WEBSITE", nullable=true)
+	 * @Orm\Column(name="WEBSITE", type="string", nullable=true)
 	 */
 	private $website;
 	public function getWebsite() {
@@ -246,7 +246,7 @@ class Vendor {
 	
 	
 	/**
-	 * @Orm\Column(name="JABATAN_KONTAK", nullable=true)
+	 * @Orm\Column(name="JABATAN_KONTAK", type="string", nullable=true)
 	 */
 	private $jabatanKontak;
 	public function getJabatanKontak() {
@@ -429,17 +429,63 @@ class Vendor {
 		$this->tipeSiup = $tipeSiup;
 	}
 	
-	private $dariTglSiup;
-	private $sampaiTglSiup;
-	private $tdpIssuedBy;
-	private $noTdp;
+	/**
+	 * @Orm\Column(name="DARI_TGL_SIUP", type="date", nullable=true)
+	 */
+	private $dariTanggalSiup;
+	/**
+	 * @Orm\Column(name="SAMPAI_TGL_SIUP", type="date", nullable=true)
+	 */
+	private $sampaiTanggalSiup;
+	
+	/**
+	 * @Orm\Column(name="TDP_ISSUED_BY", type="string", nullable=true)
+	 */
+	private $tdpDiterbitkanOleh;
+	
+	/**
+	 * @Orm\Column(name="NO_TDP". type="string", nullable=true)
+	 */
+	private $nomorTdp;
+	
+	/**
+	 * @Orm\Column(name="DARI_TGL_TDP", type="date", nullable=true)
+	 */
 	private $dariTglTdp;
+	
+	/**
+	 * @Orm\Column(name="SAMPAI_TGL_SIUP", type="date", nullable=true)
+	 */
 	private $sampaiTglTdp;
+	
+	/**
+	 * @Orm\Column(name="AGEN_PENERBIT", type="string", nullable=true)
+	 */
 	private $agenPenerbit;
+	
+	/**
+	 * @Orm\Column(name="DARI_AGEN", type="date", nullable=true)
+	 */
 	private $dariAgen;
+	
+	/**
+	 * @Orm\Column(name="HINGGA_AGEN", type="date", nullable=true)
+	 */
 	private $hinggaAgen;
+	
+	/**
+	 * @Orm\Column(name="PENERBIT_IMP", type="string", nullable=true)
+	 */
 	private $penerbitImp;
+	
+	/**
+	 * @Orm\Column(name="DARI_IMP", type="date", nullable=true)
+	 */
 	private $dariImp;
+	
+	/**
+	 * @Orm\Column(name="KE_IMP", type="date", nullable=true)
+	 */
 	private $keImp;
 	private $attOrg;
 	private $mataUangModalDasar;

@@ -29,6 +29,7 @@ class TenderVendor {
 	}
 	
 	/**
+	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Vendor\Entity\Vendor", fetch="lazy")
 	 * @Orm\JoinColumn(name="KODE_VENDOR", type="string", referencedColumnName="KODE_VENDOR")
 	 * 
@@ -48,6 +49,12 @@ class TenderVendor {
 	 * @var VendorStatus
 	 */
 	private $vendorStatus;
+	public function getVendorStatus() {
+		return $this->vendorStatus;
+	}
+	public function setVendorStatus($vendorStatus) {
+		$this->vendorStatus = $vendorStatus;
+	}
 	
 	/**
 	 * @Orm\Column(name="TGL_REKAM", type="date", nullable=true)

@@ -84,7 +84,7 @@ return array(
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
-        ),
+        )
     ),
     // Placeholder for console routes
     'console' => array(
@@ -112,7 +112,7 @@ return array(
     		'orm_default' => array(
     			'object_manager' => 'Doctrine\ORM\EntityManager',
     			'identity_class' => 'Application\Entity\User',
-    			'identity_property' => 'usercode',
+    			'identity_property' => 'kode',
     			'credential_property' => 'password',
     			/**
     			 * Ini callable function untuk ngebandingin password yang diberikan dengan password yang tersimpan
