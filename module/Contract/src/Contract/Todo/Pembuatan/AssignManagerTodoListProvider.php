@@ -39,7 +39,6 @@ class AssignManagerTodoListProvider implements TodoListProvider, ServiceLocatorA
 		
 		return $paginator;
 	}
-	
 	/**
 	 * (non-PHPdoc)
 	 * @see \Zend\ServiceManager\ServiceLocatorAwareInterface::setServiceLocator()

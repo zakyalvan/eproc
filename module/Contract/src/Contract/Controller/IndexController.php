@@ -10,13 +10,10 @@ use Zend\Mvc\Controller\AbstractActionController;
  * @author zakyalvan
  */
 class IndexController extends AbstractActionController {
+	/**
+	 * Tampilin todo list untuk seluruh seluruh proses manajemen kontrak.
+	 */
 	public function indexAction() {
-		$initiateTodoListProvider = $this->getServiceLocator()->get('Contract\Todo\InitiateContractTodoListProvider');
-		if($initiateTodoListProvider->getObjectManager() == null) {
-			exit("Object manager null");
-		}
-		else {
-			exit("Object manager tidak null");
-		}
+		
 	}
 }

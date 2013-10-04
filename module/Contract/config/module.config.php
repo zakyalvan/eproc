@@ -7,11 +7,10 @@ return array(
 			'Contract\Controller\Index' => 'Contract\Controller\IndexController',
 			'Contract\Controller\Amend' => 'Contract\Controller\AmendController',
 			'Contract\Controller\Close' => 'Contract\Controller\CloseController',
-			'Contract\Controller\Initiate' => 'Contract\Controller\InitiateController',
+			'Contract\Controller\Create' => 'Contract\Controller\CreateController',
 			'Contract\Controller\Invoice' => 'Contract\Controller\InvoiceController',
 			'Contract\Controller\Monitor' => 'Contract\Controller\MonitorController',
-			'Contract\Controller\Satuan' => 'Contract\Controller\SatuanController',
-			'Contract\Controller\Todos' => 'Contract\Controller\TodosController'
+			'Contract\Controller\Satuan' => 'Contract\Controller\SatuanController'
 		)
 	),
 	'router' => array(

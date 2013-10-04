@@ -10,7 +10,7 @@ use Contract\Form\DelegateCreationForm;
  * 
  * @author zakyalvan
  */
-class InitiateController extends AbstractActionController {
+class CreateController extends AbstractActionController {
 	/**
 	 * List draft kontrak.
 	 */
