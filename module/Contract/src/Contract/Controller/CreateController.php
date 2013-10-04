@@ -89,6 +89,7 @@ class CreateController extends AbstractActionController {
 	 * jika type kontrak adalah spk.
 	 */
 	public function finalizeAction() {
+		
 		// Render informasi dan form inisiasi kontrak.
 		return array(
 			"pageTitle" => "Kontrak - Finalisasi Draft"

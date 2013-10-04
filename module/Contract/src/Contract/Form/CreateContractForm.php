@@ -1,24 +1,24 @@
 <?php
 namespace Contract\Form;
 
-use Zend\Form\Form;
 use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
 
 /**
- * Form untuk aktifitas pertama dalam inisiasi kontrak (Penunjukan penata pelaksanaan no lelang).
+ * Form untuk pembuatan kontrak.
  * 
  * @author zakyalvan
  */
-class DelegateCreationForm extends Form {
+class CreateContractForm extends Form {
 	/**
 	 * @var ServiceLocator
 	 */
 	private $serviceLocator;
 	
 	public function __construct(ServiceLocator $serviceLocator) {
-		parent::__construct("DelegateCreation");
+		parent::__construct('CreateContract');
+		
 		if($serviceLocator == null) {
-			throw new \InvalidArgumentException('Parameter service-locator harus diberikan', 100, null);
+			throw new \InvalidArgumentException('Parameter service-locator harus diberikan, null diberikan', 100, null);
 		}
 		
 		

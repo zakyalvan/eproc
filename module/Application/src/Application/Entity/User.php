@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Entity mapping ke user sipt.
  * 
- * @Orm\Entity
+ * @Orm\Entity(repositoryClass="Application\Entity\Repository\UserRepository")
  * @Orm\Table(name="SC.SC_USER")
  * 
  * @author zakyalvan
@@ -72,7 +72,7 @@ class User {
 		return $this->aktif;
 	}
 	public function isAktif() {
-		return (strtoupper($this->aktif) == 'Y');
+		return (strtoupper($this->aktif) == 'Y') ? true : false;
 	}
 	
 	/**
