@@ -4,7 +4,7 @@ namespace Application\Todo\Service;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
-use Application\Todo\TodoListProviderConfig;
+use Application\Todo\TodoListProviderRegistry;
 
 /**
  * Create todo list berdasarkan jenisnya.
@@ -12,45 +12,39 @@ use Application\Todo\TodoListProviderConfig;
  * @author zakyalvan
  */
 class TodoListProviderAbstractFactory implements AbstractFactoryInterface {
+	const DEFAULT_TODO_CONFIG_KEY = 'todo_list';
+	
 	/**
 	 * @var TodoListProviderConfig
 	 */
 	private $providerConfig = null;
 	
 	/**
+	 * 
+	 * @var TodoListProviderRegistry
+	 */
+	private $providerRegistry = null;
+	
+	/**
 	 * (non-PHPdoc)
 	 * @see \Zend\ServiceManager\AbstractFactoryInterface::canCreateServiceWithName()
 	 */
 	public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName) {
- 		if(!class_exists($requestedName, true)) {
- 			return false;
- 		}
- 		
-		$interfaces = class_implements($requestedName, true);
-		if(!array_key_exists('Application\Todo\TodoListProvider', $interfaces)) {
-			return false;
-		}
-		
 		// Jika belum pernah dipanggil sebelumnya, inisiasi dulu provider config.
-		if($this->providerConfig == null) {
-			//if($serviceLocator->has('Application\Todo\TodoListProviderConfig')) {				
-			//	$this->providerConfig = $serviceLocator->get('Application\Todo\TodoListProviderConfig');
-			//}
-			//else  {
-				$config = $serviceLocator->get('Config');
+		if($this->providerRegistry == null) {
+			$config = $serviceLocator->get('Config');
 				
-				if(!isset($config[TodoListProviderConfigFactory::DEFAULT_TODO_CONFIG_KEY])) {
-					throw new ServiceNotCreatedException('Konfigurasi todo list dengan key ' . TodoListProviderConfig::DEFAULT_TODO_CONFIG_KEY . ' tidak ditemukan', 100, null);
-				}
+			if(!isset($config[self::DEFAULT_TODO_CONFIG_KEY])) {
+				return false;
+			}
 				
-				$this->providerConfig = new TodoListProviderConfig();
-				if(isset($config[TodoListProviderConfigFactory::DEFAULT_TODO_CONFIG_KEY]['providers'])) {
-					$this->providerConfig->setProviders($config[TodoListProviderConfigFactory::DEFAULT_TODO_CONFIG_KEY]['providers']);
-				}
-			//}
+			$this->providerRegistry = new TodoListProviderRegistry();
+			if(isset($config[self::DEFAULT_TODO_CONFIG_KEY]['providers'])) {
+				$this->providerRegistry->addAll($config[self::DEFAULT_TODO_CONFIG_KEY]['providers']);
+			}
 		}
 		// Sekarang baru evaluasi apakah service yang diminta bisa dibuat atau tidak.
-		return $this->providerConfig->hasProvider($requestedName);
+		return $this->providerRegistry->has($requestedName);
 	}
 	
 	/**
@@ -58,13 +52,11 @@ class TodoListProviderAbstractFactory implements AbstractFactoryInterface {
 	 * @see \Zend\ServiceManager\AbstractFactoryInterface::createServiceWithName()
 	 */
 	public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName) {
-		$class = $this->providerConfig->getProvider($requestedName);
-		
-		if(!class_exists($class)) {
-			throw new ServiceNotCreatedException("Kelas to do provider yang diminta {$class} tidak ditemukan.");
+		if(!$this->providerRegistry->has($requestedName)) {
+			throw new ServiceNotCreatedException(sprintf('Service todo list provider dengan nama %s tidak ditemukan dalam registry', $requestedName), 100, null);
 		}
 		
-		$todoListProvider = new $class();
-		return $todoListProvider;
+		$class = $this->providerRegistry->get($requestedName);
+		return new $class();
 	}
 }

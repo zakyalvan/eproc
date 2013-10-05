@@ -12,13 +12,14 @@ abstract class AbstractClassRegistry {
 	protected $allowOverride = false;
 	
 	public function __construct($valueClass) {
-		if(!class_exists($valueClass)) {
+		if(!class_exists($valueClass, true)) {
 			throw new \InvalidArgumentException("Parameter value class yang diberikan tidak valid", 100, null);
 		}
 		$this->valueClass = $valueClass;
 	}
 	
 	/**
+	 * Tambahin item ke registry. Langsung chek validitas class yang diberikan.
 	 * 
 	 * @param unknown $name
 	 * @param unknown $value
@@ -30,7 +31,7 @@ abstract class AbstractClassRegistry {
 		}
 		else {
 			if(!is_string($name)) {
-				
+				throw new \InvalidArgumentException(sprintf('Nama todo list provider harus diberikan dalam bentuk string.'), 99, null);
 			}
 			
 			if(!class_exists($value, true)) {
@@ -50,6 +51,18 @@ abstract class AbstractClassRegistry {
 			$this->registry[$name] = $value;
 		}
 	}
+	
+	/**
+	 * Bulk add.
+	 * 
+	 * @param unknown $items
+	 */
+	public function addAll($items = array()) {
+		foreach ($items as $name => $value) {
+			$this->add($name, $value);
+		}
+	}
+	
 	/**
 	 * Apakah registry ada data dengan nama yang diberikan.
 	 * 
@@ -84,5 +97,5 @@ abstract class AbstractClassRegistry {
 	 * 
 	 * @param \Closure $closure
 	 */
-	protected abstract function handleClosure(\Closure $closure);
+	abstract protected function handleClosure(\Closure $closure);
 }

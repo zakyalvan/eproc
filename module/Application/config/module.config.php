@@ -10,7 +10,8 @@ return array(
 	'controllers' => array(
 		'invokables' => array(
 			'Application\Controller\Index' => 'Application\Controller\IndexController',
-			'Application\Controller\Auth' => 'Application\Controller\AuthController'
+			'Application\Controller\Auth' => 'Application\Controller\AuthController',
+			'Application\Controller\File' => 'Application\Controller\FileController'
 		),
 	),
     'router' => array(
@@ -44,7 +45,20 @@ return array(
         				'action' => 'logout'
         			)
         		)
-			)  
+			),
+			'file' => array(
+				'type' => 'Zend\Mvc\Router\Http\Segment',
+				'options' => array(
+					'route' => '/file[/:name]',
+					'constraints' => array(
+						'name' => '[a-zA-Z][a-zA-Z0-9_-]*'
+					),
+					'defaults' => array(
+						'controller' => 'Application\Controller\File',
+						'action' => 'dewnload'
+					)
+				)
+			)
         )
     ),
     'service_manager' => array(
@@ -54,7 +68,7 @@ return array(
         ),
         'invokables' => array(
         	// Key generator.
-        	'Application\Common\KeyGeneratatorInterface' => 'Application\Common\TableKeyGenerator'
+        	'Application\Common\KeyGeneratator' => 'Application\Common\TableKeyGenerator'
         ),
         'aliases' => array(
             'translator' => 'MvcTranslator',

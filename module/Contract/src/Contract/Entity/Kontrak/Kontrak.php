@@ -16,6 +16,13 @@ use Application\Entity\Kantor;
  * @author zakyalvan
  */
 class Kontrak {
+	const TIPE_LUMPSUM = 'LUMPSUM';
+	const TIPE_HARGA_SATUAN = 'HARGA SATUAN';
+	const TIPE_RENTAL_SERVICE = 'RENTAL SERVICE';
+	
+	const JENIS_SPK = 'SPK';
+	const JENIS_PERJANJIAN = 'PERJANJIAN';
+	
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="KODE_KONTRAK", type="string")

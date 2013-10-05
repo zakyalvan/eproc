@@ -8,7 +8,7 @@ use Zend\Paginator\Paginator;
  * 
  * @author zakyalvan
  */
-interface TodoListProvider {
+interface TodoListProviderInterface {
 	/**
 	 * Retrieve todo list.
 	 * 
@@ -17,5 +17,10 @@ interface TodoListProvider {
 	 * @param unknown $additionalDatas
 	 * @return Paginator
 	 */
-	public function getTodoList($pageNumber, $itemCountPerPage, $additionalDatas = array());
+	public function getTodoList($pageNumber, $itemCountPerPage, $searchCriterias = array(), $additionalDatas = array());
+	
+	/**
+	 * Retrieve searchable parameter untuk todo list.
+	 */
+	public function getSearchableParameters();
 }
