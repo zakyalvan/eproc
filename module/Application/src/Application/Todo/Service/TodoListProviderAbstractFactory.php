@@ -15,12 +15,6 @@ class TodoListProviderAbstractFactory implements AbstractFactoryInterface {
 	const DEFAULT_TODO_CONFIG_KEY = 'todo_list';
 	
 	/**
-	 * @var TodoListProviderConfig
-	 */
-	private $providerConfig = null;
-	
-	/**
-	 * 
 	 * @var TodoListProviderRegistry
 	 */
 	private $providerRegistry = null;

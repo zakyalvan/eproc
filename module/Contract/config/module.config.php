@@ -69,8 +69,10 @@ return array(
     ),
 	'todo_list' => array(
 		'providers' => array(
-			'Contract\Todo\Pembuatan\AssignManagerTodoListProvider',
-			'Contract\Todo\Pembuatan\CreateContractTodoListProvider'
+			'Contract\Todo\AssignManager' => 'Contract\Todo\AssignManagerTodoListProvider',
+			'Contract\Todo\ContractCreate' => 'Contract\Todo\ContractCreateTodoListProvider',
+			'Contract\Todo\ContractAmend' => 'Contract\Todo\ContractAmendTodoListProvider',
+			'Contract\Todo\WorkOrder' => 'Contract\Todo\WorkOrderTodoListProvider'
 		)
 	)
 );
