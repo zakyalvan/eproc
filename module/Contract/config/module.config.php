@@ -69,7 +69,7 @@ return array(
     ),
 	'todo_list' => array(
 		'providers' => array(
-			'Contract\Todo\AssignManager' => 'Contract\Todo\AssignManagerTodoListProvider',
+			'Contract\Todo\ContractInit' => 'Contract\Todo\ContractInitTodoListProvider',
 			'Contract\Todo\ContractCreate' => 'Contract\Todo\ContractCreateTodoListProvider',
 			'Contract\Todo\ContractAmend' => 'Contract\Todo\ContractAmendTodoListProvider',
 			'Contract\Todo\WorkOrder' => 'Contract\Todo\WorkOrderTodoListProvider'

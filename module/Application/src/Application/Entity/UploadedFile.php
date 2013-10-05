@@ -7,11 +7,14 @@ use Doctrine\ORM\Mapping as Orm;
  * Entity yang menyimpan file-file yang diupload.
  * 
  * @Orm\Entity
- * @Orm\Table(name="EP_FILE")
+ * @Orm\Table(name="EP_FILE_UPLOAD")
  * 
  * @author zakyalvan
  */
 class UploadedFile {
+	const STORAGE_TYPE_LOCAL = 'LOCAL';
+	const STORAGE_TYPE_FTP = 'FTP';
+	
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="NAMA_FILE", type="string", length="255")
@@ -24,6 +27,19 @@ class UploadedFile {
 	}
 	public function setNama($nama) {
 		$this->nama = $nama;
+	}
+	
+	/**
+	 * @Orm\Column(name="STORAGE_TYPE", length="20", nullable=false)
+	 * 
+	 * @var string
+	 */
+	private $storageType;
+	public function getStorageType() {
+		return $this->storageType;
+	}
+	public function setStorageType($storageType) {
+		$this->storageType = $storageType;
 	}
 	
 	/**

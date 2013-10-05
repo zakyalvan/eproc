@@ -7,7 +7,7 @@ use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Application\Todo\TodoListProviderRegistry;
 
 /**
- * Create todo list berdasarkan jenisnya.
+ * Abstract factory untuk todo list provider.
  * 
  * @author zakyalvan
  */
@@ -46,7 +46,7 @@ class TodoListProviderAbstractFactory implements AbstractFactoryInterface {
 	 * @see \Zend\ServiceManager\AbstractFactoryInterface::createServiceWithName()
 	 */
 	public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName) {
-		if(!$this->providerRegistry->has($requestedName)) {
+		if(!$this->canCreateServiceWithName($serviceLocator, $name, $requestedName)) {
 			throw new ServiceNotCreatedException(sprintf('Service todo list provider dengan nama %s tidak ditemukan dalam registry', $requestedName), 100, null);
 		}
 		

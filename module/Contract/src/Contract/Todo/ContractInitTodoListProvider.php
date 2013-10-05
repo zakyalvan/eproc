@@ -9,7 +9,7 @@ use Doctrine\ORM\QueryBuilder;
  * 
  * @author zakyalvan
  */
-class AssignManagerTodoListProvider extends AbstractTodoListProvider {
+class ContractInitTodoListProvider extends AbstractTodoListProvider {
 	/**
 	 * Init searchable parameters.
 	 */

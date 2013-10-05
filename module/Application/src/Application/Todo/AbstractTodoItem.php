@@ -36,29 +36,29 @@ abstract class AbstractTodoItem {
 	protected $createdDate;
 	
 	public function __construct($context, $actionUrl, $createdDate) {
-		$this->context = $context;
-		$this->actionUrl = $actionUrl;
-		$this->createdDate = $createdDate;
+		$this->setContext($context);
+		$this->setActionUrl($actionUrl);
+		$this->setCreatedDate($createdDate);
 	}
 	
 	public function getContext() {
 		return $this->context;
 	}
-	public function setContext($context) {
+	protected function setContext($context) {
 		$this->context = $context;
 	}
 	
 	public function getActionUrl() {
-		return $this->actionUrl;
+		return $this->formatActionUrl();
 	}
-	public function setActionUrl($actionUrl) {
+	protected function setActionUrl($actionUrl) {
 		$this->actionUrl = $actionUrl;
 	}
 	
 	public function getCreatedDate() {
 		return $this->createdDate;
 	}
-	public function setCreatedDate($createdDate) {
+	protected function setCreatedDate($createdDate) {
 		$this->createdDate = $createdDate;
 	}
 	
@@ -84,4 +84,9 @@ abstract class AbstractTodoItem {
 	public function __isset($name) {
 		return $this->hasData($name);
 	}
+	
+	/**
+	 * @return url string
+	 */
+	abstract protected function formatActionUrl();
 }
