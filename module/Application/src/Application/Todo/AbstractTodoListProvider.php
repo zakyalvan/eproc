@@ -41,19 +41,24 @@ abstract class AbstractTodoListProvider implements TodoListProviderInterface, Se
 	 * @see \Application\Todo\TodoListProvider::getTodoList()
 	*/
 	public function getTodoList($pageNumber, $itemCountPerPage, $searchCriterias = array(), $additionalDatas = array()) {
-		/* @var $entityManager EntityManager */
-		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
-		$queryBuilder = $entityManager->createQueryBuilder();
-		
 		foreach ($searchCriterias as $key => $value) {
 			if(!array_key_exists($key, $this->searchableParameter)) {
 				throw new \InvalidArgumentException(sprintf('Parameter search %s dengan value %s yang diberikan tidak valid.', $key, $value), $code, $previous);
 			}
 		}
 		
+		/* @var $entityManager EntityManager */
+		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
+		$queryBuilder = $entityManager->createQueryBuilder();
+		
 		$query = $this->buildTodoListQuery($queryBuilder, $searchCriterias, $additionalDatas);
 		$paginatorAdapter = new DoctrinePaginatorAdapter(new DoctrinePaginator($query));
-		return new Paginator($paginatorAdapter);
+		
+		$paginator = new Paginator($paginatorAdapter);
+		$paginator->setPageRange($pageNumber);
+		$paginator->setItemCountPerPage($itemCountPerPage);
+		
+		return $paginator;
 	}
 	
 	/**

@@ -82,9 +82,9 @@ class Dokumen {
     }
     
     /**
-     * @Orm\Column(name="STATUS", type="char", nullable=true)
+     * @Orm\Column(name="STATUS", type="string", length="1", nullable=true)
      *
-     * @var char
+     * @var string
      */
     private $status;
     public function getStatus() {
@@ -95,9 +95,9 @@ class Dokumen {
     }
     
     /**
-     * @Orm\Column(name="STATUS_PUBLISH", type="char", nullable=true)
+     * @Orm\Column(name="STATUS_PUBLISH", type="string", length="1", nullable=true)
      *
-     * @var char
+     * @var string
      */
     private $statusPublish;
     public function getStatusPublish() {

@@ -16,4 +16,10 @@ class IndexController extends AbstractActionController {
 	public function indexAction() {
 		
 	}
+	
+	
+	
+	public function getTodoListProvider($name) {
+		$this->serviceLocator->get($name);
+	}
 }
