@@ -74,6 +74,13 @@ class AuthController extends AbstractActionController {
 	}
 	
 	/**
+	 * Handle pemilihan role user.
+	 */
+	public function roleAction() {
+		
+	}
+	
+	/**
 	 * @return AuthenticationService
 	 */
 	protected function getAuthenticationService() {

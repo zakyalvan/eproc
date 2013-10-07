@@ -37,6 +37,16 @@ return array(
         			)
         		)
 			),
+			'role' => array(
+				'type' => 'Zend\Mvc\Router\Http\Literal',
+				'options' => array(
+					'route' => '/role',
+					'defaults' => array(
+						'controller' => 'Application\Controller\Auth',
+						'action' => 'role'
+					)
+				)
+			),
 			'logout' => array(
 				'type' => 'Zend\Mvc\Router\Http\Literal',
         		'options' => array(
@@ -74,10 +84,21 @@ return array(
 			)
         )
     ),
+    'navigation' => array(
+    	'default' => array(
+    		array(
+    			'label' => 'Home',
+    			'route' => 'home'
+    		)
+    	)
+    ),
     'service_manager' => array(
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
             'Zend\Log\LoggerAbstractServiceFactory',
+        ),
+        'factories' => array(
+			'Zend\Navigation\Navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory'
         ),
         'invokables' => array(
         	// Key generator.
@@ -111,6 +132,9 @@ return array(
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
+        ),
+        'strategies' => array(
+        	'ViewJsonStrategy'
         )
     ),
     // Placeholder for console routes

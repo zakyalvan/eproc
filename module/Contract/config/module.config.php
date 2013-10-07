@@ -43,6 +43,23 @@ return array(
 			)
 		)
 	),
+	'navigation' => array(
+		'default' => array(
+			array(
+				'label' => 'Manajemen Kontrak',
+				'route' => 'contract',
+				'class' => 'sub',
+				'pages' => array(
+					array(
+						'label' => 'Daftar Pekerjaan',
+						'route' => 'contract',
+						'controller' => 'Index',
+						'action' => 'index'
+					)
+				)
+			)
+		)
+	),
 	'view_manager' => array(
 		'display_not_found_reason' => true,
 		'display_exceptions'       => true,

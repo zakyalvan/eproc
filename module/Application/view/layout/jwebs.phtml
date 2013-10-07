@@ -59,15 +59,29 @@
 		->appendFile($this->basePath() . '/extra/js/custom.js', 'text/javascript');
 	?>
 	
+	<!--[if IE]>
 	<script type="text/javascript">
+		$.ajaxSetup({ cache: false });
+	</script>
+	<![endif]-->
+	
+	<script type="text/javascript">
+		var imageLoading = "<?php echo $this->basePath() . '/extra/images/loading/loading-circle.gif'?>";
+	    var imageUrl = "<?php echo $this->basePath() . '/extra/images/editor_images/color.png'?>";
+	    var imageLoadingMicro = "<?php echo $this->basePath() . '/extra/images/loading/loading-micro.gif'?>";
+	    var contextPath = "<?php echo $this->basePath();?>";
+	    var isLoggedIn = <?php echo ($this->identity() != null) ? 'true' : 'false' ?>;
+	    var textLoading = '<div style="padding: 0px; font-size: 36px;">Loading....</div>';
+	    var df = new DecimalFormat("#,#00.00#");
+		
     	$(function(){
-    		$(".breadCrumb").jBreadCrumb(); 
+    		$(".breadCrumb").jBreadCrumb();
     		getServerTime();
     		$(".chzn").chosen();
 
     		//Hidden Sidebar Menu
     		$("#left").hide();
-    		
+
     		//Navigation Fixed Floating
     		$(document).ready(function () {  
     			var top = $('nav').offset().top - parseFloat($('nav').css('marginTop').replace(/auto/, 0));
@@ -85,28 +99,19 @@
     			    }
     			});
     		});
+
+    		if($.browser.name == 'firefox' && $.browser.versionNumber < 14){
+				window.location = "<?php echo ($this->basePath() . 'services/checker/browser')?>";
+			}
         });
-    </script>
-    
-    <!--[if IE]>
-    <script type="text/javascript">
-    	$.ajaxSetup({ cache: false });
-    </script>
-    <![endif]-->
-	
-	<script type="text/javascript">
-	    var imageLoading = "<?php echo $this->basePath() . '/extra/images/loading/loading-circle.gif'?>";
-	    var imageUrl = "<?php echo $this->basePath() . '/extra/images/editor_images/color.png'?>";
-	    var imageLoadingMicro = "<?php echo $this->basePath() . '/extra/images/loading/loading-micro.gif'?>";
-	    var contextPath = "<?php echo $this->basePath();?>";
-	    var isLoggedIn = false;
-	    var textLoading = '<div style="padding: 0px; font-size: 36px;">Loading....</div>';
-	    
-	    //Server Time
+
+    	//Server Time
 		function getServerTime(){
 			$.ajax({
-		        url: "<?php echo $this->basePath() . '/service/server_time'?>",
-		        success: function(response){
+				url: "<?php echo $this->basePath() . '/service/server_time'?>",
+				type: "post", 
+				dataType: "json",
+				success: function(response){
 		        	if(response.tanggal != ""){
 		        		var tanggal = response.tanggal;
 		        		var waktu = response.waktu.split(":");
@@ -116,12 +121,11 @@
 		    	    	var detik = waktu[2];
 		        		setTime(tanggal, jam, menit, detik);
 		        	}
-		        },
-		        type: "post", 
-		        dataType: "json"
+		        }
 		    });
-		} 
-	    
+		}
+
+	    // Set time
 	    function setTime(tanggal, jam, menit, detik){
 	    	if(detik == 60){
 	    		menit = parseFloat(menit) +1;
@@ -145,22 +149,7 @@
 	    	
 	    	setTimeout("setTime('"+tanggal+"', '" + parseFloat(jam) + "', '" + parseFloat(menit) + "', '" + (parseFloat(detik)+1) + "')",1000);
 	    }
-	</script>
-	<?php if($this->identity() !== null): ?>
-		<script>isLoggedIn = true;</script>
-	<?php endif;?>
-	
-	<script type="text/javascript">
-	  	var df = new DecimalFormat("#,#00.00#");
-	</script>
-	
-	<script type="text/javascript">
-		$(document).ready(function(){
-			if($.browser.name == 'firefox' && $.browser.versionNumber < 14){
-				window.location = "<?php echo ($this->basePath() . 'services/checker/browser')?>";
-			}
-		});
-	</script>
+    </script>
 	
 	<!-- Custom CSS -->
 	<style type="text/css">
@@ -195,12 +184,12 @@
 							<li><a href='<?php echo $this->basePath() ?>'>Dashboard</a></li>
 							<li><?php echo $this->identity()->getNama()?></li>
 							<li id="loginBox" class="last"><span class="loginBoxToggle">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;</li>
-						</ul>	
+						</ul>
 						<div class="clear"></div>
 						<div id="loginBoxContent">
-							<div class="topMenuDrop" onclick="window.location=&quot;<?php //echo site_url("auth/users/change_role")?>&quot;">Ganti Role</div><hr />
-							<div class="topMenuDrop" onclick="window.location=&quot;<?php //echo site_url("auth/users/logout")?>&quot;">Keluar</div>
-						</div> 
+							<div class="topMenuDrop" onclick="window.location=&quot;<?php echo $this->url('role')?>&quot;">Ganti Role</div><hr />
+							<div class="topMenuDrop" onclick="window.location=&quot;<?php echo $this->url('logout')?>&quot;">Keluar</div>
+						</div>
 					<?php else : ?>
 						<ul class="topMenu">
 							<li class="last">
@@ -224,14 +213,16 @@
 
 <!-- Start Main Menu -->
 <nav>
-	<ul>
+	<!-- <ul>
 		<li><a href="<?php echo $this->basePath() . '/';?>" id="m1">Home</a></li>
 		<li class="sub"><a href="javascript:void(0)">Manajemen Kontrak</a>
 			<ul>
 				<li><a href="<?php echo $this->basePath() . '/contract'; ?>">Daftar Pekerjaan</a></li>
 			</ul>
 		</li>
-	</ul>
+	</ul> -->
+	<?php echo $this->navigation('Zend\Navigation\Navigation')->menu()?>
+	
 </nav>
 <!-- End Main Menu -->
 
@@ -240,10 +231,15 @@
 		
 		<!-- Start BreadCrumbs -->
 		<div class="breadCrumb module">
-			<ul>
+			<!-- <ul>
 				<li><a href="<?php echo $this->basePath() . '/'?>">Home</a></li>
 				<li>Custom Report</li>
 				<li>Riwayat Cetak</li>
+			</ul> -->
+			<ul>
+				<?php $homePage = $this->navigation('Zend\Navigation\Navigation')->findByRoute('home')?>
+				<li><a href="<?php echo $homePage->getHref() ?>"><?php echo $homePage->getLabel() ?></a></li>
+				<li><?php echo $this->navigation('Zend\Navigation\Navigation')->breadcrumbs()->setLinkLast(false)->setSeparator('</li><li>')?></li>
 			</ul>
 		</div>
 		<!-- End BreadCrumbs -->

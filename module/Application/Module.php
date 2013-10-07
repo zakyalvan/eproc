@@ -7,6 +7,7 @@ use Zend\ModuleManager\Feature\ConfigProviderInterface as ConfigProvider;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface as AutoloaderProvider;
 use Zend\Loader\AutoloaderFactory;
 use Zend\Session\Container;
+use Application\Security\SecurityInterceptListener;
 
 /**
  * Definisi dan konfigurasi untuk modul Application
@@ -18,6 +19,9 @@ class Module implements ConfigProvider, AutoloaderProvider {
 		$eventManager        = $e->getApplication()->getEventManager();
 		$moduleRouteListener = new ModuleRouteListener();
 		$moduleRouteListener->attach($eventManager);
+		
+		$securityInterceptListener = new SecurityInterceptListener();
+		$securityInterceptListener->attach($eventManager);
 		
 		// Start session.
 		if($e->getApplication()->getServiceManager()->has('Zend\Session\SessionManager')) {

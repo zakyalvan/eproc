@@ -33,6 +33,14 @@ return array(
 					'charset'  => 'AL32UTF8'
 				)
 			)
+		),
+		// Init oracle session, listener ini (nge-force) agar (beberapa) type data balikan dari oracle sesuai harapan doctrine.
+		'eventmanager' => array(
+			'orm_default' => array(
+				'subscribers' => array(
+					'Doctrine\DBAL\Event\Listeners\OracleSessionInit'
+				)
+			)
 		)
 	),
  	'session_config' => array(
