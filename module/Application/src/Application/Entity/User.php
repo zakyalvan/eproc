@@ -102,8 +102,8 @@ class User {
 	/**
 	 * Unit kerja dari user.
 	 * 
-	 * @Orm\ManyToOne(targetEntity="\Application\Entity\Kantor", fetch="lazy")
-	 * @Orm\JoinColumn(name="KODE_KANTOR", type="string", referencedColumnName="KODE_KANTOR")
+	 * @Orm\ManyToOne(targetEntity="\Application\Entity\Kantor", fetch="LAZY")
+	 * @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR")
 	 * 
 	 * @var Kantor
 	 */
@@ -117,8 +117,8 @@ class User {
 	 * 
 	 * @Orm\ManyToMany(targetEntity="\Application\Entity\Role", inversedBy="users")
 	 * @Orm\JoinTable(name="SC.SC_USER_FUNGSI",
- 	 * 		joinColumns={@Orm\JoinColumn(name="KODE_USER", type="string", referencedColumnName="KODE_USER")},
-	 *		inverseJoinColumns={@Orm\JoinColumn(name="KODE_FUNGSI", type="string", referencedColumnName="KODE_FUNGSI")}
+ 	 * 		joinColumns={@Orm\JoinColumn(name="KODE_USER", referencedColumnName="KODE_USER")},
+	 *		inverseJoinColumns={@Orm\JoinColumn(name="KODE_FUNGSI", referencedColumnName="KODE_FUNGSI")}
 	 * )
 	 * 
 	 * @var ArrayCollection

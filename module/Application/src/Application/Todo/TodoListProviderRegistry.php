@@ -2,6 +2,7 @@
 namespace Application\Todo;
 
 use Application\Common\AbstractClassRegistry;
+use Application\Todo\TodoListProviderInterface;
 
 /**
  * Registry class todo list provider, implementasi dari {@link TodoListProviderInterface}

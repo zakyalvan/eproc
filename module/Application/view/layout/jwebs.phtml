@@ -1,0 +1,266 @@
+<!DOCTYPE html> 
+<!--[if lt IE 7 ]><html class="ie ie6" lang="id"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="id"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="id"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="i" class="no-js"> <!--<![endif]-->
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<?php echo $this->headTitle('Aplikasi eProcurement PT. Jamsostek (Persero)')->setSeparator(' - ')->setAutoEscape(false) ?>
+		
+	<?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/layout/images/favicon.png'))
+		->prependStylesheet($this->basePath() . '/layout/css/base.css')
+		->prependStylesheet($this->basePath() . '/layout/css/style.css')
+		->prependStylesheet($this->basePath() . '/layout/css/forms.css')
+		->prependStylesheet($this->basePath() . '/layout/css/datatables.css')
+		->prependStylesheet($this->basePath() . '/extra/js/plugins/chosen/chosen.css')
+		->prependStylesheet($this->basePath() . '/extra/js/plugins/lightbox/facebox.css')
+		->prependStylesheet($this->basePath() . '/layout/css/pepper-grinder/jquery-ui.css');
+	?>
+	
+	<?php echo $this->headScript()
+		->appendFile($this->basePath() . '/extra/js/jquery-1.10.2.min.js', 'text/javascript')
+		->appendFile($this->basePath() . '/extra/js/jquery-migrate-1.2.1.min.js', 'text/javascript')
+		
+		->appendFile($this->basePath() . '/extra/js/selectivizr-min.js', 'text/javascript', array('conditional' => 'lt IE 9'))		
+		->appendFile($this->basePath() . '/layout/js/html5shiv.js', 'text/javascript', array('conditional' => 'lt IE 9'))
+	
+		->appendFile($this->basePath() . '/extra/js/jquery.ui-1.10.3.js', 'text/javascript')
+		->appendFile($this->basePath() . '/extra/js/jquery.ui-i18n.js', 'text/javascript')
+		
+		->appendFile($this->basePath() . '/extra/js/jquery.validate.min.js', 'text/javascript')
+		->appendFile($this->basePath() . '/extra/js/jquery.validate.additional.methods.min.js')
+		->appendFile($this->basePath() . '/extra/js/jquery.validate-id.js', 'text/javascript')
+		
+		->appendFile($this->basePath() . '/extra/js/plugins/jquery.customInput.js', 'text/javascript')
+		->appendFile($this->basePath() . '/extra/js/plugins/jquery.datatables.js', 'text/javascript')
+		->appendFile($this->basePath() . '/extra/js/plugins/jquery.elastic.source.js', 'text/javascript')
+		->appendFile($this->basePath() . '/extra/js/plugins/jquery.placeholder.min.js', 'text/javascript')
+		->appendFile($this->basePath() . '/extra/js/DecimalFormat.js', 'text/javascript')
+		
+		->appendFile($this->basePath() . '/extra/js/jquery.form.js', 'text/javascript')
+		
+		// Breadcrumbs
+		->appendFile($this->basePath() . '/extra/js/plugins/jquery.easing.1.3.js', 'text/javascript')
+		->appendFile($this->basePath() . '/extra/js/plugins/jquery.jBreadCrumb.1.1.js', 'text/javascript')
+		
+		// Choosen
+		->appendFile($this->basePath() . '/extra/js/plugins/chosen/chosen.jquery.min.js', 'text/javascript')
+		->appendFile($this->basePath() . '/extra/js/plugins/lightbox/facebox.js', 'text/javascript')
+		
+		// Noty
+		->appendFile($this->basePath() . '/extra/js/plugins/noty/jquery.noty.js', 'text/javascript')
+		->appendFile($this->basePath() . '/extra/js/plugins/noty/layouts/topCenter.js', 'text/javascript')
+		->appendFile($this->basePath() . '/extra/js/plugins/noty/themes/default.js', 'text/javascript')
+	
+		// Browser Check
+		->appendFile($this->basePath() . '/extra/js/plugins/jquery.browser.js', 'text/javascript')
+	
+		->appendFile($this->basePath() . '/extra/js/apps.js', 'text/javascript')
+		->appendFile($this->basePath() . '/extra/js/custom.js', 'text/javascript');
+	?>
+	
+	<script type="text/javascript">
+    	$(function(){
+    		$(".breadCrumb").jBreadCrumb(); 
+    		getServerTime();
+    		$(".chzn").chosen();
+
+    		//Hidden Sidebar Menu
+    		$("#left").hide();
+    		
+    		//Navigation Fixed Floating
+    		$(document).ready(function () {  
+    			var top = $('nav').offset().top - parseFloat($('nav').css('marginTop').replace(/auto/, 0));
+    			$(window).scroll(function (event) {
+    				// what the y position of the scroll is
+    			    var y = $(this).scrollTop();
+    			  
+    			    // whether that's below the form
+    			    if (y >= top) {
+    			    	// if so, ad the fixed class
+    			    	$('nav').addClass('fixedNavigation');
+    			    }else {
+    			    	// otherwise remove it
+    			    	$('nav').removeClass('fixedNavigation');
+    			    }
+    			});
+    		});
+        });
+    </script>
+    
+    <!--[if IE]>
+    <script type="text/javascript">
+    	$.ajaxSetup({ cache: false });
+    </script>
+    <![endif]-->
+	
+	<script type="text/javascript">
+	    var imageLoading = "<?php echo $this->basePath() . '/extra/images/loading/loading-circle.gif'?>";
+	    var imageUrl = "<?php echo $this->basePath() . '/extra/images/editor_images/color.png'?>";
+	    var imageLoadingMicro = "<?php echo $this->basePath() . '/extra/images/loading/loading-micro.gif'?>";
+	    var contextPath = "<?php echo $this->basePath();?>";
+	    var isLoggedIn = false;
+	    var textLoading = '<div style="padding: 0px; font-size: 36px;">Loading....</div>';
+	    
+	    //Server Time
+		function getServerTime(){
+			$.ajax({
+		        url: "<?php echo $this->basePath() . '/service/server_time'?>",
+		        success: function(response){
+		        	if(response.tanggal != ""){
+		        		var tanggal = response.tanggal;
+		        		var waktu = response.waktu.split(":");
+		        		
+		        		var jam = waktu[0];
+		    	    	var menit = waktu[1];
+		    	    	var detik = waktu[2];
+		        		setTime(tanggal, jam, menit, detik);
+		        	}
+		        },
+		        type: "post", 
+		        dataType: "json"
+		    });
+		} 
+	    
+	    function setTime(tanggal, jam, menit, detik){
+	    	if(detik == 60){
+	    		menit = parseFloat(menit) +1;
+	    		detik = 0;
+	    	}
+	    	if(menit == 60){
+	    		jam = parseFloat(jam) +1;
+	    		menit = 0;
+	    	}
+	    	if(jam == 24){
+	    		jam = 0;
+	    	}
+	    	
+	    	if(detik.toString().length == 1)detik = "0" + detik;
+	    	if(menit.toString().length == 1)menit = "0" + menit;
+	    	if(jam.toString().length == 1)jam = "0" + jam;
+	    	
+	    	var waktu = jam + ":" + menit + ":" + detik;
+	    	var serverTime = tanggal + " | " + waktu;
+	    	$('#time').html(serverTime);
+	    	
+	    	setTimeout("setTime('"+tanggal+"', '" + parseFloat(jam) + "', '" + parseFloat(menit) + "', '" + (parseFloat(detik)+1) + "')",1000);
+	    }
+	</script>
+	<?php if($this->identity() !== null): ?>
+		<script>isLoggedIn = true;</script>
+	<?php endif;?>
+	
+	<script type="text/javascript">
+	  	var df = new DecimalFormat("#,#00.00#");
+	</script>
+	
+	<script type="text/javascript">
+		$(document).ready(function(){
+			if($.browser.name == 'firefox' && $.browser.versionNumber < 14){
+				window.location = "<?php echo ($this->basePath() . 'services/checker/browser')?>";
+			}
+		});
+	</script>
+	
+	<!-- Custom CSS -->
+	<style type="text/css">
+		table.all tbody tr, table.topTr tbody tr{vertical-align: top;}
+		.red{
+			color: red;
+		}
+		.green{
+			color: green;
+		}
+	</style>
+</head>
+<body>
+<div class="topbar"> 
+    <div class="content" style="font-size: 9pt;">
+    	<table style="width: 100%; padding: 0; border-spacing: 0">
+    		<tr>
+    			<td style="width: 43%;margin-top: 9px;">
+    				<table>
+    					<tr style="vertical-align: top;">
+    						<td width="80px;">Logged in as:</td>
+    						<td><?php //echo '<span style="color: #FF6666"> '.$this->session->userdata('NAMA_FUNGSI').'</span><br />'.$this->session->userdata('NAMA_REFERENCE_KANTOR'); ?></td>
+    					</tr>
+    				</table>
+    			</td>
+    			<td class="serverTime" style="text-align: center;">
+    				<span id="time"></span> WIB
+    			</td>
+    			<td style="background: green">
+    				<?php if($this->identity()) : ?>
+						<ul class="topMenu">
+							<li><a href='<?php echo $this->basePath() ?>'>Dashboard</a></li>
+							<li><?php echo $this->identity()->getNama()?></li>
+							<li id="loginBox" class="last"><span class="loginBoxToggle">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;</li>
+						</ul>	
+						<div class="clear"></div>
+						<div id="loginBoxContent">
+							<div class="topMenuDrop" onclick="window.location=&quot;<?php //echo site_url("auth/users/change_role")?>&quot;">Ganti Role</div><hr />
+							<div class="topMenuDrop" onclick="window.location=&quot;<?php //echo site_url("auth/users/logout")?>&quot;">Keluar</div>
+						</div> 
+					<?php else : ?>
+						<ul class="topMenu">
+							<li class="last">
+								<a href="<?php echo $this->basePath() . '/login'?>">Login</a> &nbsp;
+							</li>
+						</ul>
+					<?php endif; ?>
+    			</td>
+    		</tr>
+    	</table> 
+    </div>  
+</div>
+<div class="clear"></div>
+<div class="header">
+	<div class="headerLogo">
+		<a href="<?php echo $this->basePath() . '/'?>">
+			<img style="margin-top: 15px; margin-left: -10px;" alt="Logo Jamsostek" src="<?php echo $this->basePath() . '/layout/images/logo-jamsostek-white.png'?>">
+		</a>
+	</div>
+</div>
+
+<!-- Start Main Menu -->
+<nav>
+	<ul>
+		<li><a href="<?php echo $this->basePath() . '/';?>" id="m1">Home</a></li>
+		<li class="sub"><a href="javascript:void(0)">Manajemen Kontrak</a>
+			<ul>
+				<li><a href="<?php echo $this->basePath() . '/contract'; ?>">Daftar Pekerjaan</a></li>
+			</ul>
+		</li>
+	</ul>
+</nav>
+<!-- End Main Menu -->
+
+<div id="wrapper">
+	<div id="container">
+		
+		<!-- Start BreadCrumbs -->
+		<div class="breadCrumb module">
+			<ul>
+				<li><a href="<?php echo $this->basePath() . '/'?>">Home</a></li>
+				<li>Custom Report</li>
+				<li>Riwayat Cetak</li>
+			</ul>
+		</div>
+		<!-- End BreadCrumbs -->
+		
+		<!-- Start Content -->			
+		<?php echo $this->content; ?>
+		<!-- End Content -->	
+		
+		<div class="clear"></div>
+		<div id="toTop">^ Ke Atas</div>
+	</div>
+</div> 
+
+<div class="clear"></div>
+<footer>
+	<h2>Aplikasi eProcurement<br />Copyright (c) 2013</h2>
+</footer>
+			
+</body>
+</html>

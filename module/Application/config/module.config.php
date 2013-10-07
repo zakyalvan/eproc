@@ -11,6 +11,7 @@ return array(
 		'invokables' => array(
 			'Application\Controller\Index' => 'Application\Controller\IndexController',
 			'Application\Controller\Auth' => 'Application\Controller\AuthController',
+			'Application\Controller\Service' => 'Application\Controller\ServiceController',
 			'Application\Controller\File' => 'Application\Controller\FileController'
 		),
 	),
@@ -55,7 +56,19 @@ return array(
 					),
 					'defaults' => array(
 						'controller' => 'Application\Controller\File',
-						'action' => 'dewnload'
+						'action' => 'download'
+					)
+				)
+			),
+			'service' => array(
+				'type' => 'Zend\Mvc\Router\Http\Segment',
+				'options' => array(
+					'route' => '/service[/:action]',
+					'constraints' => array(
+						'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
+					),
+					'defaults' => array(
+						'controller' => 'Application\Controller\Service'
 					)
 				)
 			)
@@ -91,7 +104,7 @@ return array(
         'not_found_template'       => 'error/404',
         'exception_template'       => 'error/index',
         'template_map' => array(
-            'layout/layout'           => __DIR__ . '/../view/layout/default.phtml',
+            'layout/layout'           => __DIR__ . '/../view/layout/jwebs.phtml',
             'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
             'error/404'               => __DIR__ . '/../view/error/404.phtml',
             'error/index'             => __DIR__ . '/../view/error/index.phtml',

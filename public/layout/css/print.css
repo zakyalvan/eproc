@@ -1,0 +1,70 @@
+body{
+	font-weight: normal;
+	font-family: "Times New Roman", Times, Verdana;
+	font-size: 12pt;
+	margin: 0;
+	padding: 0;
+}
+
+@PAGE size-A4 {
+	size: 21.0cm 29.7cm;
+	margin: 1.5cm;	
+}
+
+.container{
+	margin: 0 auto;
+	width: 190mm;
+	background: #FFFFFF;
+}
+
+hr{
+	width: 100%;
+	border: 1px solid black;
+}
+
+header{
+	padding: 10px 0px 0px 10px;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+.content{
+	text-align: left;
+}
+
+.content .title{
+	font-weight: bold;
+	font-size: 16pt;
+	text-decoration: underline;
+	text-align: center;
+	width: 100%;
+}
+
+.content .subtitle{
+	font-weight: normal;
+	font-size: 15pt;
+	text-align: center;
+	width: 100%;
+}
+
+table.grid{
+	margin-top: 30px;
+	border: 1px solid black;
+	border-spacing: 0px;
+}
+
+table.grid tr td{
+	border: 1px solid black;
+	padding: 5px;
+}
+
+table.grid tr th{
+	border: 1px solid black;
+	padding: 5px;
+	text-align: center;
+}
+
+footer{
+	
+}
+

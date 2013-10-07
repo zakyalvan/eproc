@@ -1,6 +1,8 @@
 <?php
 namespace Application\Common;
 
+use Application\Todo\TodoListProviderInterface;
+
 /**
  * Kelas untuk object class registry.
  * 
@@ -11,9 +13,12 @@ abstract class AbstractClassRegistry {
 	protected $valueClass;
 	protected $allowOverride = false;
 	
-	public function __construct($valueClass) {
-		if(!class_exists($valueClass, true)) {
-			throw new \InvalidArgumentException("Parameter value class yang diberikan tidak valid", 100, null);
+	public function __construct($valueClass, $useInterface = true) {
+		if($useInterface && !interface_exists($valueClass)) {
+			throw new \InvalidArgumentException(sprintf('Parameter value class yang diberikan tidak valid, interface %s tidak ditemukan.', $valueClass), 100, null);
+		}
+		else if(!$useInterface && !class_exists($valueClass)) {
+			throw new \InvalidArgumentException(sprintf('Parameter value class yang diberikan tidak valid, class %s tidak ditemukan.', $valueClass), 100, null);
 		}
 		$this->valueClass = $valueClass;
 	}
