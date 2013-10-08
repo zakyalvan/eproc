@@ -26,7 +26,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="NAMA_VENDOR", type="string", length="50", nullable=true)
+	 * @Orm\Column(name="NAMA_VENDOR", type="string", length=50, nullable=true)
 	 * 
 	 * @var string
 	 */
@@ -39,7 +39,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="KODE_LOGIN", type="string", length="50", nullable=true)
+	 * @Orm\Column(name="KODE_LOGIN", type="string", length=50, nullable=true)
 	 */
 	private $kodeLogin;
 	public function getKodeLogin() {
@@ -50,7 +50,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="PASSWRD", type="string", length="255", nullable=true)
+	 * @Orm\Column(name="PASSWRD", type="string", length=255, nullable=true)
 	 */
 	private $password;
 	public function getPassword() {
@@ -61,7 +61,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="ALAMAT_EMAIL", type="string", length="255", nullable=true)
+	 * @Orm\Column(name="ALAMAT_EMAIL", type="string", length=255, nullable=true)
 	 */
 	private $alamatEmail;
 	public function getAlamatEmail() {
@@ -72,7 +72,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="AWALAN", type="string", length="50", nullable=true)
+	 * @Orm\Column(name="AWALAN", type="string", length=50, nullable=true)
 	 */
 	private $awalan;
 	public function getAwalan() {
@@ -83,7 +83,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="AWALAN_LAIN", type="string", length="50", nullable=true)
+	 * @Orm\Column(name="AWALAN_LAIN", type="string", length=50, nullable=true)
 	 */
 	private $awalanLain;
 	public function getAwalanLain() {
@@ -94,7 +94,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="AKHIRAN", type="string", length="50", nullable=true)
+	 * @Orm\Column(name="AKHIRAN", type="string", length=50, nullable=true)
 	 * 
 	 * @var string
 	 */
@@ -107,7 +107,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="AKHIRAN_LAIN", type="string", length="50", nullable=true)
+	 * @Orm\Column(name="AKHIRAN_LAIN", type="string", length=50, nullable=true)
 	 * 
 	 * @var string
 	 */
@@ -120,7 +120,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="ALAMAT", type="string", length="512", nullable=true)
+	 * @Orm\Column(name="ALAMAT", type="string", length=512, nullable=true)
 	 * 
 	 * @var string
 	 */
@@ -133,7 +133,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="KOTA", type="string", length="512", nullable=true)
+	 * @Orm\Column(name="KOTA", type="string", length=512, nullable=true)
 	 * 
 	 * @var string
 	 */
@@ -444,7 +444,7 @@ class Vendor {
 	private $tdpDiterbitkanOleh;
 	
 	/**
-	 * @Orm\Column(name="NO_TDP". type="string", nullable=true)
+	 * @Orm\Column(name="NO_TDP", type="string", nullable=true)
 	 */
 	private $nomorTdp;
 	
@@ -454,7 +454,7 @@ class Vendor {
 	private $dariTglTdp;
 	
 	/**
-	 * @Orm\Column(name="SAMPAI_TGL_SIUP", type="date", nullable=true)
+	 * @Orm\Column(name="SAMPAI_TGL_TDP", type="date", nullable=true)
 	 */
 	private $sampaiTglTdp;
 	
@@ -541,7 +541,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="PETUGAS_REKAM", type="string", length="50", nullable=true)
+	 * @Orm\Column(name="PETUGAS_REKAM", type="string", length=50, nullable=true)
 	 */
 	private $petugasRekam;
 	public function getPetugasRekam() {
@@ -563,7 +563,7 @@ class Vendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="PETUGAS_UBAH", type="string", length="50", nullable=true)
+	 * @Orm\Column(name="PETUGAS_UBAH", type="string", length=50, nullable=true)
 	 */
 	private $petugasUbah;
 	public function getPetugasUbah() {

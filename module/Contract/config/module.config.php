@@ -54,8 +54,69 @@ return array(
 				'pages' => array(
 					array(
 						'label' => 'Daftar Pekerjaan',
+						'route' => 'contract/default',
+						'controller' => 'todo',
+						'action' => 'index'
+					),
+					array(
+						'label' => 'Pembuatan Work Order',
+						'route' => 'contract/default',
+						'controller' => 'satuan',
+						'action' => 'index'
+					),
+					array(
+						'label' => 'Monitor',
 						'route' => 'contract',
-						'controller' => 'Index',
+						'class' => 'sub',
+						'pages' => array(
+							array(
+								'label' => 'Monitor Kontrak',
+								'route' => 'contract/default',
+								'controller' => 'index',
+								'action' => 'index'
+							),
+							array(
+								'label' => 'Monitor Work Order',
+								'route' => 'contract/default',
+								'controller' => 'index',
+								'action' => 'index'
+							),
+							array(
+								'label' => 'Monitor Progress Work Order',
+								'route' => 'contract/default',
+								'controller' => 'index',
+								'action' => 'index'
+							),
+							array(
+								'label' => 'Monitor Progress Milestone',
+								'route' => 'contract/default',
+								'controller' => 'index',
+								'action' => 'index'
+							),
+							array(
+								'label' => 'Monitor Progress Termin',
+								'route' => 'contract/default',
+								'controller' => 'index',
+								'action' => 'index'
+							),
+							array(
+								'label' => 'Monitor Adendum Kontrak',
+								'route' => 'contract/default',
+								'controller' => 'index',
+								'action' => 'index'
+							),
+							array(
+								'label' => 'Monitor Tagihan',
+								'route' => 'contract/default',
+								'controller' => 'index',
+								'action' => 'index'
+							)
+						)
+					),
+					array(
+						'label' => 'Panduan',
+						'route' => 'contract/default',
+						'controller' => 'satuan',
 						'action' => 'index'
 					)
 				)

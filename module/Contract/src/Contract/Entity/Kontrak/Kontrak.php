@@ -26,6 +26,7 @@ class Kontrak {
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="KODE_KONTRAK", type="string")
+	 * @Orm\GeneratedValue(strategy="NONE")
 	 */
 	private $kode;
 	public function getKode() {
@@ -236,7 +237,7 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="NILAI_KONTRAK", type="double", nullable=true)
+	 * @Orm\Column(name="NILAI_KONTRAK", type="bigint", nullable=true)
 	 */
 	private $nilaiKontrak;
 	public function getNilaiKontrak() {
@@ -313,7 +314,7 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="JUMLAH_PERUBAHAN", type="double", nullable=true)
+	 * @Orm\Column(name="JUMLAH_PERUBAHAN", type="bigint", nullable=true)
 	 */
 	private $jumlahPerubahan;
 	public function getJumlahPerubahan() {
@@ -335,7 +336,7 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="NILAI_JAMINAN", type="double", nullable=true)
+	 * @Orm\Column(name="NILAI_JAMINAN", type="bigint", nullable=true)
 	 */
 	private $nilaiJaminan;
 	public function getNilaiJaminan() {
@@ -412,7 +413,7 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="UM_NILAI", type="double", nullable=true)
+	 * @Orm\Column(name="UM_NILAI", type="bigint", nullable=true)
 	 */
 	private $nilaiUangMuka;
 	public function getNilaiUangMuka() {

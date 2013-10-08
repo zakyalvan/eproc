@@ -15,9 +15,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 class Tender {
 	/**
 	 * @Orm\Id
-	 * @Orm\Column(name="KODE_TENDER", type="string", length="50", nullable=false)
+	 * @Orm\Column(name="KODE_TENDER", type="string", length=50, nullable=false)
+	 * @Orm\GeneratedValue(strategy="NONE")
 	 * 
-	 * @string
+	 * @var string
 	 */
 	private $kode;
 	public function getKode() {
@@ -29,8 +30,8 @@ class Tender {
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Application\Entity\Kantor", fetch="lazy")
-	 * @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR", type="string", nullable=false)
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\Kantor", fetch="LAZY")
+	 * @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR", nullable=false)
 	 *
 	 * @var Kantor
 	 */
@@ -43,7 +44,7 @@ class Tender {
 	}
 	
 	/**
-	 * @Orm\OneToMany(targetEntity="Procurement\Entity\Tender\TenderVendor", fetch="lazy", mappedBy="tender")
+	 * @Orm\OneToMany(targetEntity="Procurement\Entity\Tender\TenderVendor", fetch="LAZY", mappedBy="tender")
 	 * 
 	 * @var ArrayCollection
 	 */
@@ -56,7 +57,7 @@ class Tender {
 	}
 	
 	/**
-	 * @Orm\OneToMany(targetEntity="Contract\Entity\Kontrak\Kontrak", fetch="lazy", mappedBy="tender")
+	 * @Orm\OneToMany(targetEntity="Contract\Entity\Kontrak\Kontrak", fetch="LAZY", mappedBy="tender")
 	 * 
 	 * @var ArrayCollection
 	 */
@@ -69,7 +70,7 @@ class Tender {
 	}
 	
 	/**
-	 * @Orm\OneToMany(targetEntity="Procurement\Entity\Tender\Item", fetch="lazy", mappedBy="tender")
+	 * @Orm\OneToMany(targetEntity="Procurement\Entity\Tender\Item", fetch="LAZY", mappedBy="tender")
 	 *
 	 * @var ArrayCollection
 	 */

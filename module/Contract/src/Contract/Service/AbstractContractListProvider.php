@@ -66,7 +66,7 @@ abstract class AbstractContractListProvider implements ContractListProviderInter
 			throw new \BadMethodCallException(sprintf('Nilai balikan dari method buildQuery bukan instance dari class Doctrine\ORM\Query, %s diberikan.', is_object($query) ? get_class($query) : $query), 100, null);
 		}
 		
-		$doctrinePaginator = new DoctrinePaginate($query);
+		$doctrinePaginator = new DoctrinePaginate($query, false);
 		$paginatorAdapter = new PaginatorAdapter($doctrinePaginator);
 		
 		$paginator = new Paginator($paginatorAdapter);

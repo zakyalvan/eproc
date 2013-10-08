@@ -4,16 +4,18 @@ namespace Contract\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Contract\Service\AbstractContractListProvider;
-use Contract\Service\ContractListProviderInterface;
+use Contract\Service\ContractListProviderInterface as ContractListProvider;
 
 /**
  * Kelas kontroler ini mewakili aktifitas-aktifitas dalam proses flow 
  * C.2 - Pembelian Melalui Kontrak Harga Satuan/Workorder.
+ * Sebagai catatan, sebagian aktifitas dalam proses ini ada di modul eksternal.
  * 
  * @author zakyalvan
  */
 class SatuanController extends AbstractActionController {
 	private $acceptCriteria = array(
+		'Zend\View\Model\ViewModel' => array('text/html'),
 		'Zend\View\Model\JsonModel' => array('application/json')
 	);
 	
@@ -23,25 +25,39 @@ class SatuanController extends AbstractActionController {
 	public function indexAction() {
 		$viewModel = $this->acceptableViewModelSelector($this->acceptCriteria);
 		
-		/* @var $contractListProvider ContractListProviderInterface */
-		$contractListProvider = $this->getServiceLocator()->get(AbstractContractListProvider::KONTRAK_HARGA_SATUAN_LIST_PROVIDER);
+ 		if($viewModel instanceof JsonModel) {
+ 			/* @var $contractListProvider ContractListProvider */
+ 			$contractListProvider = $this->getServiceLocator()->get(AbstractContractListProvider::KONTRAK_HARGA_SATUAN_LIST_PROVIDER);
+ 			$datas = $contractListProvider->getContractList(1, 10);
+ 			
+ 			return $viewModel;
+ 		}
 		
-		$datas = $contractListProvider->getContractList(1, 10);
-		print_r($datas->getIterator());
-		exit();
+		return $viewModel;
+	}
+	
+	/**
+	 * Aktifitas pembuatan workorder.
+	 */
+	public function createAction() {
+		$viewModel = $this->acceptableViewModelSelector($this->acceptCriteria);
 		
-// 		if($viewModel instanceof JsonModel) {
-// 			exit('Hahahaha');
-// 			return $viewModel;
-// 		}
+		// Handle penyimpanan data workorder.
+		if($this->getRequest()->isPost()) {
+			
+		}
 		
 		return array();
 	}
 	
 	/**
-	 * Create workorder.
+	 * Handling seluruh proses approval.
 	 */
-	public function createAction() {
-		return array();
+	public function approvalAction() {
+		$viewModel = $this->acceptableViewModelSelector($this->acceptCriteria);
+		
+		if($this->getRequest()->isPost()) {
+			
+		}
 	}
 }
