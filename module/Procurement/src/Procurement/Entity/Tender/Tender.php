@@ -45,14 +45,27 @@ class Tender {
 	/**
 	 * @Orm\OneToMany(targetEntity="Procurement\Entity\Tender\TenderVendor", fetch="lazy", mappedBy="tender")
 	 * 
-	 * Array dari vendor untuk tender ini.
+	 * @var ArrayCollection
 	 */
-	private $tenderVendors;
-	public function getTenderVendors() {
-		return $this->tenderVendors;
+	private $listTenderVendor;
+	public function getListTenderVendor() {
+		return $this->listTenderVendor;
 	}
-	public function setTenderVendors($tenderVendors) {
-		$this->tenderVendors = $tenderVendors;
+	public function setListTenderVendor($listTenderVendor) {
+		$this->listTenderVendor = $listTenderVendor;
+	}
+	
+	/**
+	 * @Orm\OneToMany(targetEntity="Contract\Entity\Kontrak\Kontrak", fetch="lazy", mappedBy="tender")
+	 * 
+	 * @var ArrayCollection
+	 */
+	private $listKontrak;
+	public function getListKontrak() {
+		return $this->listKontrak;
+	}
+	public function setListKontrak($listKontrak) {
+		$this->listKontrak = $listKontrak;
 	}
 	
 	/**

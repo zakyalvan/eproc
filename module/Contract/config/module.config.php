@@ -1,10 +1,12 @@
 <?php 
 namespace Contract;
 
+use Contract\Service\AbstractContractListProvider;
 return array(
 	'controllers' => array(
 		'invokables' => array(
 			'Contract\Controller\Index' => 'Contract\Controller\IndexController',
+			'Contract\Controller\Todo' => 'Contract\Controller\TodoController',
 			'Contract\Controller\Amend' => 'Contract\Controller\AmendController',
 			'Contract\Controller\Close' => 'Contract\Controller\CloseController',
 			'Contract\Controller\Create' => 'Contract\Controller\CreateController',
@@ -30,7 +32,7 @@ return array(
 					'default' => array(
 						'type' => 'Zend\Mvc\Router\Http\Segment',
 						'options' => array(
-							'route' => '/contract[/:controller[/:action[/:id]]]',
+							'route' => '/:controller[/:action[/:id]]',
 							'constraints' => array(
 								'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
 								'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
@@ -84,6 +86,16 @@ return array(
             )
         )
     ),
+	'service_manager' => array(
+		'abstract_factories' => array(
+			'Contract\Service\Factory\ContractListProviderAbstractFactory'
+		)
+	),
+	'contract' => array(
+		'list_providers' => array(
+			AbstractContractListProvider::KONTRAK_HARGA_SATUAN_LIST_PROVIDER => 'Contract\Service\HargaSatuanContractListProvider'
+		)
+	),
 	'todo_list' => array(
 		'providers' => array(
 			'Contract\Todo\ContractInit' => 'Contract\Todo\ContractInitTodoListProvider',

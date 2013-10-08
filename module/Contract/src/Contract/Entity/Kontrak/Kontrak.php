@@ -37,8 +37,8 @@ class Kontrak {
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Application\Entity\Kantor", fetch="lazy")
-	 * @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR", type="string")
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\Kantor", fetch="LAZY")
+	 * @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR")
 	 * 
 	 * @var Kantor
 	 */
@@ -51,8 +51,8 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\ManyToOne(targetEntity="Procurement\Entity\Tender\Tender", fetch="lazy")
-	 * @Orm\JoinColumns({@JoinColumn(name="KODE_TENDER", type="string", referencedColumnName="KODE_TENDER"), @Orm\JoinColumn(name="KODE_KANTOR", type="string", referencedColumnName="KODE_KANTOR")})
+	 * @Orm\ManyToOne(targetEntity="Procurement\Entity\Tender\Tender", fetch="LAZY", inversedBy="listKontrak")
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_TENDER", referencedColumnName="KODE_TENDER"), @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR")})
 	 * 
 	 * @var Tender
 	 */
@@ -65,7 +65,7 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Colum(name="NOMOR_KONTRAK", type="string", nullable=true)
+	 * @Orm\Column(name="NO_KONTRAK", type="string", nullable=true)
 	 */
 	private $nomorKontrak;
 	public function getNomorKontrak() {
@@ -76,7 +76,7 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Colum(name="USER_PEMINTA", type="string", nullable=true)
+	 * @Orm\Column(name="USER_PEMINTA", type="string", nullable=true)
 	 */
 	private $userPeminta;
 	public function getUserPeminta() {
@@ -87,7 +87,7 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Colum(name="JABATAN_PEMINTA", type="string", nullable=true)
+	 * @Orm\Column(name="JABATAN_PEMINTA", type="string", nullable=true)
 	 */
 	private $jabatanPeminta;
 	public function getJabatanPeminta() {
@@ -98,8 +98,8 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\ManyToOne(targetEntity="Vendor\Entity\Vendor", fetch="lazy")
-	 * @Orm\JoinColumn(columnName="KODE_VENDOR", type="string", referencedColumnName="KODE_VENDOR")
+	 * @Orm\ManyToOne(targetEntity="Vendor\Entity\Vendor", fetch="LAZY")
+	 * @Orm\JoinColumn(name="KODE_VENDOR", referencedColumnName="KODE_VENDOR")
 	 * 
 	 * @var Vendor
 	 */
@@ -222,8 +222,8 @@ class Kontrak {
 	}
 	
 	/**
-	 * @ManyToOne(targetEntity="Master\Entity\MataUang" fetch="lazy")
-	 * @Orm\JoinColumn(name="MATA_UANG", type="string", referencedColumnName="MATA_UANG" nullable=true)
+	 * @Orm\ManyToOne(targetEntity="Master\Entity\MataUang", fetch="LAZY")
+	 * @Orm\JoinColumn(name="MATA_UANG", referencedColumnName="MATA_UANG", nullable=true)
 	 * 
 	 * @var MataUang
 	 */
@@ -357,7 +357,7 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="NOMOR_JAMINAN", type="string", nullable=true)
+	 * @Orm\Column(name="NO_JAMINAN", type="string", nullable=true)
 	 */
 	private $nomorJaminan;
 	public function getNomorJaminan() {

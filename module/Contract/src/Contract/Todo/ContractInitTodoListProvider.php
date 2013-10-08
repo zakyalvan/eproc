@@ -24,7 +24,12 @@ class ContractInitTodoListProvider extends AbstractTodoListProvider {
 	 * @see \Application\Todo\AbstractTodoListProvider::buildTodoListQuery()
 	 */
 	protected function buildTodoListQuery(QueryBuilder $queryBuilder, $searchCriterias = array(), $additionalDatas = array()) {
-		
+		$queryBuilder->select('new Contract\Todo\ContractInitTodoItem()')
+			->from('Procurement\Entity\Tender\Tender', 'tender')
+			->innerJoin('tender.tenderVendors', 'tenderVendors')
+			->innerJoin('tenderVendors.vendor', 'vendor')
+			->innerJoin('tenderVendors.vendorStatus', 'status', 'status.pemenang = :statusPemenang')
+			->where('');
 		return $queryBuilder->getQuery();
 	}
 }

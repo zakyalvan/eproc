@@ -38,7 +38,7 @@ class CreateController extends AbstractActionController {
 	/**
 	 * Pembuatan draft kontrak baru
 	 */
-	public function createAction() {
+	public function draftAction() {
 		
 		// Proses input data draft kontrak dari user.
 		if($this->getRequest()->isPost()) {

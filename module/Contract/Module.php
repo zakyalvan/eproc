@@ -1,23 +1,22 @@
 <?php
 namespace Contract;
 
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
-use Zend\ModuleManager\Feature\ServiceProviderInterface;
-use Zend\ModuleManager\Feature\InitProviderInterface;
-use Zend\ModuleManager\ModuleManagerInterface;
+use Zend\ModuleManager\Feature\ConfigProviderInterface as ConfigProvider;
+use Zend\ModuleManager\Feature\AutoloaderProviderInterface as AutoloaderProvider;
+use Zend\ModuleManager\Feature\InitProviderInterface as InitProvider;
+use Zend\ModuleManager\ModuleManagerInterface as ModuleManager;
 
 /**
  * Contract Module
  * 
  * @author zakyalvan
  */
-class Module implements InitProviderInterface, AutoloaderProviderInterface, ConfigProviderInterface, ServiceProviderInterface {
+class Module implements InitProvider, AutoloaderProvider, ConfigProvider {
 	/**
 	 * (non-PHPdoc)
 	 * @see \Zend\ModuleManager\Feature\InitProviderInterface::init()
 	 */
-	public function init(ModuleManagerInterface $manager) {
+	public function init(ModuleManager $manager) {
 		
 	}
 	/**
@@ -42,16 +41,5 @@ class Module implements InitProviderInterface, AutoloaderProviderInterface, Conf
 	 */
 	public function getConfig() {
 		return include __DIR__ . '/config/module.config.php';
-	}
-	/**
-	 * (non-PHPdoc)
-	 * @see \Zend\ModuleManager\Feature\ServiceProviderInterface::getServiceConfig()
-	 */
-	public function getServiceConfig() {
-		return array(
-			'factories' => array(
-				
-			)
-		);
 	}
 }

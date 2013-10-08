@@ -4,22 +4,12 @@ namespace Contract\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 
 /**
- * Kelas index dari module Contract.
- * Nampilin seluruh todo list terkait manajemen kontrak.
+ * Kontroller utama.
  * 
  * @author zakyalvan
  */
 class IndexController extends AbstractActionController {
-	/**
-	 * Tampilin todo list untuk seluruh seluruh proses manajemen kontrak.
-	 */
 	public function indexAction() {
-		
-	}
-	
-	
-	
-	public function getTodoListProvider($name) {
-		$this->serviceLocator->get($name);
+		$this->redirect()->toRoute('contract/default', array('controller' => 'todo', 'action' => 'index'));
 	}
 }
