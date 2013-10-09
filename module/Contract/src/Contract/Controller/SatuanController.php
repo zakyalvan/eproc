@@ -28,7 +28,7 @@ class SatuanController extends AbstractActionController {
  		if($viewModel instanceof JsonModel) {
  			/* @var $contractListProvider ContractListProvider */
  			$contractListProvider = $this->getServiceLocator()->get(AbstractContractListProvider::KONTRAK_HARGA_SATUAN_LIST_PROVIDER);
- 			$datas = $contractListProvider->getContractList(1, 10);
+ 			$datas = $contractListProvider->getListData(1, 10);
  			
  			return $viewModel;
  		}

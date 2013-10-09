@@ -14,7 +14,7 @@ class HargaSatuanContractListProvider extends AbstractContractListProvider {
 		
 		$this->contextDatas['tipeKontrak'] = Kontrak::TIPE_HARGA_SATUAN;
 	}
-	protected function buildQuery(QueryBuilder $queryBuilder, $contextDatas, $criterias = array()) {
+	protected function buildQuery(QueryBuilder $queryBuilder, $contextDatas = array(), $criterias = array()) {
 		$queryBuilder->select('kontrak, vendor')
 			->from('Contract\Entity\Kontrak\Kontrak', 'kontrak')
 			->innerJoin('kontrak.vendor', 'vendor')

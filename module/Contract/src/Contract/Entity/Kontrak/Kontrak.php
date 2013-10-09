@@ -459,12 +459,12 @@ class Kontrak {
 	/**
 	 * @Orm\Column(name="LINGKUP_KERJA", type="string", nullable=true)
 	 */
-	private $lingkupKerja;
-	public function getLingkupKerja() {
-		return $this->lingkupKerja;
+	private $lingkupPekerjaan;
+	public function getLingkupPekerjaan() {
+		return $this->lingkupPekerjaan;
 	}
-	public function setLingkupKerja($lingkupKerja) {
-		$this->lingkupKerja = $lingkupKerja;
+	public function setLingkupPekerjaan($lingkupPekerjaan) {
+		$this->lingkupPekerjaan = $lingkupPekerjaan;
 	}
 	
 	/**

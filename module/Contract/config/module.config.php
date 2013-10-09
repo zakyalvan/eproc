@@ -2,6 +2,10 @@
 namespace Contract;
 
 use Contract\Service\AbstractContractListProvider;
+
+/**
+ * Konfigurasi untuk modul contract
+ */
 return array(
 	'controllers' => array(
 		'invokables' => array(
@@ -150,6 +154,10 @@ return array(
 	'service_manager' => array(
 		'abstract_factories' => array(
 			'Contract\Service\Factory\ContractListProviderAbstractFactory'
+		),
+		'invokables' => array(
+			'Contract\Service\ContractService' => 'Contract\Service\ContractService',
+			'Contract\Service\WorkOrderService' => 'Contract\Service\WorkOrderService'
 		)
 	),
 	'contract' => array(
