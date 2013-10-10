@@ -6,6 +6,9 @@ use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
 use Doctrine\ORM\EntityManager;
 use Contract\Entity\Kontrak\Kontrak;
 use Procurement\Entity\Tender\Tender;
+use Procurement\Service\ProcurementServiceInterface;
+use Vendor\Entity\Vendor;
+use Application\Common\KeyGeneratatorInterface;
 
 /**
  * Implementasi default dari {@link ContractServiceInterface}
@@ -28,73 +31,57 @@ class ContractService implements ContractServiceInterface, ServiceLocatorAware {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see \Contract\Service\ContractServiceInterface::createNewContractForTender()
+	 * @see \Contract\Service\ContractServiceInterface::createContractForTender()
 	 */
-	public function createContractForTender($tender) {
+	public function createContractForTender($tender, $persist = true) {
+		/* @var $procurementService ProcurementServiceInterface */
+		$procurementService = $this->serviceLocator->get('Procurement\Service\ProcurementService');
+		
 		/* @var $entityManager EntityManager */
 		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
 		
-		$tenderId = $this->extractIdentityAndValidateCreateContractForTender($tender);
-		if(!$tenderId) {
-			throw new \InvalidArgumentException('Tidak dapat membuat kontrak dari tender yang diberikan, data tender tidak ditemukan dalam database', 10, null);
+		if(!$procurementService->isCompletedWithWinnerVendor($tender)) {
+			throw new \InvalidArgumentException(sprintf('Tidak dapat membuat kontrak untuk vendor yang diberikan.'), 100, null);
 		}
 		
+		/* @var $vendor Vendor */
+		$vendor = $procurementService->getWinnerVendor($tender);
+		
 		/* @var $tender Tender */
-		$tender = $entityManager->createQuery('SELECT tender, kantor FROM Procurement\Entity\Tender\Tender tender INNER JOIN tender.kantor kantor WITH kantor.kode = :kodeKantor WHERE tender.kode = :kodeTender')
+		$tender = $entityManager->createQuery('SELECT tender, kantor, listItem FROM Procurement\Entity\Tender\Tender tender INNER JOIN tender.kantor kantor WITH kantor.kode = :kodeKantor INNER JOIN tender.listItem listItem WHERE tender.kode = :kodeTender')
 			->setParameter('kodeKantor', $tenderId['KODE_KANTOR'])
 			->setParameter('kodeTender', $tenderId['KODE_TENDER'])
 			->getSingleResult();
 		
+		/* @var $keyGenerator KeyGeneratatorInterface */
+		$keyGenerator = $this->serviceLocator->get('Application\Common\KeyGeneratator');
+		
 		$kontrak = new Kontrak();
+		$kontrak->setKode($keyGenerator->generateNextKey(get_class($kontrak), 'kode'));
 		$kontrak->setTender($tender);
 		$kontrak->setKantor($tender->getKantor());
+		$kontrak->setVendor($vendor);
+		$kontrak->setNamaVendor($vendor->getNama());
 		$kontrak->setTipeKontrak($tender->getTipeKontrak());
 		$kontrak->setJudulPekerjaan($tender->getJudulPekerjaan());
 		$kontrak->setLingkupPekerjaan($tender->getLingkupPekerjaan());
-		$kontrak->getMataUang($tender->getMataUang());
+		$kontrak->setMataUang($tender->getMataUang());
 		
-		$entityManager->persist($kontrak);
+		/**
+		 * TODO Masukin item kontrak dari item pengadaan.
+		 */
+		
+		if($persist) {
+			$entityManager->persist($kontrak);
+			$entityManager->flush($kontrak);
+		}
 		
 		return $kontrak;
 	}
 	
-	/**
-	 * 
-	 * @param Tender|array $tender
-	 * @return array
-	 */
-	protected function extractIdentityAndValidateCreateContractForTender($tender) {
-		/* @var $entityManager EntityManager */
-		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
+	public function saveContractDraft(Kontrak $kontrak) {
 		
-		$tenderId = array();
-		if($tender != null && $tender instanceof Tender && $tender->getKode() !=null && $tender->getKantor() != null) {
-			$tenderId['KODE_TENDER'] = $tender->getKode();
-			$tenderId['KODE_KANTOR'] = $tender->getKantor()->getKode();
-		}
-		else if($tender != null && is_array($tender)) {
-			foreach ($tender as $key => $value) {
-				$key = strtoupper($key);
-				$requiredKeys = array('KODE_TENDER', 'KODE_KANTOR');
-				if(!array_key_exists($key, $requiredKeys)) {
-					throw new \InvalidArgumentException(sprintf('Parameter tender yang diberikan tidak sesuai dengan yg dibutuhkan. Key yang dubutuhkan dalam parameter %s', implode(', ', $requiredKeys)), 100, null);
-				}
-		
-				$tenderId[$key] = $value;
-			}
-		}
-		else {
-			throw new \InvalidArgumentException(sprintf('Parameter harus berupa instance dari kelas tender atau array dengan key KODE_TENDER dan KODE_KANTOR'), 100, null);
-		}
-		
-		$validTender = $entityManager->createQuery('SELECT EXISTS(tender) FROM Procurement\Entity\Tender\Tender tender INNER JOIN tender.kantor kantor WITH kantor.kode = :kodeKantor WHERE tender.kode = :kodeTender')
-			->setParameter('kodeKantor', $tenderId['KODE_KANTOR'])
-			->setParameter('kodeTender', $tenderId['KODE_TENDER'])
-			->getSingleScalarResult();
-		
-		return $validTender ? $tenderId : $validTender;
 	}
-	
 	
 	public function setServiceLocator(ServiceLocator $serviceLocator) {
 		$this->serviceLocator = $serviceLocator;

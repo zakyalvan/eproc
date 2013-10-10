@@ -72,14 +72,14 @@ class Tender {
 	/**
 	 * @Orm\OneToMany(targetEntity="Procurement\Entity\Tender\Item", fetch="LAZY", mappedBy="tender")
 	 *
-	 * @var ArrayCollection
+	 * @var array
 	 */
-	private $items;
-	public function getItems() {
-		return $this->items;
+	private $listItem;
+	public function getListItem() {
+		return $this->listItem;
 	}
-	public function setItems(ArrayCollection $items) {
-		$this->items = $items;
+	public function setListItem(array $listItem) {
+		$this->listItem = $listItem;
 	}
 	
 	/**

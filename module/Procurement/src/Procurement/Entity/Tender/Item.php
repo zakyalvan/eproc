@@ -14,8 +14,8 @@ use Doctrine\ORM\Mapping as Orm;
 class Item {
 	/**
 	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Procurement\Entity\Tender\Tender", fetch="lazy", inversedBy="items")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_TENDER", referencedColumnName="KODE_TENDER", type="string"), @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR", type="string")})
+	 * @Orm\ManyToOne(targetEntity="Procurement\Entity\Tender\Tender", fetch="lazy", inversedBy="listItem")
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_TENDER", referencedColumnName="KODE_TENDER"), @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR")})
 	 * 
 	 * @var Tender
 	 */

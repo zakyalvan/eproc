@@ -21,11 +21,11 @@ interface ContractServiceInterface {
 	 * @param Tender|integer $tender
 	 * @return Kontrak
 	 */
-	public function createContractForTender($tender);
+	public function createContractForTender($tender, $persist = false);
 	
 	
 	/**
-	 * Save draft 
+	 * Save draft kontrak.
 	 * 
 	 * @param Kontrak $kontrak
 	 */

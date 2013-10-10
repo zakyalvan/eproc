@@ -14,4 +14,18 @@ class AmendController extends AbstractActionController {
 	public function indexACtion() {
 		
 	}
+	
+	/**
+	 * Inisiasi pembuatan draft adendum kontrak.
+	 */
+	public function itializeAction() {
+		
+	}
+	
+	/**
+	 * Action finalisasi draft adendum kontrak, pemberian nomor kontrak baru.
+	 */
+	public function finalizeAction() {
+		
+	}
 }

@@ -2,6 +2,7 @@
 namespace Procurement\Entity\Tender;
 
 use Doctrine\ORM\Mapping as Orm;
+use Procurement\Entity\Status;
 
 /**
  * @Orm\Entity
@@ -12,8 +13,8 @@ use Doctrine\ORM\Mapping as Orm;
 class VendorStatus {
 	/**
 	 * @Orm\Id
-	 * @Orm\OneToOne(targetEntity="Procurement\Entity\Tender\TenderVendor", fetch="lazy", inversedBy="vendorStatus")
-	 * @Orm\JoinColumns({@JoinColumn(name="KODE_TENDER", referencedColumnName="KODE_TENDER", type="string", length="50"), @JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR", type="string", length="5"), @JoinColumn(name="KODE_VENDOR", referencedColumnName="KODE_VENDOR", type="integer")})
+	 * @Orm\OneToOne(targetEntity="Procurement\Entity\Tender\TenderVendor", fetch="LAZY", inversedBy="vendorStatus")
+	 * @Orm\JoinColumns({@JoinColumn(name="KODE_TENDER", referencedColumnName="KODE_TENDER"), @JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @JoinColumn(name="KODE_VENDOR", referencedColumnName="KODE_VENDOR")})
 	 * 
 	 * @var TenderVendor
 	 */
@@ -26,13 +27,16 @@ class VendorStatus {
 	}
 	
 	/**
-	 * @Orm\Column(name="STATUS", type="integer", nullable=true)
+	 * @Orm\ManyToOne(targetEntity="Procurement\Entity\Status", fetch="LAZY")
+	 * @Orm\JoinColumn(name="STATUS", referencedColumnName="KODE_STATUS")
+	 * 
+	 * @var Status
 	 */
 	private $status;
 	public function getStatus() {
 		return $this->status;
 	}
-	public function setStatus($status) {
+	public function setStatus(Status $status) {
 		$this->status = $status;
 	}
 	

@@ -13,9 +13,11 @@ use Vendor\Entity\Vendor;
  * @author zakyalvan
  */
 class TenderVendor {
+	const FLAG_PEMENANG = '1';
+	
 	/**
 	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Procurement\Entity\Tender\Tender", fetch="lazy", inversedBy="tenderVendors")
+	 * @Orm\ManyToOne(targetEntity="Procurement\Entity\Tender\Tender", fetch="LAZY", inversedBy="tenderVendors")
 	 * @Orm\JoinColumns({@JoinColumn(name="KODE_TENDER", type="string", referencedColumnName="KODE_TENDER"), @JoinColumn(name="KODE_KANTOR", type="string", referencedColumnName="KODE_KANTOR")})
 	 * 
 	 * @var Tender
@@ -30,8 +32,8 @@ class TenderVendor {
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Vendor\Entity\Vendor", fetch="lazy")
-	 * @Orm\JoinColumn(name="KODE_VENDOR", type="string", referencedColumnName="KODE_VENDOR")
+	 * @Orm\ManyToOne(targetEntity="Vendor\Entity\Vendor", fetch="LAZY")
+	 * @Orm\JoinColumn(name="KODE_VENDOR", referencedColumnName="KODE_VENDOR")
 	 * 
 	 * @var Vendor
 	 */
@@ -44,7 +46,7 @@ class TenderVendor {
 	}
 	
 	/**
-	 * @Orm\OneToOne(targetEntity="Procurement\Entity\Tender\VendorStatus", mappedBy="tenderVendor")
+	 * @Orm\OneToOne(targetEntity="Procurement\Entity\Tender\VendorStatus", fetch="LAZY", mappedBy="tenderVendor")
 	 * 
 	 * @var VendorStatus
 	 */
@@ -52,7 +54,7 @@ class TenderVendor {
 	public function getVendorStatus() {
 		return $this->vendorStatus;
 	}
-	public function setVendorStatus($vendorStatus) {
+	public function setVendorStatus(VendorStatus $vendorStatus) {
 		$this->vendorStatus = $vendorStatus;
 	}
 	

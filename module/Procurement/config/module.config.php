@@ -1,7 +1,15 @@
 <?php
 namespace Procurement;
 
+/**
+ * Konfigurasi untuk modul procurement.
+ */
 return array(
+	'service_manager' => array(
+		'invokables' => array(
+			'Procurement\Service\ProcurementService' => 'Procurement\Service\ProcurementService'
+		)
+	),
 	'doctrine' => array(
 		'driver' => array(
 			__NAMESPACE__ . '_driver' => array(
