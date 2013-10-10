@@ -113,17 +113,6 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="KODE_VENDOR", type="string", nullable=true)
-	 */
-	private $kodeVendor;
-	public function getKodeVendor() {
-		return $this->kodeVendor;
-	}
-	public function setKodeVendor($kodeVendor) {
-		$this->kodeVendor = $kodeVendor;
-	}
-	
-	/**
 	 * @Orm\Column(name="NAMA_VENDOR", type="string", nullable=true)
 	 */
 	private $namaVendor;

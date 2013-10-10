@@ -52,8 +52,9 @@ return array(
 	'todo_list' => array(),
 	'service_manager' => array(
 		'initializers' => array(
+			'Application\Common\Service\InitializableObjectInitializer',
 			'Application\Common\Service\ObjectManagerAwareInitializer',
-			//'Application\Common\Service\IdentityAwareInitializer'
+			'Application\Common\Service\IdentityAwareInitializer'
 		),
 		'abstract_factories' => array(
 			'Application\Todo\Service\TodoListProviderAbstractFactory'

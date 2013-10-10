@@ -30,4 +30,11 @@ interface ContractServiceInterface {
 	 * @param Kontrak $kontrak
 	 */
 	public function saveContractDraft(Kontrak $kontrak);
+	
+	/**
+	 * Apakah kontrak yang diberikan teregistrasi dalam database atau tidak.
+	 * 
+	 * @param Kontrak|array $kontrak
+	 */
+	public function isRegisteredContract($kontrak);
 }

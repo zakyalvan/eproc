@@ -34,6 +34,17 @@ class Module implements ConfigProvider, AutoloaderProvider {
 				$container->init = 1;
 			}
 		}
+		
+		/**
+		 * Tambahin initializable-object-initializer pada ujung bawah stack initializer, 
+		 * ini untuk memastikan semua initializer lain telah dieksekui.
+		 * Sebagai contoh untuk memastikan injeksi service-locator pada service-locator-aware sudah dilakuan
+		 * kemudian service-locator dapat digunakan pada init method.
+		 * 
+		 * Kalau didaftarin di service config, setiap initializer akan didaftarin
+		 * diurutan paling atas stack.
+		 */
+		$e->getApplication()->getServiceManager()->addInitializer('Application\Common\Service\InitializableObjectInitializer', false);
 	}
 
 	public function getConfig() {

@@ -9,6 +9,7 @@ use Procurement\Entity\Tender\Tender;
 use Procurement\Service\ProcurementServiceInterface;
 use Vendor\Entity\Vendor;
 use Application\Common\KeyGeneratatorInterface;
+use DoctrineModule\Validator\ObjectExists;
 
 /**
  * Implementasi default dari {@link ContractServiceInterface}
@@ -16,6 +17,12 @@ use Application\Common\KeyGeneratatorInterface;
  * @author zakyalvan
  */
 class ContractService implements ContractServiceInterface, ServiceLocatorAware {
+	const KODE_KONTRAK_KEY = 'kode';
+	const KODE_KANTOR_KEY = 'kantor.kode';
+	
+	const ALT_KODE_KONTRAK_KEY = 'kodeKontrak';
+	const ALT_KODE_KANTOR_KEY = 'kodeKantor';
+	
 	/**
 	 * @var ServiceLocator
 	 */
@@ -79,8 +86,64 @@ class ContractService implements ContractServiceInterface, ServiceLocatorAware {
 		return $kontrak;
 	}
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see \Contract\Service\ContractServiceInterface::saveContractDraft()
+	 */
 	public function saveContractDraft(Kontrak $kontrak) {
 		
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see \Contract\Service\ContractServiceInterface::isRegisteredContract()
+	 */
+	public function isRegisteredContract($kontrak) {
+		$kontrakIdentity = $this->extractContractIdentity($kontrak);
+		
+		/* @var $entityManager EntityManager */
+		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
+		
+		$validator = new ObjectExists(array(
+			'object_repository' => $entityManager->getRepository('Contract\Entity\Kontrak\Kontrak'),
+			'fields' => array('kode', 'kantor.kode')
+		));
+		$valid = $validator->isValid($kontrakIdentity);
+		return $valid;
+	}
+	
+	/**
+	 * Ekstrak identity kontrak.
+	 */
+	protected function extractContractIdentity($kontrak) {
+		$kontrakIdentity = array();
+		if($kontrak instanceof Kontrak) {
+			if($kontrak->getKode() != null && $kontrak->getKantor() != null) {
+				$kontrakIdentity[self::KODE_KONTRAK_KEY] = $kontrak->getKode();
+				$kontrakIdentity[self::KODE_KANTOR_KEY] = $kontrak->getKantor()->getKode();
+			}
+			else {
+				throw new \InvalidArgumentException('Parameter object kontrak yang diberikan tidak valid, kode kontrak atau object kantor sama dengan null', 100, null);
+			}
+		}
+		else if(is_array($kontrak)) {
+			// Jika sebelumnya pernah diekstrak.
+			if(array_key_exists(self::KODE_KONTRAK_KEY, $kontrak) && array_key_exists(self::KODE_KANTOR_KEY, $kontrak)) {
+				$kontrakIdentity[self::KODE_KONTRAK_KEY] = $kontrak[self::KODE_KONTRAK_KEY];
+				$kontrakIdentity[self::KODE_KANTOR_KEY] = $kontrak[self::KODE_KANTOR_KEY];
+			}
+			else if(array_key_exists(self::ALT_KODE_KONTRAK_KEY, $kontrak) && array_key_exists(self::ALT_KODE_KANTOR_KEY, $kontrak)) {
+				$kontrakIdentity[self::KODE_KONTRAK_KEY] = $kontrak[self::ALT_KODE_KONTRAK_KEY];
+				$kontrakIdentity[self::KODE_KANTOR_KEY] = $kontrak[self::ALT_KODE_KONTRAK_KEY];
+			}
+			else {
+				throw new \InvalidArgumentException('Parameter array identity kontrak yang diberikan tidak valid, key yang dibutuhkan %s atay %stidak ada.', 100, null);
+			}
+		}
+		else {
+			throw new \InvalidArgumentException('Parameter kontrak harus berupa object instance dari kelas Contract\Entity\Kontrak\Kontrak atau array dengan key kodeKontrak, kodeKantor', 100, null);
+		}
+		return $kontrakIdentity;
 	}
 	
 	public function setServiceLocator(ServiceLocator $serviceLocator) {

@@ -10,6 +10,7 @@ use Zend\Paginator\Paginator;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query;
 use Zend\Form\Form;
+use Zend\Stdlib\InitializableInterface;
 
 /**
  * Implementasi dasar untuk list provider. Spesifik zend dan menggunakan doctrine.
@@ -20,7 +21,7 @@ abstract class AbstractListProvider implements SearchableListProviderInterface, 
 	/**
 	 * @var ServiceLocator
 	 */
-	private $serviceLocator;
+	protected $serviceLocator;
 	
 	/**
 	 * @var array
@@ -55,8 +56,10 @@ abstract class AbstractListProvider implements SearchableListProviderInterface, 
 	
 	/**
 	 * Initialize list data provider.
+	 * Untuk sementara, method ini belum dapat menggunakan property yang diinject oleh initializer, 
+	 * misalnya service-locator. Jadi hanya digunakan misalnya untuk inisiasi search form dll.
 	 */
-	abstract protected function init();
+	abstract public function init();
 	
 	/**
 	 * (non-PHPdoc)
@@ -123,7 +126,7 @@ abstract class AbstractListProvider implements SearchableListProviderInterface, 
 	 * @param array $contextDatas
 	 * @param array $criterias
 	 * 
-	 * @return Query | QueryBuilder
+	 * @return Query|QueryBuilder
 	 */
 	abstract protected function buildQuery(QueryBuilder $queryBuilder, $contextDatas = array(), $criterias = array());
 	

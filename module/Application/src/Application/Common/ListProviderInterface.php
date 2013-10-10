@@ -2,12 +2,13 @@
 namespace Application\Common;
 
 use Zend\Paginator\Paginator;
+use Zend\Stdlib\InitializableInterface;
 /**
  * Kontrak dasar untuk list data provider.
  * 
  * @author zakyalvan
  */
-interface ListProviderInterface {
+interface ListProviderInterface extends InitializableInterface {
 	/**
 	 * Set contex data untuk list-provider.
 	 * 

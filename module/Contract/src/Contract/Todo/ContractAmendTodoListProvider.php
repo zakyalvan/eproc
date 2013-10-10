@@ -10,10 +10,19 @@ use Doctrine\ORM\QueryBuilder;
  * @author zakyalvan
  */
 class ContractAmendTodoListProvider extends AbstractTodoListProvider {
-	protected function initSearchableParameters($searchableParameters) {
-	
+	/**
+	 * (non-PHPdoc)
+	 * @see \Application\Common\AbstractListProvider::init()
+	 */
+	public function init() {
+		
 	}
-	protected function buildTodoListQuery(QueryBuilder $queryBuilder, $searchCriterias = array(), $additionalDatas = array()) {
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see \Application\Common\AbstractListProvider::buildQuery()
+	 */
+	protected function buildQuery(QueryBuilder $queryBuilder, $contextDatas = array(), $criterias = array()) {
+		
 	}
 }

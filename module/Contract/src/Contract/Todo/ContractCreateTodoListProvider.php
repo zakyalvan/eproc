@@ -10,25 +10,18 @@ use Doctrine\ORM\QueryBuilder;
  * @author zakyalvan
  */
 class ContractCreateTodoListProvider extends AbstractTodoListProvider {
-	/**
-	 * Init searchable parameters.
-	 */
-	protected function initSearchableParameters($searchableParameters) {
-		$searchableParameter['kodeTender'] = array(
+	public function init() {
+		$this->searchableParams['kodeTender'] = array(
 			'field' => 'tender.kode',
 			'label' => 'Kode Tender'
 		);
-		$searchableParameter['kodeKontrak'] = array(
+		$this->searchableParams['kodeKontrak'] = array(
 			'field' => 'kontrak.kode',
 			'label' => 'Kode Kontrak'
 		);
 	}
-	/**
-	 * (non-PHPdoc)
-	 * @see \Application\Todo\AbstractTodoListProvider::buildTodoListQuery()
-	 */
-	protected function buildTodoListQuery(QueryBuilder $queryBuilder, $searchCriterias = array(), $additionalDatas = array()) {
+	
+	protected function buildQuery(QueryBuilder $queryBuilder, $contextDatas = array(), $criterias = array()) {
 		
-		return $queryBuilder->getQuery();
 	}
 }

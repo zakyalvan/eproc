@@ -106,6 +106,8 @@ return array(
         ),
         'aliases' => array(
             'translator' => 'MvcTranslator',
+        ),
+		'initializers' => array(
         )
     ),
     'translator' => array(
@@ -174,7 +176,7 @@ return array(
     			'credential_callable' => function(User $user, $passwordGiven) {
     				return true;
     			}
-    		),
+    		)
     	)
     )
 );
