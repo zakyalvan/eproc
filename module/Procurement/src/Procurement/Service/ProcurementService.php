@@ -10,6 +10,8 @@ use DoctrineModule\Validator\ObjectExists;
 use Procurement\Service\Exception\TenderNotCompletedException;
 use Procurement\Entity\Status;
 use Procurement\Entity\Tender\TenderVendor;
+use Zend\Json\Json;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * Implementasi default dari procurement service.
@@ -17,6 +19,9 @@ use Procurement\Entity\Tender\TenderVendor;
  * @author zakyalvan
  */
 class ProcurementService implements ProcurementServiceInterface, ServiceLocatorAware {
+	const KODE_TENDER_KEY = 'kode';
+	const KODE_KANTOR_KEY = 'kantor';
+	
 	/**
 	 * @var ServiceLocator
 	 */
@@ -34,7 +39,7 @@ class ProcurementService implements ProcurementServiceInterface, ServiceLocatorA
 		
 		$validator = new ObjectExists(array(
 			'object_repository' => $entityManager->getRepository('Procurement\Entity\Tender\Tender'), 
-			'fields' => array('kode', 'kantor.kode')
+			'fields' => array(self::KODE_TENDER_KEY, self::KODE_KANTOR_KEY)
 		));
 		$valid = $validator->isValid($tenderIdentity);
 		
@@ -46,26 +51,66 @@ class ProcurementService implements ProcurementServiceInterface, ServiceLocatorA
 	
 	/**
 	 * (non-PHPdoc)
+	 * @see \Procurement\Service\ProcurementServiceInterface::getRegisteredTender()
+	 */
+	public function getRegisteredTender($tender) {
+		$tenderIdentity = $this->extractTenderIdentity($tender);
+		
+		if(!$this->isRegisteredTender($tenderIdentity)) {
+			throw new \InvalidArgumentException('Identity tender yang diberikan tidak valid, data tender tidak ditemukan dalam database', 100, null);
+		}
+		
+		/* @var $entityManager EntityManager */
+		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
+		$queryBuilder = $entityManager->createQueryBuilder();
+		
+		/* @var $tender Tender */
+		$tender = $queryBuilder->select(array('tender', 'kantor', 'items'))
+			->from('Procurement\Entity\Tender\Tender', 'tender')
+			->innerJoin('tender.kantor', 'kantor', Join::WITH, $queryBuilder->expr()->eq('kantor.kode', ':kodeKantor'))
+			->innerJoin('tender.listItem', 'items')
+			->where($queryBuilder->expr()->eq('tender.kode', ':kodeTender'))
+			->setParameter('kodeKantor', $tenderIdentity[self::KODE_KANTOR_KEY])
+			->setParameter('kodeTender', $tenderIdentity[self::KODE_TENDER_KEY])
+			->getQuery()
+			->getSingleResult();
+		
+		return $tender;
+	}
+	
+	/**
+	 * (non-PHPdoc)
 	 * @see \Procurement\Service\ProcurementServiceInterface::isCompletedWithWinnerVendor()
 	 */
 	public function isCompletedWithWinnerVendor($tender) {
 		$tenderIdentity = $this->extractTenderIdentity($tender);
 		
-		if($this->isRegisteredTender($tenderIdentity, true)) {
-			/* @var $entityManager EntityManager */
-			$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
-			
-			$completedWithWinnerVendor = $entityManager->createQuery('SELECT COUNT(tender) FROM Procurement\Entity\Tender\Tender tender INNER JOIN tender.kantor kantor INNER JOIN tender.listTenderVendor tenderVendor WITH tenderVendor.pemenang = :pemenang INNER JOIN tenderVendor.status status WITH status.kode = :kodeStatus WHERE tender.kode = :kodeTender AND kantor.kode = :kodeKantor')
-				->setParameter('kodeStatus', Status::KODE_PENUNJUKAN_PEMENANG)
-				->setParameter('pemenang', TenderVendor::FLAG_PEMENANG)
-				->setParameter('kodeTender', $tenderIdentity['kode'])
-				->setParameter('kodeKantor', $tenderIdentity['kantor.kode'])
-				->getSingleScalarResult();
-			
-			return $completedWithWinnerVendor ? true : false;
+		if(!$this->isRegisteredTender($tenderIdentity, true)) {
+			throw new \InvalidArgumentException(sprintf('Parameter tender yang diberikan tidak valid, tender dengan identity tidak ditemukan.', Json::encode($tenderIdentity)), 100, null);
 		}
 		
-		return false;
+		/* @var $entityManager EntityManager */
+		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
+			
+			
+		$queryBuilder = $entityManager->createQueryBuilder();
+		$completedWithWinnerVendor = $queryBuilder->select($queryBuilder->expr()->count('tender.kode'))
+			->from('Procurement\Entity\Tender\Tender', 'tender')
+			->innerJoin('tender.kantor', 'kantor', Join::WITH, $queryBuilder->expr()->eq('kantor.kode', ':kodeKantor'))
+			->innerJoin('tender.listTenderVendor', 'tenderVendor')
+			->innerJoin('tenderVendor.vendorStatus', 'tenderVendorStatus', Join::WITH, $queryBuilder->expr()->andX(
+				$queryBuilder->expr()->eq('tenderVendorStatus.status', ':kodeStatus'),
+				$queryBuilder->expr()->eq('tenderVendorStatus.pemenang', ':pemenang')
+			))
+			->where($queryBuilder->expr()->eq('tender.kode', ':kodeTender'))
+			->setParameter('kodeKantor', $tenderIdentity[self::KODE_KANTOR_KEY])
+			->setParameter('pemenang', TenderVendor::FLAG_PEMENANG)
+			->setParameter('kodeStatus', Status::KODE_PENUNJUKAN_PEMENANG)
+			->setParameter('kodeTender', $tenderIdentity[self::KODE_TENDER_KEY])
+			->getQuery()
+			->getSingleScalarResult();
+		
+		return $completedWithWinnerVendor;
 	}
 	
 	/**
@@ -76,17 +121,28 @@ class ProcurementService implements ProcurementServiceInterface, ServiceLocatorA
 		$tenderIdentity = $this->extractTenderIdentity($tender);
 		
 		if(!$this->isCompletedWithWinnerVendor($tenderIdentity)) {
-			throw new \InvalidArgumentException(sprintf('Tender dengan kode %s dan kode kantor %s belum selesai dengan pemenang atau selesai tanpa pemenang.'), 100, null);
+			throw new \InvalidArgumentException(sprintf('Tender dengan identity %s belum selesai dengan pemenang atau selesai tanpa pemenang.', Json::encode($tenderIdentity)), 100, null);
 		}
 		
 		/* @var $entityManager EntityManager */
 		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
 		
-		return $entityManager->createQuery('SELECT vendor FROM Procurement\Entity\Tender\Tender tender INNER JOIN tender.kantor kantor INNER JOIN tender.listTenderVendor tenderVendor WITH tenderVendor.pemenang = :pemenang INNER JOIN tenderVendor.vendor vendor INNER JOIN tenderVendor.status status WITH status.kode = :kodeStatus WHERE tender.kode = :kodeTender AND kantor.kode = :kodeKantor')
-			->setParameter('kodeStatus', Status::KODE_PENUNJUKAN_PEMENANG)
+		$queryBuilder = $entityManager->createQueryBuilder();
+		return $queryBuilder->select('vendor')
+			->from('Procurement\Entity\Tender\Tender', 'tender')
+			->innerJoin('tender.kantor', 'kantor', Join::WITH, $queryBuilder->expr()->eq('kantor.kode', ':kodeKantor'))
+			->innerJoin('tender.listTenderVendor', 'tenderVendor')
+			->innerJoin('tenderVendor.vendor', 'vendor')
+			->innerJoin('tenderVendor.vendorStatus', 'tenderVendorstatus', $queryBuilder->expr()->andX(
+				$queryBuilder->expr()->eq('tenderVendor.pemenang', ':pemenang'),
+				$queryBuilder->expr()->eq('status.kode', ':kodeStatus')
+			))
+			->where($queryBuilder->expr()->eq('tender.kode', ':kodeTender'))
+			->setParameter('kodeKantor', $tenderIdentity[self::KODE_KANTOR_KEY])
 			->setParameter('pemenang', TenderVendor::FLAG_PEMENANG)
-			->setParameter('kodeTender', $tenderIdentity['kode'])
-			->setParameter('kodeKantor', $tenderIdentity['kantor.kode'])
+			->setParameter('kodeStatus', Status::KODE_PENUNJUKAN_PEMENANG)
+			->setParameter('kodeTender', $tenderIdentity[self::KODE_TENDER_KEY])
+			->getQuery()
 			->getSingleResult();
 	}
 	
@@ -100,25 +156,25 @@ class ProcurementService implements ProcurementServiceInterface, ServiceLocatorA
 	protected function extractTenderIdentity($tender) {
 		$tenderIdentity = array();
 		if($tender instanceof Tender) {
-			$tenderIdentity['kode'] = $tender->getKode();
-			$tenderIdentity['kantor.kode'] = $tender->getKantor()->getKode();
+			$tenderIdentity[self::KODE_TENDER_KEY] = $tender->getKode();
+			$tenderIdentity[self::KODE_KANTOR_KEY] = $tender->getKantor()->getKode();
 		}
 		else if(is_array($tender)) {
 			// Ini jika sebelumnya pernah di-extract.
-			if(count($tender) == 2 && array_key_exists('kode', array_keys($tender)) && array_key_exists('kantor.kode', array_keys($tender))) {
+			if(count($tender) == 2 && array_key_exists(self::KODE_TENDER_KEY, $tender) && array_key_exists(self::KODE_KANTOR_KEY, $tender)) {
 				$tenderIdentity = $tender;
 			}
 			else {
 				foreach (array('kodeTender','kodeKantor') as $key) {
-					if(!array_key_exists($key, array_keys($tender))) {
-						throw new \InvalidArgumentException(sprintf('Key %s harus diberikan dalam araay sebagai parameter id tender.', $key), 100, null);
+					if(!array_key_exists($key, $tender)) {
+						throw new \InvalidArgumentException(sprintf('Key %s harus diberikan dalam array sebagai parameter identity tender. Yang diberikan %s', $key, implode(', ', array_keys($tender))), 100, null);
 					}
 					
 					if($key == 'kodeTender') {
-						$tenderIdentity['kode'] = $tender[$key];
+						$tenderIdentity[self::KODE_TENDER_KEY] = $tender[$key];
 					}
 					else if($key == 'kodeKantor') {
-						$tenderIdentity['kantor.kode'] = $tender[$key];
+						$tenderIdentity[self::KODE_KANTOR_KEY] = $tender[$key];
 					}
 				}
 			}
@@ -126,7 +182,7 @@ class ProcurementService implements ProcurementServiceInterface, ServiceLocatorA
 		else {
 			throw new \InvalidArgumentException(sprintf('Parameter tender harus berupa instance dari Tender atau array dengan key kodeTender dan kodeKantor'), 100, null);
 		}
-		return $tenderId;
+		return $tenderIdentity;
 	}
 	
 	/**

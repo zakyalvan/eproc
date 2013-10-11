@@ -209,7 +209,7 @@ class Tender {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_PEMBUATAN", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_PEMBUATAN", type="datetime", nullable=true)
 	 */
 	private $tanggalPembutan;
 	public function getTanggalPembuatan() {
@@ -264,7 +264,7 @@ class Tender {
 	}
 	
 	/**
-	 * @Orm\Column(name="NAMA_PEMEBELI", type="string", nullable=true)
+	 * @Orm\Column(name="NAMA_PEMBELI", type="string", nullable=true)
 	 */
 	private $namaPembeli;
 	public function getNamaPembeli() {
@@ -308,7 +308,7 @@ class Tender {
 	}
 	
 	/**
-	 * @Orm\Column(name="NAMA_JABATAN_PESERTA", type="string", nullable=true)
+	 * @Orm\Column(name="NAMA_JAB_PESERTA", type="string", nullable=true)
 	 */
 	private $namaJabatanPeserta;
 	public function getNamaJabatanPeserta() {
@@ -319,7 +319,7 @@ class Tender {
 	}
 	
 	/**
-	 * @Orm\Column(name="KODE_JABATAN_PESERTA", type="string", nullable=true)
+	 * @Orm\Column(name="KODE_JAB_PESERTA", type="string", nullable=true)
 	 */
 	private $kodeJabatanPeserta;
 	public function getKodeJabatanPeserta() {
@@ -352,7 +352,7 @@ class Tender {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_SELESAI", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_SELESAI", type="datetime", nullable=true)
 	 */
 	private $tanggalSelesai;
 	public function getTanggalSelesai() {
@@ -385,7 +385,7 @@ class Tender {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_REKAM", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
 	 */
 	private $tanggalRekam;
 	public function getTanggalRekam() {
@@ -407,7 +407,7 @@ class Tender {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_UBAH", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
 	 */
 	private $tanggalUbah;
 	public function getTanggalUbah() {

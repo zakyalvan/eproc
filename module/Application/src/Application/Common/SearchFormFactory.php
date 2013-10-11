@@ -15,6 +15,8 @@ class SearchFormFactory {
 	 * @return Form
 	 */
 	public function createForm(array $params) {
+		$form = new Form();
+		
 		
 	}
 }

@@ -8,6 +8,8 @@ use Contract\Entity\Kontrak\Kontrak;
  * @author zakyalvan
  */
 interface ContractServiceInterface {
+	public function hasRegisteredContractForTender($tender);
+	
 	/**
 	 * Apakah tender yang diberikan dapat dibuatkan kontraknya.
 	 * 
@@ -22,7 +24,6 @@ interface ContractServiceInterface {
 	 * @return Kontrak
 	 */
 	public function createContractForTender($tender, $persist = false);
-	
 	
 	/**
 	 * Save draft kontrak.

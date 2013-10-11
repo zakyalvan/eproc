@@ -30,10 +30,31 @@ class ContractService implements ContractServiceInterface, ServiceLocatorAware {
 	
 	/**
 	 * (non-PHPdoc)
+	 * @see \Contract\Service\ContractServiceInterface::hasRegisteredContractForTender()
+	 */
+	public function hasRegisteredContractForTender($tender) {
+		
+	}
+	
+	/**
+	 * (non-PHPdoc)
 	 * @see \Contract\Service\ContractServiceInterface::canCreateContractForTender()
 	 */
 	public function canCreateContractForTender($tender) {
+		/* @var $procurementService ProcurementServiceInterface */
+		$procurementService = $this->serviceLocator->get('Procurement\Service\ProcurementService');
 		
+		if(!$procurementService->isRegisteredTender($tender)) {
+			exit("Huhuhu" . get_class($this));
+			return false;
+		}
+		if(!$procurementService->isCompletedWithWinnerVendor($tender)) {
+			exit("Hihihi" . get_class($this));
+			return false;
+		}
+		
+		
+		return true;
 	}
 	
 	/**

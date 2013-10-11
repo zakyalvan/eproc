@@ -5,12 +5,16 @@ use Doctrine\ORM\Mapping as Orm;
 /**
  * Kelas entity yang menyimpan informasi kantor.
  * 
- * @Orm\Entity(repositoryClass="Application\Entity\Repository\KantorRepository")
+ * @Orm\Entity(repositoryClass="Application\Entity\Repository\KantorRepository", readOnly=true)
  * @Orm\Table(name="SC.MS_KANTOR")
  * 
  * @author zakyalvan
  */
 class Kantor {
+	const UNIT_KERJA_KANTOR_PUSAT = 1;
+	const UNIT_KERJA_KANTOR_WILAYAH = 2;
+	const UNIT_KERJA_KANTOR_CABANG = 3;
+	
 	/**
 	 * Kode unit kerja.
 	 * 

@@ -13,8 +13,31 @@ use Procurement\Entity\Status;
 class VendorStatus {
 	/**
 	 * @Orm\Id
+	 * @Orm\Column(name="KODE_TENDER", type="string")
+	 *
+	 * @var string
+	 */
+	private $kodeTender;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_KANTOR", type="string")
+	 *
+	 * @var string
+	 */
+	private $kodeKantor;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_VENDOR", type="string")
+	 *
+	 * @var integer
+	 */
+	private $kodeVendor;
+	
+	/**
 	 * @Orm\OneToOne(targetEntity="Procurement\Entity\Tender\TenderVendor", fetch="LAZY", inversedBy="vendorStatus")
-	 * @Orm\JoinColumns({@JoinColumn(name="KODE_TENDER", referencedColumnName="KODE_TENDER"), @JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @JoinColumn(name="KODE_VENDOR", referencedColumnName="KODE_VENDOR")})
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_TENDER", referencedColumnName="KODE_TENDER"), @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_VENDOR", referencedColumnName="KODE_VENDOR")})
 	 * 
 	 * @var TenderVendor
 	 */
@@ -44,7 +67,7 @@ class VendorStatus {
 	 * @Orm\Column(name="TEKNIKAL_STATUS", type="integer", nullable=true)
 	 */
 	private $statusTeknikal;
-	public function setStatusTeknikal() {
+	public function getStatusTeknikal() {
 		return $this->statusTeknikal;
 	}
 	public function setStatusTeknikal($statusTeknikal) {
@@ -85,7 +108,7 @@ class VendorStatus {
 	}
 	
 	/**
-	 * @Orm\Column(name="PEMENANG", type="string", length="1", nullable=true)
+	 * @Orm\Column(name="PEMENANG", type="string", length=1, nullable=true)
 	 * 
 	 * @var string
 	 */
@@ -101,7 +124,7 @@ class VendorStatus {
 	}
 	
 	/**
-	 * @Orm\Column(name="NEGOSIASI", type="string", length="1", nullable=true)
+	 * @Orm\Column(name="NEGOSIASI", type="string", length=1, nullable=true)
 	 * 
 	 * @var string
 	 */
@@ -114,7 +137,7 @@ class VendorStatus {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_REKAM", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
 	 */
 	private $tanggalRekam;
 	public function getTanggalRekam() {
@@ -136,7 +159,7 @@ class VendorStatus {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_UBAH", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
 	 */
 	private $tanggalUbah;
 	public function getTanggalUbah() {

@@ -8,7 +8,7 @@ use Zend\Cache\Pattern\ObjectCache;
 /**
  * Entity mapping ke user sipt.
  * 
- * @Orm\Entity(repositoryClass="Application\Entity\Repository\UserRepository")
+ * @Orm\Entity(repositoryClass="Application\Entity\Repository\UserRepository", readOnly=true)
  * @Orm\Table(name="SC.SC_USER")
  * 
  * @author zakyalvan

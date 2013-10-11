@@ -17,9 +17,24 @@ class TenderVendor {
 	
 	/**
 	 * @Orm\Id
+	 * @Orm\Column(name="KODE_TENDER", type="string")
+	 *
+	 * @var string
+	 */
+	private $kodeTender;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_KANTOR", type="string")
+	 *
+	 * @var string
+	 */
+	private $kodeKantor;
+	
+	/**
 	 * @Orm\ManyToOne(targetEntity="Procurement\Entity\Tender\Tender", fetch="LAZY", inversedBy="tenderVendors")
-	 * @Orm\JoinColumns({@JoinColumn(name="KODE_TENDER", type="string", referencedColumnName="KODE_TENDER"), @JoinColumn(name="KODE_KANTOR", type="string", referencedColumnName="KODE_KANTOR")})
-	 * 
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_TENDER", referencedColumnName="KODE_TENDER"), @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR")})
+	 *
 	 * @var Tender
 	 */
 	private $tender;
@@ -34,7 +49,7 @@ class TenderVendor {
 	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Vendor\Entity\Vendor", fetch="LAZY")
 	 * @Orm\JoinColumn(name="KODE_VENDOR", referencedColumnName="KODE_VENDOR")
-	 * 
+	 *
 	 * @var Vendor
 	 */
 	private $vendor;
@@ -44,6 +59,8 @@ class TenderVendor {
 	public function setVendor(Vendor $vendor) {
 		$this->vendor = $vendor;
 	}
+	
+	
 	
 	/**
 	 * @Orm\OneToOne(targetEntity="Procurement\Entity\Tender\VendorStatus", fetch="LAZY", mappedBy="tenderVendor")
@@ -59,7 +76,7 @@ class TenderVendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_REKAM", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
 	 */
 	private $tanggalRekam;
 	public function getTanggalRekam() {
@@ -81,7 +98,7 @@ class TenderVendor {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_UBAH", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
 	 */
 	private $tanggalUbah;
 	public function getTanggalUbah() {

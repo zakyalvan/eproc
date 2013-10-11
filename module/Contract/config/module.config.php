@@ -9,6 +9,7 @@ use Contract\Service\AbstractContractListProvider;
 return array(
 	'controllers' => array(
 		'invokables' => array(
+			'Contract\Controller\Init' => 'Contract\Controller\InitController',
 			'Contract\Controller\Index' => 'Contract\Controller\IndexController',
 			'Contract\Controller\Todo' => 'Contract\Controller\TodoController',
 			'Contract\Controller\Amend' => 'Contract\Controller\AmendController',
@@ -36,14 +37,27 @@ return array(
 					'default' => array(
 						'type' => 'Zend\Mvc\Router\Http\Segment',
 						'options' => array(
-							'route' => '/:controller[/:action[/:id]]',
-							'constraints' => array(
-								'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-								'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-								'id' => '[0-9]+'
+							'route' => '/:controller[/:action]',
+							'defaults' => array(
+								'__NAMESPACE__' => 'Contract\Controller',
+								'controller' => 'todo',
+								'action' => 'index'
 							)
-						),
-						'defaults' => array()
+						)
+					),
+					'init' => array(
+						'type' => 'Zend\Mvc\Router\Http\Segment',
+						'options' => array(
+							'route' => '/init/assign/:tender',
+							'constraints' => array(
+								'tender' => '[\\.a-zA-Z0-9_-]+',
+							),
+							'defaults' => array(
+								'__NAMESPACE__' => 'Contract\Controller',
+								'controller' => 'init',
+								'action' => 'assign'
+							)
+						)
 					)
 				)
 			)

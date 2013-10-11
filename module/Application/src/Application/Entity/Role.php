@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Entity yang nyimpan user fungsi, dari sipt.
  * 
- * @Orm\Entity
+ * @Orm\Entity(readOnly=true)
  * @Orm\Table(name="SC.SC_FUNGSI")
  * 
  * @author zakyalvan

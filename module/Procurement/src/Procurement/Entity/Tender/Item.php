@@ -13,8 +13,8 @@ use Doctrine\ORM\Mapping as Orm;
  */
 class Item {
 	/**
-	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Procurement\Entity\Tender\Tender", fetch="lazy", inversedBy="listItem")
+	 * 
+	 * @Orm\ManyToOne(targetEntity="Procurement\Entity\Tender\Tender", fetch="LAZY", inversedBy="listItem")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_TENDER", referencedColumnName="KODE_TENDER"), @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR")})
 	 * 
 	 * @var Tender
@@ -42,7 +42,7 @@ class Item {
 	}
 	
 	/**
-	 * @Orm\Column(name="KETERANGAN", type="string", length="1024", nullable=true)
+	 * @Orm\Column(name="KETERANGAN", type="string", length=1024, nullable=true)
 	 * 
 	 * @var string
 	 */
@@ -68,7 +68,7 @@ class Item {
 	}
 	
 	/**
-	 * @Orm\Column(name="UNIT", type="string", length="50", nullable=true)
+	 * @Orm\Column(name="UNIT", type="string", length=50, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -81,7 +81,7 @@ class Item {
 	}
 	
 	/**
-	 * @Orm\Column(name="HARGA", type="double", nullable=true)
+	 * @Orm\Column(name="HARGA", type="float", nullable=true)
 	 *
 	 * @var double
 	 */
@@ -94,7 +94,7 @@ class Item {
 	}
 	
 	/**
-	 * @Orm\Column(name="PPN", type="string", length="1", nullable=true)
+	 * @Orm\Column(name="PPN", type="string", length=1, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -110,7 +110,7 @@ class Item {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_REKAM", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
 	 */
 	private $tanggalRekam;
 	public function getTanggalRekam() {
@@ -132,7 +132,7 @@ class Item {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_UBAH", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
 	 */
 	private $tanggalUbah;
 	public function getTanggalUbah() {
