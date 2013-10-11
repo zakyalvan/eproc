@@ -14,6 +14,7 @@ use Zend\Stdlib\InitializableInterface;
 
 /**
  * Implementasi dasar untuk list provider. Spesifik zend dan menggunakan doctrine.
+ * Kelas turunan dari kelas ini seharusnya dibikin instance-nya dalam service-manager.
  * 
  * @author zakyalvan
  */

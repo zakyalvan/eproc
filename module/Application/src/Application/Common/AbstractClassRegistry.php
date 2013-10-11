@@ -88,6 +88,16 @@ abstract class AbstractClassRegistry {
 		
 		return $this->registry[$name];
 	}
+	
+	/**
+	 * Retrieve seluruh isi registry, tapi copyannya aja.
+	 *
+	 * @return multitype:
+	 */
+	public function getAll() {
+		return array_merge(array(), $this->registry);
+	}
+	
 	/**
 	 * Set apakah override item diizinkan atau tidak.
 	 * 

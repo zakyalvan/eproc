@@ -78,37 +78,42 @@ class Workflow implements InputFilterAwareInterface {
 	}
 	
 	/**
-	 * @ORM\Column(name="TGL_REKAM", type="datetime", nullable=true)
+	 * @Orm\Column(name="PETUGAS_REKAM", type="string", nullable=true)
+	 * 
+	 * @var string
 	 */
-	private $createdDate;
-	public function getCreatedDate() {
-		return $this->createdDate;
-	}
-	
-	/**
-	 * @ORM\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @ORM\JoinColumn(name="PETUGAS_REKAM", referencedColumnName="KODE_USER")
-	 */
-	private $createdBy;
+	protected $createdBy;
 	public function getCreatedBy() {
 		return $this->createdBy;
 	}
-	
-	/**
-	 * @ORM\Column(name="TGL_UBAH")
-	 */
-	private $updatedDate;
-	public function getUpdatedDate() {
-		return $this->updatedDate;
+	public function setCreatedBy($createdBy) {
+		$this->createdBy = $createdBy;
 	}
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @ORM\JoinColumn(name="PETUGAS_UBAH", referencedColumnName="KODE_USER")
+	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
+	 * 
+	 * @var \DateTime
 	 */
-	private $updatedBy;
+	protected $updatedDate;
+	public function getUpdatedDate() {
+		return $this->updatedDate;
+	}
+	public function setUpdatedDate(\DateTime $updateDate) {
+		$this->updatedDate = $updateDate;
+	}
+	
+	/**
+	 * @Orm\Column(name="PETUGAS_UBAH", type="string", nullable=true)
+	 * 
+	 * @var string
+	 */
+	protected $updatedBy;
 	public function getUpdatedBy() {
 		return $this->updatedBy;
+	}
+	public function setUpdatedBy($updatedBy) {
+		$this->updatedBy = $updatedBy;
 	}
 
 	

@@ -14,7 +14,7 @@ class UserTransition extends Transition {
 	/**
 	 * Konteks dari user eksekutor yang dapat mengeksekusi transisi ini.
 	 * 
-	 * @Orm\Column(name="USER_CONTEXT", type="string", length="255", nullable=true)
+	 * @Orm\Column(name="USER_CONTEXT", type="string", length=255, nullable=true)
 	 * 
 	 * @var string
 	 */
@@ -28,27 +28,25 @@ class UserTransition extends Transition {
 	
 	/**
 	 * Ini role yang harus mengeksekusi transisi ini.
+	 * 
+	 * @Orm\Column(name="ROLE_ID", type="string", nullable=true)
 	 *
-	 * @Orm\ManyToOne(targetEntity="Application\Entity\Role", fetch="lazy")
-	 * @Orm\JoinColumn(name="ROLE_ID", type="string", referencedColumnName="KODE_FUNGSI", nullable=true)
-	 *
-	 * @var Role
+	 * @var string
 	 */
-	protected $role;
-	public function getRole() {
-		return $this->role;
+	protected $userRole;
+	public function getUserRole() {
+		return $this->userRole;
 	}
-	public function setRole($role) {
-		$this->role = $role;
+	public function setUserRole($userRole) {
+		$this->userRole = $userRole;
 	}
-	
 	
 	/**
 	 * Task yang harus dieksekusi jika instance dari transisi bersangkutan dihandle.
 	 * (Jika transisi bertipe user-triggered).
 	 *
-	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Task", fetch="lazy")
-	 * @Orm\JoinColumn(name="TASK_ID", type="integer", referencedColumnName="TASK_ID")
+	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Task", fetch="LAZY")
+	 * @Orm\JoinColumn(name="TASK_ID", referencedColumnName="TASK_ID")
 	 *
 	 * @var Task
 	 */
@@ -65,7 +63,7 @@ class UserTransition extends Transition {
 	 * Dengan kata lain, jika atribut ini tidak diberikan dan jika ada split (arc ke output place lebih dari satu) 
 	 * maka split tersebut adalah and-split.
 	 * 
-	 * @Orm\Column(name="SPLIT_EVALUATOR", type="string", length="255", nullable=true)
+	 * @Orm\Column(name="SPLIT_EVALUATOR", type="string", length=255, nullable=true)
 	 * 
 	 * @var string
 	 */

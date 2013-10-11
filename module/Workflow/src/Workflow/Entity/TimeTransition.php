@@ -13,10 +13,11 @@ use Doctrine\ORM\Mapping as Orm;
 class TimeTransition extends Transition {
 	/**
 	 * Kapan deadline transition ini harus dieksekusi.
+	 * Relatif terhadap enableddate.
 	 * 
-	 * @Orm\Column(name="TIME_LIMIT", type="datetime", nullable=true)
+	 * @Orm\Column(name="TIME_LIMIT", type="integer", nullable=true)
 	 * 
-	 * @var date
+	 * @var integer
 	 */
 	protected $timeLimit;
 	public function getTimeLimit() {

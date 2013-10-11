@@ -6,6 +6,7 @@ use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
 use Workflow\Execution\Evaluator\SplitEvaluatorRegistry;
 use Workflow\Execution\Evaluator\ClosureSplitEvaluator;
 use Workflow\Execution\Handler\TransitionHandlerRegistry;
+use Workflow\Execution\Evaluator\CallbackSplitEvaluator;
 
 /**
  * Kelas abstract factory untuk object kelas yang mengimplement SplitEvalutorInterface.
@@ -39,11 +40,11 @@ class SplitEvaluatorAbstractFactory implements AbstractFactory {
 		}
 		
 		$evaluator = $this->evaluatorRegistry->get($requestedName);
-		if($evaluator instanceof  \Closure) {
-			return new ClosureSplitEvaluator($evaluator);
+		if($evaluator instanceof  \Closure || is_callable($evaluator)) {
+			return new CallbackSplitEvaluator($evaluator);
 		}
 		else {
-			return new $evaluator;
+			return new $evaluator();
 		}
 	}
 }

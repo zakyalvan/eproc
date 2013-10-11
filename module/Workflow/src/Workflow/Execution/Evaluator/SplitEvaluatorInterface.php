@@ -30,5 +30,5 @@ interface SplitEvaluatorInterface {
 	 * @param array $datas
 	 * @return string nama dari arc.
 	 */
-	public function eveluate();
+	public function eveluate($datas = array());
 }

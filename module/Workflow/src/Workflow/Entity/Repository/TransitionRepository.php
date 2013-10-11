@@ -11,7 +11,14 @@ use Workflow\Entity\Workflow;
  * @author zakyalvan
  */
 class TransitionRepository extends EntityRepository {
-	public function getTransitionsByType(Workflow $workflow, $type, $returnParent = true) {
+	/**
+	 * 
+	 * @param Workflow $workflow
+	 * @param string $type
+	 * @param bool $returnParent
+	 * @throws \InvalidArgumentException
+	 */
+	public function getTransitionsByTriggerType(Workflow $workflow, $type, $returnParent = true) {
 		$typeTemp = ucfirst(strtolower($type));
 		$classType = "Workflow\Entity\{$typeTemp}Transition";
 		
@@ -32,7 +39,7 @@ class TransitionRepository extends EntityRepository {
 		}
 	}
 	
-	public function getTransitionType($transition) {
+	public function getTransitionTriggerType($transition) {
 		
 	}
 }

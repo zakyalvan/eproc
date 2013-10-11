@@ -29,20 +29,6 @@ class Token {
 	}
 	
 	/**
-	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Workflow", fetch="LAZY")
-	 * @Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID")
-	 *
-	 * @var Workflow
-	 */
-	protected $workflow;
-	public function getWorkflow() {
-		return $this->workflow;
-	}
-	public function setWorkflow(Workflow $workflow) {
-		$this->workflow = $workflow;
-	}
-	
-	/**
 	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Instance", fetch="LAZY")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="INSTANCE_ID", referencedColumnName="INSTANCE_ID")})

@@ -3,7 +3,6 @@ namespace Workflow\Execution\Router;
 
 use Zend\ServiceManager\ServiceLocatorAwareInterface as ServiceLocatorAware;
 use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
-use Zend\Di\ServiceLocator;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
 use Workflow\Entity\Place;
@@ -11,6 +10,10 @@ use Workflow\Entity\Token;
 use Workflow\Execution\Router\Exception\ProcessRouterException;
 use Workflow\Entity\Transition;
 use Workflow\Entity\Arc;
+use Workflow\Execution\Handler\TransitionHandler;
+use Workflow\Entity\Instance;
+use Workflow\Entity\Repository\TransitionRepository;
+use Workflow\Execution\Evaluator\SplitEvaluatorInterface;
 
 /**
  * Implementasi default dari {@link ProcessRouterInterface}
@@ -28,47 +31,88 @@ class ProcessRouter implements ProcessRouterInterface, ServiceLocatorAware {
 		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
 		
 		/* @var $inputToken Token */
-		$inputToken = $entityManager->createQuery('SELECT token, token.place, token.place.arcs, token.instance FROM Workflow\Entity\Token token INNER JOIN token.place INNER JOIN token.instance INNER JOIN token.place.arcs WITH arc.direction = :arcDirection WHERE tokenId = :tokenId')
+		$inputToken = $entityManager->createQuery('SELECT token, instance, workflow, place, arcs FROM Workflow\Entity\Token token INNER JOIN token.place place INNER JOIN token.instance instance INNER JOIN instance.workflow workflow INNER JOIN place.arcs arcs WITH arcs.direction = :arcDirection WHERE token.id = :tokenId')
 			->setParameter('arcDirection', Arc::ARC_DIRECTION_INPUT)
 			->setParameter('tokenId', $token->getId())
 			->getSingleResult();
 		
+		// Jika status token sudah tidak free.
+		if($inputToken->getStatus() !== Token::STATUS_FREE) {
+			throw new ProcessRouterException(
+				sprintf(
+					'Token (id %s, workflow-id %s, instance-id %s, place-id %s) tidak dapat diroute karena statusnya sudah tidak free (atau sudah di-consume atau di-cancel sebelumnya)', 
+					$inputToken->getId(), 
+					$inputToken->getInstance()->getWorkflow()->getId(),
+					$inputToken->getInstance()->getId(), 
+					$inputToken->getPlace()->getId()
+				), 100, null);
+		}
+		
+		/* @var $instance Instance */
 		$instance = $inputToken->getInstance();
+		
+		/* @var $inputPlace Place */
 		$inputPlace = $inputToken->getPlace();
 		
 		if($inputPlace->getType() == Place::TYPE_END_PLACE) {
-			throw new ProcessRouterException('Token sudah berada pada end place, tidak dapat di-route lebih lanjut', 100, null);
+			throw new ProcessRouterException(
+				sprintf(
+					'Token (id %s, workflow-id %s, instance-id %s, place-id %s) sudah berada pada end place, tidak dapat di-route lebih lanjut',
+					$inputToken->getId(),
+					$inputToken->getInstance()->getWorkflow()->getId(),
+					$inputToken->getInstance()->getId(),
+					$inputToken->getPlace()->getId()
+				), 101, null);
 		}
 		
 		$inputArcs = $inputPlace->getArcs();
 		$inputArcsCount = count($inputPlace->getArcs());
 		
-		// Ini tidak valid.
+		// Ini tidak valid karena hanya and place yang tidak punya input-arc.
 		if($inputArcsCount == 0) {
-			throw new ProcessRouterException('Arc dari input place asal dari token yang dirouting tidak ditemukan', 102, null);
+			throw new ProcessRouterException(
+				sprintf(
+					'Input arc dari input place (id %s, workflow-id %s) di mana token (id %s, workflow-id %s, instance-id %s, place-id %s) yang dirouting berada tidak ditemukan',
+					$inputPlace->getId(),
+					$instance->getWorkflow()->getId(),
+					$inputToken->getId(),
+					$instance->getWorkflow()->getId(),
+					$instance->getId(),
+					$inputToken->getPlace()->getId()
+				), 102, null);
 		}
-		if($inputArcsCount == 1) {
+		// Ini jika hanya ada satu arc yang keluar dari input place.
+		else if($inputArcsCount == 1) {
+			/* @var $inputArc Arc */
 			$inputArc = $inputArcs[0];
-			$transition = $entityManager->createQuery('SELECT arc.transition FROM Workflow\Entity\Arc arc INNER JOIN arc.transition WITH arc.id = :arcId INNER JOIN arc.transition.arcs')
+			
+			/* @var $transition Transition */
+			$transition = $entityManager->createQuery('SELECT transition FROM Workflow\Entity\Transition transition INNER JOIN transition.arcs arcs WITH arcs.id = :arcId AND arcs.direction = :arcDirection')
 				->setParameter('arcId', $inputArc->getId())
+				->setParameter('arcDirection', Arc::ARC_DIRECTION_OUTPUT)
 				->getSingleResult();
 			
-			$transitionHandlerName = $transition->getHandler();
-			// Setiap transition harus memiliki handler.
-			if($transitionHandlerName == null) {
-				throw new ProcessRouterException(sprintf('Transition dengan id %s tidak memiliki handler', $transition->getId()), 101, null);
+			if($transition->getHandler() == null) {
+				throw new ProcessRouterException(
+					sprintf(
+						'Transition (id %s, workflow id %s) tidak memiliki handler, setiap transition harus memiliki handler', 
+						$transition->getId(),
+						$instance->getWorkflow()->getId()
+					), 103, null);
 			}
 			
-			$transitionHandler = $this->serviceLocator->get($transitionHandlerName);
-			$transitionHandler->handle($transition);
+			/* @var $transitionHandler TransitionHandler */
+			$transitionHandler = $this->serviceLocator->get($transition->getHandler());
+			$transitionHandler->handle($transition, $instance);
 			
+			/* @var $transitionRepository TransitionRepository */
 			$transitionRepository = $entityManager->getRepository('Workflow\Entity\Transition');
-			$transitionTrigger = $transitionRepository->getTransitionType($transition);
+			$transitionTrigger = $transitionRepository->getTransitionTriggerType($transition);
 			
 			if($transitionTrigger == Transition::TRIGGER_BY_USER) {
 				return new RouteResult($success, $message, $code, $fromPlace, $fromToken);
 			}
-			if($transitionTrigger == Transition::TRIGGER_BY_TIME) {
+			else if($transitionTrigger == Transition::TRIGGER_BY_TIME) {
 				
 			}
 			
@@ -100,11 +144,10 @@ class ProcessRouter implements ProcessRouterInterface, ServiceLocatorAware {
 				return new RouteResult(true, null, -1, $inputPlace, $inputToken, $transition, $outputPlaces, $outputTokens);
 			}
 			else if($outputArcsCount > 1) {
-				$splitEvaluatorName = $transition->getSplitEvaluator();
-				
 				// Ini berarti explicit-or-split. Buat token pada place sesuai dengan hasil split evaluator.
-				if($splitEvaluatorName != null) {
-					$splitEvaluator = $this->serviceLocator->get($splitEvaluatorName);
+				if($transition->getSplitEvaluator() != null) {
+					/* @var $splitEvaluator SplitEvaluatorInterface */
+					$splitEvaluator = $this->serviceLocator->get($transition->getSplitEvaluator());
 				
 					$instanceDatasArray = array();
 					$instanceDatas = $instance->getDatas();

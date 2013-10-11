@@ -92,37 +92,41 @@ class Place {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
-	 */
-	protected $createdDate;
-	public function getCreatedDate() {
-		return $this->createdDate;
-	}
-	
-	
-	/**
-	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @Orm\JoinColumn(name="PETUGAS_REKAM", referencedColumnName="KODE_USER", nullable=true)
+	 * @Orm\Column(name="PETUGAS_REKAM", type="string", nullable=true)
+	 * 
+	 * @var string
 	 */
 	protected $createdBy;
 	public function getCreatedBy() {
 		return $this->createdBy;
 	}
+	public function setCreatedBy($createdBy) {
+		$this->createdBy = $createdBy;
+	}
 	
 	/**
 	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
+	 * 
+	 * @var \DateTime
 	 */
 	protected $updatedDate;
 	public function getUpdatedDate() {
 		return $this->updatedDate;
 	}
+	public function setUpdatedDate(\DateTime $updateDate) {
+		$this->updatedDate = $updateDate;
+	}
 	
 	/**
-	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @Orm\JoinColumn(name="PETUGAS_UBAH", referencedColumnName="KODE_USER", nullable=true)
+	 * @Orm\Column(name="PETUGAS_UBAH", type="string", nullable=true)
+	 * 
+	 * @var string
 	 */
 	protected $updatedBy;
 	public function getUpdatedBy() {
 		return $this->updatedBy;
+	}
+	public function setUpdatedBy($updatedBy) {
+		$this->updatedBy = $updatedBy;
 	}
 }

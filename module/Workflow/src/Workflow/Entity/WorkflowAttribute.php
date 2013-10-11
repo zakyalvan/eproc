@@ -17,7 +17,7 @@ class WorkflowAttribute {
 	const TYPE_DOUBLE = "DOUBLE";
 	const TYPE_DATE = "DATE";
 	const TYPE_STRING = "STRING";
-	const TYPE_BOOLEAN = true;
+	const TYPE_BOOLEAN = "BOOLEAN";
 	
 	/**
 	 * @Orm\Id
@@ -27,25 +27,6 @@ class WorkflowAttribute {
 	 * @var Workflow
 	 */
 	protected $workflow;
-	
-	/**
-	 * @Orm\Id
-	 * @Orm\Column(name="WORKFLOW_ATTRIBUTE_NAME", type="string")
-	 */
-	protected $name;
-	
-	/**
-	 * @Orm\Column(name="WORKFLOW_ATTRIBUTE_TYPE", type="string")
-	 */
-	protected $type;
-	
-	public function getId() {
-		return $this->name;
-	}
-	public function setId($id) {
-		$this->name = $id;
-	}
-	
 	public function getWorkflow() {
 		return $this->workflow;
 	}
@@ -53,6 +34,11 @@ class WorkflowAttribute {
 		$this->workflow = $workflow;
 	}
 	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="WORKFLOW_ATTR_NAME", type="string")
+	 */
+	protected $name;
 	public function getName() {
 		return $this->name;
 	}
@@ -60,6 +46,10 @@ class WorkflowAttribute {
 		$this->name = $name;
 	}
 	
+	/**
+	 * @Orm\Column(name="WORKFLOW_ATTR_TYPE", type="string")
+	 */
+	protected $type;
 	public function getType() {
 		return $this->type;
 	}

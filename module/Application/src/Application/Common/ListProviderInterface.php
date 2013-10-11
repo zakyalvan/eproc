@@ -12,16 +12,16 @@ interface ListProviderInterface extends InitializableInterface {
 	/**
 	 * Set contex data untuk list-provider.
 	 * 
-	 * @param unknown $contexDatas
+	 * @param array $contexDatas
 	 */
 	public function setContextDatas($contexDatas);
 	
 	/**
 	 * Retrieve list data.
 	 * 
-	 * @param unknown $currentPage
-	 * @param unknown $itemCountPerPage
-	 * @param unknown $criterias
+	 * @param integer $currentPage
+	 * @param integer $itemCountPerPage
+	 * @param array $criterias
 	 * @return Paginator
 	 */
 	public function getListData($pageNumber, $itemCountPerPage, $criterias = array());

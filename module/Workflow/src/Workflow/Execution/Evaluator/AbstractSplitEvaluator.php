@@ -1,20 +1,17 @@
 <?php
 namespace Workflow\Execution\Evaluator;
 
+use Zend\Stdlib\InitializableInterface;
 /**
  * Abstract kelas split evaluator.
  * 
  * @author zakyalvan
  * @see {@link SplitEvaluatorInterface}
  */
-abstract class AbstractSplitEvaluator implements SplitEvaluatorInterface {
+abstract class AbstractSplitEvaluator implements SplitEvaluatorInterface, InitializableInterface {
 	protected $requiredDatas = array();
 	protected $possibleOutput = array();
 	protected $datas = array();
-	
-	public function __construct() {
-		$this->initialize();
-	}
 	
 	/**
 	 * (non-PHPdoc)
@@ -29,7 +26,7 @@ abstract class AbstractSplitEvaluator implements SplitEvaluatorInterface {
 	 * @see \Workflow\Execution\Evaluator\SplitEvaluatorInterface::setDatas()
 	 */
 	public function setDatas(array $datas) {
-		$className = __CLASS__;
+		$className = get_class($this);
 		$requiredDataImplode = implode(", ", $this->requiredDatas);
 		$providedDataImplode = implode(", ", array_keys($datas));
 		
@@ -43,14 +40,18 @@ abstract class AbstractSplitEvaluator implements SplitEvaluatorInterface {
 				throw new \InvalidArgumentException("Content data yang diberikan tidak sesuai dengan kebutuhan evaluator {$className}. Required data key : '{$requiredDataImplode}' , provided data key '{$providedDataImplode}'", 1000, null);
 			}
 		}
-		$this->datas = $datas;
+		$this->datas = array_merge($this->datas, $datas);
 	}
 	
 	/**
 	 * Method ini yang perlu diimpelementasi dalam kelas konkrit split-evaluator.
 	 * Sebenarnya cuma maksa developer untuk ingat untuk setup required-datas (Kalau hanya di konstruktor,takut lupa).
+	 * Method ini otomatis dipanggil jika object split evaluator dicreate dalam service locator (misalnya dengan abstract-factory).
+	 * 
+	 * (non-PHPdoc)
+	 * @see \Zend\Stdlib\InitializableInterface::init()
 	 */
-	protected function initialize();
+	abstract public function init();
 	
 	/**
 	 * Method ini yang perlu diimpelementasi dalam kelas konkrit split-evaluator.
@@ -58,5 +59,5 @@ abstract class AbstractSplitEvaluator implements SplitEvaluatorInterface {
 	 * (non-PHPdoc)
 	 * @see \Workflow\Execution\Evaluator\SplitEvaluatorInterface::eveluate()
 	 */
-	public function eveluate();
+	abstract public function eveluate($datas = array());
 }

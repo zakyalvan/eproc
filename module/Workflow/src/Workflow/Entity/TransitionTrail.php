@@ -29,7 +29,7 @@ class TransitionTrail {
 	/**
 	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Instance", fetch="lazy", inversedBy="auditTrails")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", type="string", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="TRANSITION_ID", type="integer", referencedColumnName="TRANSITION_ID")})
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="TRANSITION_ID", referencedColumnName="TRANSITION_ID")})
 	 * 
 	 * @var Transition
 	 */
@@ -44,7 +44,7 @@ class TransitionTrail {
 	/**
 	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Instance", fetch="lazy")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", type="string", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="INSTANCE_ID", type="integer", referencedColumnName="INSTANCE_ID")})
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="INSTANCE_ID", referencedColumnName="INSTANCE_ID")})
 	 * 
 	 * @var Instance
 	 */
@@ -61,26 +61,26 @@ class TransitionTrail {
 	 * 
 	 * @Orm\Column(name="ENABLED_TIME", type="datetime", nullable=false)
 	 * 
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $enabledTime;
 	public function getEnabledTime() {
 		return $this->enabledTime;
 	}
-	public function setEnabledTime($enabledTime) {
+	public function setEnabledTime(\DateTime $enabledTime) {
 		$this->enabledTime = $enabledTime;
 	}
 	
 	/**
 	 * @Orm\Column(name="EXECUTED_TIME", type="datetime", nullable=true)
 	 * 
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $executedTime;
 	public function getExucutedTime() {
 		return $this->executedTime;
 	}
-	public function setExecutedTime($executedTime) {
+	public function setExecutedTime(\DateTime $executedTime) {
 		$this->executedTime = $executedTime;
 	}
 	
@@ -91,13 +91,13 @@ class TransitionTrail {
 	 * 
 	 * @Orm\Column(name="CANCELED_TIME", type="datetime", nullable=true)
 	 * 
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $canceledTime;
 	public function getCanceledTime() {
 		return $this->canceledTime;
 	}
-	public function setCanceledTime($canceledTime) {
+	public function setCanceledTime(\DateTime $canceledTime) {
 		$this->canceledTime = $canceledTime;
 	}
 }
