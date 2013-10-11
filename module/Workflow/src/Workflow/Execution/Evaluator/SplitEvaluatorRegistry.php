@@ -13,7 +13,7 @@ class SplitEvaluatorRegistry extends AbstractClassRegistry {
 		parent::__construct('Workflow\Execution\Evaluator\SplitEvaluatorInterface', true);
 	}
 	
-	protected function handleClosure($closure) {
+	protected function handleClosure(\Closure $closure) {
 		return $closure;
 	}
 }

@@ -3,14 +3,14 @@ namespace Application\Common;
 
 use Zend\ServiceManager\ServiceLocatorAwareInterface as ServiceLocatorAware;
 use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
+use Zend\Form\Form;
+use Zend\Stdlib\InitializableInterface as Initializable;
+use Zend\Paginator\Paginator;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
-use Zend\Paginator\Paginator;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query;
-use Zend\Form\Form;
-use Zend\Stdlib\InitializableInterface;
 
 /**
  * Implementasi dasar untuk list provider. Spesifik zend dan menggunakan doctrine.
@@ -18,7 +18,7 @@ use Zend\Stdlib\InitializableInterface;
  * 
  * @author zakyalvan
  */
-abstract class AbstractListProvider implements SearchableListProviderInterface, ServiceLocatorAware {
+abstract class AbstractListProvider implements SearchableListProviderInterface, ServiceLocatorAware, Initializable {
 	/**
 	 * @var ServiceLocator
 	 */
