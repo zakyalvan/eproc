@@ -5,6 +5,7 @@ use Doctrine\ORM\EntityRepository;
 use Workflow\Entity\Place;
 use Workflow\Entity\Arc;
 use Workflow\Entity\Workflow;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * Custom repository untuk entity place.
@@ -15,7 +16,7 @@ class PlaceRepository extends EntityRepository {
 	private function isValidWorkflowId($workflowId) {
 		$workflowCount = $this->_em->createQuery('SELECT COUNT(workflow) FROM Workflow\Entity\Workflow AS workflow WHERE workflow.id = :workflowId')
 			->setParameter('workflowId', $workflowId)
-			->getScalarResult();
+			->getSingleScalarResult();
 		return $workflowCount == 1;
 	}
 	
@@ -31,12 +32,17 @@ class PlaceRepository extends EntityRepository {
 		}
 		
 		if(!$this->isValidWorkflowId($workflowId)) {
-			throw new \InvalidArgumentException('Parameter workflow yang diberikan tidak valid', 100, null);
+			throw new \InvalidArgumentException(sprintf('Parameter workflow (id = %s) yang diberikan tidak valid, tidak ditemukan dalam database definisi workflow', $workflowId), 100, null);
 		}
 		
-		return $this->_em->createQuery('SELECT place FROM Workflow\Entity\Place AS place INNER JOIN place.workflow WITH place.workflow.id = :workflowId WHERE place.type = :placeType')
+		$queryBuilder = $this->_em->createQueryBuilder();
+		$queryBuilder->select('place')
+			->from('Workflow\Entity\Place', 'place')
+			->innerJoin('place.workflow', 'workflow', Join::WITH, $queryBuilder->expr()->eq('workflow.id', ':workflowId'))
+			->where($queryBuilder->expr()->eq('place.type', ':placeType'))
 			->setParameter('placeType', Place::TYPE_START_PLACE)
-			->setParameter('workflowId', $workflow->getId())
+			->setParameter('workflowId', $workflowId)
+			->getQuery()
 			->getSingleResult();
 	}
 	/**

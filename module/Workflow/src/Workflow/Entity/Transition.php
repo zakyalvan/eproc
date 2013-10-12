@@ -9,14 +9,26 @@ use Application\Entity\Role;
  * Table yang nyimpan data transisi.
  * 
  * @Orm\Entity(repositoryClass="Workflow\Entity\Repository\TransitionRepository")
+ * @Orm\Table(name="EP_WF_TRANSITION")
  * @Orm\InheritanceType("SINGLE_TABLE")
  * @Orm\DiscriminatorColumn(name="TRANSITION_TRIGGER", type="string", length=255)
- * @Orm\DiscriminatorMap({"AUTO" = "Workflow\Entity\AutoTransition", "USER" = "Workflow\Entity\UserTransition", "TIME" = "Workflow\Entity\TimeTransition", "MESG" = "Workflow\Entity\MesgTransition, })
- * @Orm\Table(name="EP_WF_TRANSITION")
+ * @Orm\DiscriminatorMap({"AUTO" = "Workflow\Entity\AutoTransition", "USER" = "Workflow\Entity\UserTransition", "TIME" = "Workflow\Entity\TimeTransition", "MESG" = "Workflow\Entity\MesgTransition"})
  * 
  * @author zakyalvan
  */
 class Transition {
+	/**
+	 * Ini jenis trigger dari transition ini.
+	 * USER jika transisi ini harus ditrigger uleh user.
+	 * AUTO jika transisi ini ditrigger secara automatis.
+	 * MESG jika transisi ini ditrigger setelah diterimanya message.
+	 * TIME jika transisi ini ditrigger oleh waktu (contoh dalam percabangan implisit join).
+	 * Perlu dicatat, untuk setiap transisi yang harus ditrigger oleh user maka sebelum
+	 *
+	 * @Orm\Column(name="TRANSITION_TRIGGER", type="string", length=4, nullable=false)
+	 *
+	 * @var string
+	 */
 	const TRIGGER_BY_USER = "USER";
 	const TRIGGER_BY_MESSAGE = "MESG";
 	const TRIGGER_BY_AUTO = "AUTO";
@@ -25,6 +37,7 @@ class Transition {
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="TRANSITION_ID", type="integer", nullable=false)
+	 * @Orm\GeneratedValue(strategy="NONE")
 	 */
 	protected $id;
 	public function getId() {
@@ -36,7 +49,7 @@ class Transition {
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="\Workflow\Entity\Workflow", fetch="lazy", inversedBy="transitions")
+	 * @Orm\ManyToOne(targetEntity="\Workflow\Entity\Workflow", fetch="LAZY", inversedBy="transitions")
 	 * @Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID")
 	 * 
 	 * @var Workflow
@@ -47,26 +60,6 @@ class Transition {
 	}
 	public function setWorkflow(Workflow $workflow) {
 		$this->workflow = $workflow;
-	}
-	
-	/**
-	 * Ini jenis trigger dari transition ini.
-	 * USER jika transisi ini harus ditrigger uleh user.
-	 * AUTO jika transisi ini ditrigger secara automatis.
-	 * MESG jika transisi ini ditrigger setelah diterimanya message.
-	 * TIME jika transisi ini ditrigger oleh waktu (contoh dalam percabangan implisit join).
-	 * Perlu dicatat, untuk setiap transisi yang harus ditrigger oleh user maka sebelum
-	 * 
-	 * @Orm\Column(name="TRANSITION_TRIGGER", type="string", length=4, nullable=false)
-	 * 
-	 * @var string
-	 */
-	protected $triggerType;
-	public function getTriggerType() {
-		return $this->triggerType;
-	}
-	public function setTriggerType($triggerType) {
-		$this->triggerType = $triggerType;
 	}
 	
 	/**
@@ -123,7 +116,7 @@ class Transition {
 	 * Transition handler untuk transition bersangkutan.
 	 * Ini merupakan nama dari kelas transition handler untuk transisi bersangkutan.
 	 * 
-	 * @Orm\Column(name="TRANSITION_HANDLER", type="string", length=255, nullable="false")
+	 * @Orm\Column(name="TRANSITION_HANDLER", type="string", length=255, nullable=false)
 	 * 
 	 * @var string
 	 */

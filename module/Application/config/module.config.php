@@ -101,7 +101,7 @@ return array(
 			'Zend\Navigation\Navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory'
         ),
         'invokables' => array(
-        	// Key generator.
+        	'Application\Service\ApplicationService' => 'Application\Service\ApplicationService',
         	'Application\Common\KeyGeneratator' => 'Application\Common\TableKeyGenerator'
         ),
         'aliases' => array(

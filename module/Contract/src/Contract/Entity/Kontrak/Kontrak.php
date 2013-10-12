@@ -281,7 +281,9 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_PEMUTUSAN", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_PEMUTUSAN", type="datetime", nullable=true)
+	 * 
+	 * @var \DateTime
 	 */
 	private $tanggalPemutusan;
 	public function getTanggalPemutusan() {
@@ -303,7 +305,7 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="JUMLAH_PERUBAHAN", type="bigint", nullable=true)
+	 * @Orm\Column(name="JUMLAH_PERUBAHAN", type="float", nullable=true)
 	 */
 	private $jumlahPerubahan;
 	public function getJumlahPerubahan() {
@@ -314,7 +316,7 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_AKHIR_PENAWARAN", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_AKHIR_PENAWARAN", type="datetime", nullable=true)
 	 */
 	private $tanggalAkhirPenawaran;
 	public function getTanggalAkhirPenawaran() {
@@ -325,7 +327,7 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="NILAI_JAMINAN", type="bigint", nullable=true)
+	 * @Orm\Column(name="NILAI_JAMINAN", type="float", nullable=true)
 	 */
 	private $nilaiJaminan;
 	public function getNilaiJaminan() {
@@ -358,7 +360,9 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_MULAI_JAMINAN", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_MULAI_JAMINAN", type="datetime", nullable=true)
+	 * 
+	 * @var \DateTime
 	 */
 	private $tanggalMulaiJaminan;
 	public function getTanggalMulaiJaminan() {
@@ -369,7 +373,9 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_AKHIR_JAMINAN", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_AKHIR_JAMINAN", type="datetime", nullable=true)
+	 * 
+	 * @var \DateTime
 	 */
 	private $tanggalAkhirJaminan;
 	public function getTanggalAkhirJaminan() {
@@ -479,7 +485,7 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_REKAM", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
 	 */
 	private $tanggalRekam;
 	public function getTanggalRekam() {
@@ -501,7 +507,7 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_UBAH", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
 	 */
 	private $tanggalUbah;
 	public function getTanggalUbah() {

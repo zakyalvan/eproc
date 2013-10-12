@@ -2,8 +2,6 @@
 namespace Workflow\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Zend\InputFilter\InputFilterAwareInterface;
-use Zend\InputFilter\InputFilterInterface;
 
 /**
  * Entity yang menyimpan informasi untuk definisi workflow.
@@ -11,7 +9,7 @@ use Zend\InputFilter\InputFilterInterface;
  * @ORM\Entity
  * @ORM\Table(name="EP_WF_WORKFLOW")
  */
-class Workflow implements InputFilterAwareInterface {
+class Workflow {
 	/**
 	 * @ORM\Id
 	 * @ORM\Column(name="WORKFLOW_ID", type="string")
@@ -26,7 +24,7 @@ class Workflow implements InputFilterAwareInterface {
 	}
 	
 	/**
-	 * @ORM\Column(name="WORKFLOW_NAME", type="string", length="50", nullable=false)
+	 * @ORM\Column(name="WORKFLOW_NAME", type="string", length=50, nullable=false)
 	 * 
 	 * @var string
 	 */
@@ -39,7 +37,7 @@ class Workflow implements InputFilterAwareInterface {
 	}
 	
 	/**
-	 * @ORM\Column(name="WORKFLOW_DESC", type="string", length="500", nullable=true)
+	 * @ORM\Column(name="WORKFLOW_DESC", type="string", length=500, nullable=true)
 	 * 
 	 * @var string
 	 */
@@ -114,20 +112,5 @@ class Workflow implements InputFilterAwareInterface {
 	}
 	public function setUpdatedBy($updatedBy) {
 		$this->updatedBy = $updatedBy;
-	}
-
-	
-	public function __get($property) {
-		return $this->{$property};
-	}
-	public function __set($property, $value) {
-		$this->{$property} = $value;
-	}
-	
-	public function setInputFilter(InputFilterInterface $inputFilter) {
-		
-	}
-	public function getInputFilter() {
-		
 	}
 }

@@ -12,12 +12,13 @@ use Doctrine\ORM\Mapping as Orm;
 class GeneratedKey {
 	/**
 	 * @Orm\Id
+	 * @Orm\Column(name="KODE_GENERATED_ID", type="integer")
 	 * @Orm\GeneratedValue(strategy="SEQUENCE")
-	 * @Orm\SequenceGenerator(name="EP_GENERATED_ID_SEQ")
+	 * @Orm\SequenceGenerator(sequenceName="EP_GENERATED_ID_SEQ")
 	 * 
 	 * @var integer
 	 */
-	private $id;
+	private $kode;
 	
 	/**
 	 * Context dari key.

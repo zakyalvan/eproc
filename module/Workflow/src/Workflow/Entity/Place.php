@@ -16,7 +16,7 @@ class Place {
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\GeneratedValue(strategy="AUTO")
+	 * @Orm\GeneratedValue(strategy="NONE")
 	 * @Orm\Column(name="PLACE_ID", type="integer")
 	 */
 	protected $id;
@@ -29,8 +29,8 @@ class Place {
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Workflow", fetch="lazy", inversedBy="places")
-	 * @Orm\JoinColumn(name="WORKFLOW_ID", type="string", referencedColumnName="WORKFLOW_ID")
+	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Workflow", fetch="LAZY", inversedBy="places")
+	 * @Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID")
 	 *
 	 * @var Workflow
 	 */
@@ -57,7 +57,7 @@ class Place {
 	}
 	
 	/**
-	 * @Orm\Column(name="PLACE_NAME", type="string", length="50", nullable=false)
+	 * @Orm\Column(name="PLACE_NAME", type="string", length=50, nullable=false)
 	 */
 	protected $name;
 	public function getName() {
@@ -68,7 +68,7 @@ class Place {
 	}
 	
 	/**
-	 * @Orm\Column(name="PLACE_DESC", type="string", length="500", nullable=true)
+	 * @Orm\Column(name="PLACE_DESC", type="string", length=500, nullable=true)
 	 */
 	protected $description;
 	public function getDescription() {
@@ -79,7 +79,7 @@ class Place {
 	}
 	
 	/**
-	 * @Orm\OneToMany(targetEntity="Workflow\Entity\Arc", mappedBy="place")
+	 * @Orm\OneToMany(targetEntity="Workflow\Entity\Arc", fetch="LAZY", mappedBy="place")
 	 * 
 	 * @var array
 	 */

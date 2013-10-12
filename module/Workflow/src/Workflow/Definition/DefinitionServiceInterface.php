@@ -13,19 +13,19 @@ interface DefinitionServiceInterface {
 	 *
 	 * @param unknown $datas
 	 */
-	function createWorkflow($datas);
+	public function createWorkflow($datas);
 	/**
 	 * Retrieve workflow berdasarkan id yang diberikan.
 	 *
 	 * @param unknown $workflowId
 	*/
-	function getWorkflow($workflowId);
+	public function getWorkflow($workflowId, $populateRelations = false);
 	/**
 	 * Apakah workflow terdaftar atau tidak.
 	 *
 	 * @param unknown $workflowId
 	*/
-	function isRegisteredWorkflow($workflowId);
+	public function isRegisteredWorkflow($workflowId);
 	/**
 	 * List all workflow definitions, with optional paging capability.
 	 *

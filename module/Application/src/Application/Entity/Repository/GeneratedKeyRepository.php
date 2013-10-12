@@ -19,9 +19,26 @@ class GeneratedKeyRepository extends EntityRepository {
 	 * @return Ambigous <number, unknown>
 	 */
 	public function generateNextKey($context, $keyName) {
-		$maxGenerated = $this->_em->createQuery('SELECT MAX(key.generated) FROM Application\Entity\GeneatedKey key WHERE key.context = :keyContext AND key.key = :keyName')
+		if(is_object($context)) {
+			$context = get_class($context);
+		}
+		else if(is_string($context)) {
+			$context = $context;
+		}
+		else {
+			throw new \InvalidArgumentException('Parameter context tidak valid, valid berupa object atau string', 100, null);
+		}
+		
+		$queryBuilder = $this->_em->createQueryBuilder();
+		$maxGenerated = $queryBuilder->select($queryBuilder->expr()->max('key.generated'))
+			->from('Application\Entity\GeneratedKey', 'key')
+			->where($queryBuilder->expr()->andX(
+				$queryBuilder->expr()->eq('key.context', ':keyContext'),
+				$queryBuilder->expr()->eq('key.key', ':keyName')
+			))
 			->setParameter('keyContext', $context)
 			->setParameter('keyName', $keyName)
+			->getQuery()
 			->getSingleScalarResult();
 		
 		$newKey = 1;
@@ -31,6 +48,7 @@ class GeneratedKeyRepository extends EntityRepository {
 		
 		$newGeneratedKey = new GeneratedKey($context, $keyName, $newKey);
 		$this->_em->persist($newGeneratedKey);
+		$this->_em->flush($newGeneratedKey);
 		
 		return $newKey;
 	}

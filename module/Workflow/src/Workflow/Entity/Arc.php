@@ -21,10 +21,34 @@ class Arc {
 	 */
 	const ARC_DIRECTION_OUTPUT = 2;
 	
+
 	/**
 	 * @Orm\Id
+	 * @Orm\Column(name="WORKFLOW_ID", type="string")
+	 *
+	 * @var string
+	 */
+	private $workflowId;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="PLACE_ID", type="integer")
+	 * 
+	 * @var integer
+	 */
+	private $placeId;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="TRANSITION_ID", type="integer")
+	 *
+	 * @var integer
+	 */
+	private $transitionId;
+	
+	/**
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Place", fetch="LAZY", inversedBy="arcs")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", type="string", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="PLACE_ID", type="integer", referencedColumnName="PLACE_ID")})
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="PLACE_ID", referencedColumnName="PLACE_ID")})
 	 * 
 	 * @var Place
 	 */
@@ -37,9 +61,8 @@ class Arc {
 	}
 	
 	/**
-	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Transition", fetch="LAZY", inversedBy="arcs")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", type="string", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="TRANSITION_ID", type="integer", referencedColumnName="TRANSITION_ID")})
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="TRANSITION_ID", referencedColumnName="TRANSITION_ID")})
 	 * 
 	 * @var Transition
 	 */
@@ -53,7 +76,7 @@ class Arc {
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\Column(name="DIRECTION", type="integer", nullable="false")
+	 * @Orm\Column(name="DIRECTION", type="integer", nullable=false)
 	 */
 	private $direction;
 	public function getDirection() {
@@ -64,7 +87,7 @@ class Arc {
 	}
 	
 	/**
-	 * @Orm\Column(name="ARC_TYPE", type="string", length="50", nullable=true)
+	 * @Orm\Column(name="ARC_TYPE", type="string", length=50, nullable=true)
 	 * 
 	 * @var string
 	 */
@@ -81,7 +104,7 @@ class Arc {
 	 * lalu flow berikutnya mengikuti label ini.
 	 * Label arc ini harus unik dalam scope sebuah proses workflow. 
 	 * 
-	 * @Orm\Column(name="ARC_LABEL", type="string", length="50", nullable=false)
+	 * @Orm\Column(name="ARC_LABEL", type="string", length=50, nullable=false)
 	 */
 	private $label;
 	public function getLabel() {
@@ -100,8 +123,8 @@ class Arc {
 	}
 	
 	/**
-	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @Orm\JoinColumn(name="PETUGAS_REKAM", referencedColumnName="KODE_USER")
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="LAZY")
+	 * @Orm\JoinColumn(name="PETUGAS_REKAM", referencedColumnName="KODE_USER", nullable=true)
 	 */
 	private $createdBy;
 	public function getCreatedBy() {
@@ -109,7 +132,7 @@ class Arc {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_UBAH")
+	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
 	 */
 	private $updatedDate;
 	public function getUpdatedDate() {
@@ -117,8 +140,8 @@ class Arc {
 	}
 	
 	/**
-	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="lazy")
-	 * @Orm\JoinColumn(name="PETUGAS_UBAH", referencedColumnName="KODE_USER")
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="LAZY")
+	 * @Orm\JoinColumn(name="PETUGAS_UBAH", referencedColumnName="KODE_USER", nullable=true)
 	 */
 	private $updatedBy;	
 	public function getUpdatedBy() {

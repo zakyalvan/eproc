@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping as Orm;
  */
 class UserRole {
 	/**
+	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="EAGER", inversedBy="listUserRole")
 	 * @Orm\JoinColumn(name="KODE_USER", referencedColumnName="KODE_USER")
 	 * 
@@ -24,6 +25,7 @@ class UserRole {
 	}
 	
 	/**
+	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Application\Entity\Role", fetch="EAGER", inversedBy="listUserRole")
 	 * @Orm\JoinColumn(name="KODE_FUNGSI", referencedColumnName="KODE_FUNGSI")
 	 *

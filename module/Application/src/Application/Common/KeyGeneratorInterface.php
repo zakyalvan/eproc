@@ -6,7 +6,7 @@ namespace Application\Common;
  * 
  * @author zakyalvan
  */
-interface KeyGeneratatorInterface {
+interface KeyGeneratorInterface {
 	/**
 	 * Generate next key value.
 	 * 

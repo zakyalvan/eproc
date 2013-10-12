@@ -189,6 +189,7 @@ return array(
 			'Contract\Service\Factory\ContractListProviderAbstractFactory'
 		),
 		'invokables' => array(
+			'Contract\Service\InitiateService' => 'Contract\Service\InitiateService',
 			'Contract\Service\ContractService' => 'Contract\Service\ContractService',
 			'Contract\Service\WorkOrderService' => 'Contract\Service\WorkOrderService'
 		)

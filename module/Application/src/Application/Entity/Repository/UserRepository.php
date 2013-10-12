@@ -19,7 +19,7 @@ class UserRepository extends EntityRepository {
 	 * @param Kantor $kantor
 	 * @param Role $role
 	 */
-	public function findUsersByKantorAndRole($kantor, $role) {
+	public function findAllByKantorAndRole($kantor, $role) {
 		$kodeKantor = null;
 		if($kantor instanceof Kantor) {
 			$kodeKantor = $kantor->getKode();
@@ -47,7 +47,7 @@ class UserRepository extends EntityRepository {
 			->from('Application\Entity\User', 'user')
 			->innerJoin('user.listUserRole', 'listUserRole')
 			->innerJoin('listUserRole.role', 'role', Join::WITH, $queryBuilder->expr()->eq('role.kode', ':kodeRole'))
-			->innerJoin('listUserRole.kantor', 'kantor', Join::WITH, $queryBuilder->expr()->eq('kantor.kode', 'kodeKantor'))
+			->innerJoin('listUserRole.kantor', 'kantor', Join::WITH, $queryBuilder->expr()->eq('kantor.kode', ':kodeKantor'))
 			->setParameter('kodeRole', $kodeRole)
 			->setParameter('kodeKantor', $kodeKantor)
 			->getQuery()

@@ -7,6 +7,13 @@ use Contract\Service\ContractServiceInterface;
 use Procurement\Service\ProcurementService;
 use Zend\Http\Response as HttpResponse;
 use Zend\Json\Json;
+use Application\Service\ApplicationService;
+use Application\Service\ApplicationServiceInterface;
+use Application\Entity\Role;
+use Contract\Form\AssignPengelolaForm;
+use Contract\Entity\PenunjukanPengelola;
+use Contract\Form\PenunjukanPengelolaKontrakForm;
+use Contract\Service\InitiateServiceInterface;
 
 /**
  * Controller yang ngehandle inisiasi kontrak.
@@ -54,14 +61,39 @@ class InitController extends AbstractActionController {
 			throw new \InvalidArgumentException('Tidak dapat membuat kontrak dari informasi yang diberikan (kodeTender : %s dan kodeKantor : %s)', 100, null);
 		}
 		
+		/* @var $applicationService ApplicationServiceInterface */
+		$applicationService = $this->serviceLocator->get('Application\Service\ApplicationService');
+		$listPengelolaKontrak = $applicationService->getListUserByRole(Role::KODE_PELAKSANA_KONTRAK, $kodeKantor);
+		
+		$penunjukanForm = new PenunjukanPengelolaKontrakForm($this->getServiceLocator());
+		$penunjukanForm->setListPengelolaKontrak($listPengelolaKontrak);
+		
 		// Handle jika request adalah post.
-		if($this->getRequest()->isPost()) {
+		if($this->request->isPost()) {
+			$datas = $this->request->getPost();
 			
+			$penunjukanPengelola = new PenunjukanPengelola();
+			$penunjukanPengelola->setUserPenunjuk($this->identity());
+			$penunjukanPengelola->setTender($tender);
+			
+			$penunjukanForm->setObject($penunjukanPengelola);
+			$penunjukanForm->setData($datas);
+			
+			if($penunjukanForm->isValid()) {
+				/* @var $initService InitiateServiceInterface */ 
+				$initService = $this->serviceLocator->get('Contract\Service\InitiateService');
+				
+				$initService->savePenunjukanPengelola($penunjukanForm->getObject());
+				
+				// Kembali lagi ke todo list kontrak.
+				$this->redirect()->toRoute('contract/todo');
+			}
 		}
 		
 		return array(
 			'tender' => $tender,
-			'vendor' => $vendor
+			'vendor' => $vendor,
+			'penunjukanForm' => $penunjukanForm
 		);
 	}
 }

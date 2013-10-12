@@ -30,8 +30,8 @@ class Instance {
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Workflow", fetch="lazy", inversedBy="instances")
-	 * @Orm\JoinColumn(name="WORKFLOW_ID", type="string", length="5", referencedColumnName="WORKFLOW_ID")
+	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Workflow", fetch="LAZY", inversedBy="instances")
+	 * @Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID")
 	 * 
 	 * @var Workflow
 	 */
@@ -66,7 +66,7 @@ class Instance {
 	}
 	
 	/**
-	 * @Orm\OneToMany(targetEntity="Workflow\Entity\InstanceData", mappedBy="instance", fetch="lazy")
+	 * @Orm\OneToMany(targetEntity="Workflow\Entity\InstanceData", mappedBy="instance", fetch="LAZY")
 	 * 
 	 * @var array
 	 */
@@ -79,7 +79,7 @@ class Instance {
 	}
 	
 	/**
-	 * @Orm\OneToMany(targetEntity="Workflow\Entity\TransitionTrail", mappedBy="instance", fetch="lazy")
+	 * @Orm\OneToMany(targetEntity="Workflow\Entity\TransitionTrail", mappedBy="instance", fetch="LAZY")
 	 * 
 	 * @var TransitionTrail
 	 */

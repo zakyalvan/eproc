@@ -9,7 +9,7 @@ use DoctrineModule\Persistence\ObjectManagerAwareInterface as ObjectManagerAware
  * 
  * @author zakyalvan
  */
-class TableKeyGenerator implements KeyGeneratatorInterface, ObjectManagerAware {
+class TableKeyGenerator implements KeyGeneratorInterface, ObjectManagerAware {
 	/**
 	 * @var ObjectManager
 	 */

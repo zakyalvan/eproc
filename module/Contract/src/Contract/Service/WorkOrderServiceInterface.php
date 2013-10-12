@@ -9,6 +9,17 @@ use Contract\Entity\Kontrak\Kontrak;
  * @author zakyalvan
  */
 interface WorkOrderServiceInterface {
-	public function canCreateWorkOrderForContract($kontrak);
+	/**
+	 * Apakah dapat membuat workorder untuk kontrak yang diberikan.
+	 * 
+	 * @param Kontrak|string $kontrak
+	 */
+	public function canCreateWorkOrder($kontrak);
+	
+	/**
+	 * Simpan data workorder.
+	 * 
+	 * @param unknown $workorder
+	 */
 	public function saveWorkOrder($workorder);
 }

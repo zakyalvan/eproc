@@ -104,9 +104,9 @@ return array(
 			'Workflow\Execution\Evaluator\Service\SplitEvaluatorRegistry' => 'Workflow\Execution\Evaluator\Service\SplitEvaluatorRegistryFactory'
 		),
 		'invokables' => array(
-			'Workflow\Definition\DefinitionServiceInterface' => 'Workflow\Definition\DefinitionService',
-			'Workflow\Execution\ExecutionServiceInterface' => 'Workflow\Execution\ExecutionService',
-			'Workflow\Execution\Router\ProcessRouter' => 'Workflow\Router\ProcessRouter',
+			'Workflow\Definition\DefinitionService' => 'Workflow\Definition\DefinitionService',
+			'Workflow\Execution\ExecutionService' => 'Workflow\Execution\ExecutionService',
+			'Workflow\Execution\Router\ProcessRouter' => 'Workflow\Execution\Router\ProcessRouter',
 			'Workflow\Execution\WorkitemManager' => 'Workflow\Execution\WorkitemManager'
 		)
 	),

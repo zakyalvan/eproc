@@ -7,8 +7,15 @@
 	
 	/* @var $vendor Vendor\Entity\Vendor */
 	$vendor = $this->vendor;
+	
+	/* @var $form Zend\Form\Form */
+	$form = $this->penunjukanForm;
 ?>
 <div id="right">
+	<?php 
+		$form->prepare();
+		echo $this->form()->openTag($form);
+	?>
 	<div class="section">
 		<!-- Start Contract Header -->
 		<div class="box">
@@ -124,12 +131,14 @@
 				<span class="hide"></span>
 			</div>
 			<div class="content">
+			
 				<table class="form formStyle2">
 					<tr>
 						<td class="head" style="width: 200px;">Pengelola Kontrak</td>
 						<td>
 							<div>
 								<!-- Select user pengelola kontrak -->
+								<?php echo($this->formSelect($form->get('userPengelola'))) ?>
 							</div>
 						</td>
 					</tr>
@@ -138,10 +147,13 @@
 						<td>
 							<div>
 								<!-- Textarea komentar -->
+								<?php echo($this->formTextarea($form->get('komentar'))) ?>
 							</div>
 						</td>
 					</tr>
 				</table>
+				
+			
 			</div>
 		</div>
 		<!-- End Contract Comment -->
@@ -149,11 +161,13 @@
 		<!-- Start Button Container -->
 		<div class="box">
 			<div class="uibutton-toolbar">
-				<input type="submit" value="Simpan Sementara" class="uibutton" />
-				<input type="submit" value="Simpan" class="uibutton" />
-				<input type="submit" value="Kembali" class="uibutton">
+				<?php echo $this->formElement($form->get('submit'))?>
+				<a href="<?php echo $this->url('contract/todo')?>" class="uibutton">Kembali</a>
 			</div>
 		</div>
 		<!-- End Button Container -->
 	</div>
+	<?php 
+		echo $this->form()->closeTag();
+	?>
 </div>

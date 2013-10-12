@@ -2,6 +2,9 @@
 namespace Contract\Form;
 
 use Zend\Form\Form;
+use Zend\Form\Fieldset;
+use Zend\Stdlib\Hydrator\ClassMethods as ClassMethodsHydrator;
+use Zend\InputFilter\InputFilter;
 
 /**
  * Form assign pengelola kontrak.
@@ -9,7 +12,5 @@ use Zend\Form\Form;
  * @author zakyalvan
  */
 class AssignPengelolaForm extends Form {
-	public function __construct() {
-		
-	}
+	
 }
