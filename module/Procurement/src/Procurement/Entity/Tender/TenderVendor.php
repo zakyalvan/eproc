@@ -13,8 +13,6 @@ use Vendor\Entity\Vendor;
  * @author zakyalvan
  */
 class TenderVendor {
-	const FLAG_PEMENANG = '1';
-	
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="KODE_TENDER", type="string")

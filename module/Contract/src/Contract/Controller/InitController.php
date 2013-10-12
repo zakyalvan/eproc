@@ -46,6 +46,7 @@ class InitController extends AbstractActionController {
 		}
 		
 		$tender = $procurementService->getRegisteredTender($tenderIdentity);
+		$vendor = $procurementService->getWinnerVendor($tenderIdentity);
 		
 		/* @var $contractService ContractServiceInterface */
 		$contractService = $this->serviceLocator->get('Contract\Service\ContractService');
@@ -58,6 +59,9 @@ class InitController extends AbstractActionController {
 			
 		}
 		
-		return array();
+		return array(
+			'tender' => $tender,
+			'vendor' => $vendor
+		);
 	}
 }

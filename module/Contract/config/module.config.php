@@ -40,17 +40,36 @@ return array(
 							'route' => '/:controller[/:action]',
 							'defaults' => array(
 								'__NAMESPACE__' => 'Contract\Controller',
-								'controller' => 'todo',
+								'controller' => 'index',
 								'action' => 'index'
+							)
+						)
+					),
+					'todo' => array(
+						'type' => 'Zend\Mvc\Router\Http\Segment',
+						'options' => array(
+							'route' => '/todo[/data/:action[/:page[/:rows]]]',
+							'constraints' => array(
+								'action' => '[\\.a-zA-Z0-9_-]+',
+								'page' => '[0-9]+',
+								'rows' => '[0-9]+'
+							),
+							'defaults' => array(
+								'__NAMESPACE__' => 'Contract\Controller',
+								'controller' => 'todo',
+								'action' => 'index',
+								'page' => 1,
+								'rows' => 10
 							)
 						)
 					),
 					'init' => array(
 						'type' => 'Zend\Mvc\Router\Http\Segment',
 						'options' => array(
-							'route' => '/init/assign/:tender',
+							'route' => '/init/assign/:kantor/:tender',
 							'constraints' => array(
 								'tender' => '[\\.a-zA-Z0-9_-]+',
+								'kantor' => '[a-zA-Z0-9]+'
 							),
 							'defaults' => array(
 								'__NAMESPACE__' => 'Contract\Controller',

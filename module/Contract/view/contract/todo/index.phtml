@@ -11,22 +11,33 @@
 					<thead>
 						<tr>
 							<th style="width: 50px;">No</th>
-							<th style="width: 150px;">Nomor Pengadaan</th>
+							<th style="width: 125px;">Nomor Pengadaan</th>
 							<th>Deskripsi Pekerjaan</th>
-							<th style="width: 200px;">Vendor</th>
-							<th style="width: 200px;">Tanggal Penetapan</th>
+							<th style="width: 200px;">Lingkup Pekerjaan</th>
+							<th style="width: 150px;">Vendor</th>
+							<th style="width: 125px;">Tanggal Penetapan</th>
 							<th style="width: 75px;">Aksi</th>
 						</tr>
 					</thead>
 					<tbody>
+					<?php 
+						$index = 1;
+						/* @var $initTodoItem Contract\Todo\ContractInitTodoItem */ 
+						foreach ($this->initTodoList as $initTodoItem) : 
+					?>
 						<tr>
-							<td style="text-align: center;"></td>
-							<td style="text-align: center;"></td>
-							<td></td>
-							<td></td>
-							<td style="text-align: center;"></td>
-							<td style="text-align: center;"><a class="uibutton" />Proses</a></td>
+							<td style="text-align: center;"><?php echo $index ?></td>
+							<td style="text-align: center;"><?php echo $initTodoItem->getKodeTender()?></td>
+							<td><?php echo $initTodoItem->getJudulPekerjaan()?></td>
+							<td><?php echo $initTodoItem->getLingkupPekerjaan()?></td>
+							<td><?php echo $initTodoItem->getNamaVendor() ?></td>
+							<td style="text-align: center;"><?php echo ($tanggalPenetapan = $initTodoItem->getTanggalPenetapan()) != null ? $tanggalPenetapan->format('d M Y') : ''?></td>
+							<td style="text-align: center;"><a href="<?php echo $this->url($initTodoItem->getActionRoute(), $initTodoItem->getActionRouteParams())?>" class="uibutton" />Proses</a></td>
 						</tr>
+					<?php 
+						$index++;
+						endforeach; 
+					?>
 					</tbody>
 				</table>
 			</div>
@@ -44,7 +55,7 @@
 					<thead>
 						<tr>
 							<th style="width: 50px;">No</th>
-							<th style="width: 150px;">Nomor Pengadaan</th>
+							<th style="width: 125px;">Nomor Pengadaan</th>
 							<th>Deskripsi Pekerjaan</th>
 							<th style="width: 200px;">Vendor</th>
 							<th style="width: 200px;">Status</th>
@@ -52,6 +63,22 @@
 						</tr>
 					</thead>
 					<tbody>
+						<tr>
+							<td style="text-align: center;"></td>
+							<td style="text-align: center;"></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td style="text-align: center;"><a class="uibutton" />Proses</a></td>
+						</tr>
+						<tr>
+							<td style="text-align: center;"></td>
+							<td style="text-align: center;"></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td style="text-align: center;"><a class="uibutton" />Proses</a></td>
+						</tr>
 						<tr>
 							<td style="text-align: center;"></td>
 							<td style="text-align: center;"></td>

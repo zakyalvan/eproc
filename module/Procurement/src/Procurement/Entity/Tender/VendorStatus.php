@@ -11,6 +11,8 @@ use Procurement\Entity\Status;
  * @author zakyalvan
  */
 class VendorStatus {
+	const FLAG_PEMENANG = '1';
+	
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="KODE_TENDER", type="string")

@@ -51,10 +51,6 @@ abstract class AbstractListProvider implements SearchableListProviderInterface, 
 	 */
 	protected $fetchJoinCollection = false;
 	
-	public function __construct() {
-		$this->init();
-	}
-	
 	/**
 	 * Initialize list data provider.
 	 * Untuk sementara, method ini belum dapat menggunakan property yang diinject oleh initializer, 
@@ -66,12 +62,9 @@ abstract class AbstractListProvider implements SearchableListProviderInterface, 
 	 * (non-PHPdoc)
 	 * @see \Application\Common\ListProviderInterface::setContextDatas()
 	 */
-	public function setContextDatas($contexDatas) {
-		foreach ($this->requiredContextDataKeys as $key) {
-			if(array_key_exists($key, $this->contexDatas) || array_key_exists($key, $contexDatas)) {
-				$providedKeys = array_merge(array_keys($this->contexDatas), array_keys($contexDatas));
-				throw new \InvalidArgumentException(sprintf('Context data yang diberikan tidak sesuai dengan yang dibutuhkan. Key data yang dibutuhkan %s sementara key data yang diberikan %s', implode(', ', $this->requiredContextDataKeys), implode(', ', $providedKeys)), 100, null);
-			}
+	public function setContextDatas(array $contexDatas, $partial = true) {
+		if(!$partial) {
+			$this->validateContextDatas($contexDatas);
 		}
 		$this->contexDatas = array_merge($this->contexDatas, $contexDatas);
 	}
@@ -100,6 +93,8 @@ abstract class AbstractListProvider implements SearchableListProviderInterface, 
 	 * @see \Application\Common\ListProviderInterface::getListData()
 	 */
 	public function getListData($pageNumber, $itemCountPerPage, $criterias = array()) {
+		$this->validateContextDatas();
+		
 		/* @var $entityManager EntityManager */
 		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
 		
@@ -130,6 +125,25 @@ abstract class AbstractListProvider implements SearchableListProviderInterface, 
 	 * @return Query|QueryBuilder
 	 */
 	abstract protected function buildQuery(QueryBuilder $queryBuilder, $contextDatas = array(), $criterias = array());
+	
+	/**
+	 * Validate contect datas yang diberikan. Apakah sesuai dengan konteks data yang diberikan atau tidak.
+	 * 
+	 * @param unknown $contextDatas
+	 * @throws \InvalidArgumentException
+	 */
+	protected function validateContextDatas($contextDatas = array()) {
+		foreach ($this->requiredContextDataKeys as $requiredKey) {
+			if(array_key_exists($requiredKey, array_keys($this->contexDatas)) || array_key_exists($requiredKey, array_keys($contextDatas))) {
+				throw new \InvalidArgumentException(sprintf(
+					'Context-datas untuk list-provider %s yang diberikan tidak sesuai dengan konteks data yang dibutuhkan. Key context data yang diberikan [%s] sementara key yang dibutuhkan [%s]', 
+					get_called_class(),
+					implode(', ', array_merge(array_keys($this->contexDatas), array_keys($contextDatas))), 
+					implode(', ', $this->requiredContextDataKeys)
+				), 100, null);
+			}
+		}
+	}
 	
 	/**
 	 * (non-PHPdoc)

@@ -113,18 +113,12 @@ class User {
 	}
 	
 	/**
-	 * Fungsi-fungsi (atau role) dari user yang bersangkutan.
-	 * 
-	 * @Orm\ManyToMany(targetEntity="\Application\Entity\Role", inversedBy="users")
-	 * @Orm\JoinTable(name="SC.SC_USER_FUNGSI",
- 	 * 		joinColumns={@Orm\JoinColumn(name="KODE_USER", referencedColumnName="KODE_USER")},
-	 *		inverseJoinColumns={@Orm\JoinColumn(name="KODE_FUNGSI", referencedColumnName="KODE_FUNGSI")}
-	 * )
-	 * 
+	 * @Orm\OneToMany(targetEntity="Application\Entity\UserRole", fetch="LAZY", mappedBy="user")
+	 *
 	 * @var ArrayCollection
 	 */
-	protected $roles;
-	public function getRoles() {
-		return $this->roles;
+	protected $listUserRole;
+	public function getListUserRole() {
+		return $this->listUserRole;
 	}
 }

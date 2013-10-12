@@ -12,6 +12,7 @@ use Procurement\Entity\Status;
 use Procurement\Entity\Tender\TenderVendor;
 use Zend\Json\Json;
 use Doctrine\ORM\Query\Expr\Join;
+use Procurement\Entity\Tender\VendorStatus;
 
 /**
  * Implementasi default dari procurement service.
@@ -104,7 +105,7 @@ class ProcurementService implements ProcurementServiceInterface, ServiceLocatorA
 			))
 			->where($queryBuilder->expr()->eq('tender.kode', ':kodeTender'))
 			->setParameter('kodeKantor', $tenderIdentity[self::KODE_KANTOR_KEY])
-			->setParameter('pemenang', TenderVendor::FLAG_PEMENANG)
+			->setParameter('pemenang', VendorStatus::FLAG_PEMENANG)
 			->setParameter('kodeStatus', Status::KODE_PENUNJUKAN_PEMENANG)
 			->setParameter('kodeTender', $tenderIdentity[self::KODE_TENDER_KEY])
 			->getQuery()
@@ -126,22 +127,23 @@ class ProcurementService implements ProcurementServiceInterface, ServiceLocatorA
 		
 		/* @var $entityManager EntityManager */
 		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
-		
 		$queryBuilder = $entityManager->createQueryBuilder();
+		
 		return $queryBuilder->select('vendor')
-			->from('Procurement\Entity\Tender\Tender', 'tender')
-			->innerJoin('tender.kantor', 'kantor', Join::WITH, $queryBuilder->expr()->eq('kantor.kode', ':kodeKantor'))
-			->innerJoin('tender.listTenderVendor', 'tenderVendor')
-			->innerJoin('tenderVendor.vendor', 'vendor')
-			->innerJoin('tenderVendor.vendorStatus', 'tenderVendorstatus', $queryBuilder->expr()->andX(
-				$queryBuilder->expr()->eq('tenderVendor.pemenang', ':pemenang'),
-				$queryBuilder->expr()->eq('status.kode', ':kodeStatus')
+			->from('Vendor\Entity\Vendor', 'vendor')
+			->innerJoin('Procurement\Entity\Tender\TenderVendor', 'tenderVendor', Join::WITH, $queryBuilder->expr()->eq('tenderVendor.vendor', 'vendor'))
+			->innerJoin('tenderVendor.tender', 'tender', Join::WITH, $queryBuilder->expr()->andX(
+				$queryBuilder->expr()->eq('tender.kode', ':kodeTender'),
+				$queryBuilder->expr()->eq('tender.kantor', ':kodeKantor')
 			))
-			->where($queryBuilder->expr()->eq('tender.kode', ':kodeTender'))
-			->setParameter('kodeKantor', $tenderIdentity[self::KODE_KANTOR_KEY])
-			->setParameter('pemenang', TenderVendor::FLAG_PEMENANG)
-			->setParameter('kodeStatus', Status::KODE_PENUNJUKAN_PEMENANG)
+			->innerJoin('tenderVendor.vendorStatus', 'tenderVendorStatus', Join::WITH, $queryBuilder->expr()->andX(
+				$queryBuilder->expr()->eq('tenderVendorStatus.pemenang', ':pemenang'),
+				$queryBuilder->expr()->eq('tenderVendorStatus.status', ':kodeStatus')
+			))
 			->setParameter('kodeTender', $tenderIdentity[self::KODE_TENDER_KEY])
+			->setParameter('kodeKantor', $tenderIdentity[self::KODE_KANTOR_KEY])
+			->setParameter('pemenang', VendorStatus::FLAG_PEMENANG)
+			->setParameter('kodeStatus', Status::KODE_PENUNJUKAN_PEMENANG)
 			->getQuery()
 			->getSingleResult();
 	}

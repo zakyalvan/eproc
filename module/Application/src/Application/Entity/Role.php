@@ -92,12 +92,12 @@ class Role {
 	}
 	
 	/**
-	 * List user yang berada dalam role ini.
+	 * @Orm\OneToMany(targetEntity="Application\Entity\UserRole", fetch="LAZY", mappedBy="role")
 	 * 
-	 * @Orm\ManyToMany(targetEntity="Application\Entity\User", mappedBy="roles")
+	 * @var ArrayCollection
 	 */
-	protected $users;
-	public function getUsers() {
-		return $this->users;
+	protected $listUserRole;
+	public function getListUserRole() {
+		return $this->listUserRole;
 	}
 }

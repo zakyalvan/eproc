@@ -6,7 +6,7 @@ namespace Application\Todo;
  * 
  * @author zakyalvan
  */
-abstract class AbstractTodoItem {
+abstract class AbstractTodoItem extends \ArrayObject {
 	/**
 	 * Context dari todo item.
 	 * 
@@ -15,11 +15,20 @@ abstract class AbstractTodoItem {
 	protected $context;
 	
 	/**
-	 * Data untuk todo item
+	 * Nama route ke action untuk mengeksekusi todo item.
+	 * Properti ini spesifik ke zend-framework 2 (mvc-router).
+	 * 
+	 * @var string
+	 */
+	protected $actionRoute;
+	
+	/**
+	 * Parameter untuk route ke action untuk mengeksekusi todo item.
+	 * Properti ini spesifik ke zend-framework 2 (mvc-router).
 	 * 
 	 * @var array
 	 */
-	protected $datas = array();
+	protected $actionRouteParams = array();
 	
 	/**
 	 * Url untuk mengeksekusi todo item.
@@ -29,14 +38,25 @@ abstract class AbstractTodoItem {
 	protected $actionUrl;
 	
 	/**
+	 * Apakah menggunakan action-route atau plain action-url.
+	 * 
+	 * @var boolean
+	 */
+	protected $useActionRoute = true;
+	
+	/**
 	 * Kapan todo item ini dibuat/mulai aktif.
 	 * 
-	 * @var unknown
+	 * @var \DateTime
 	 */
 	protected $createdDate;
 	
-	public function __construct($context, $actionUrl, $createdDate) {
+	public function __construct($context, $actionRoute, $actionRouteParams, $actionUrl, $createdDate) {
+		parent::__construct(array());
+		
 		$this->setContext($context);
+		$this->setActionRoute($actionRoute);
+		$this->setActionRouteParams($actionRouteParams);
 		$this->setActionUrl($actionUrl);
 		$this->setCreatedDate($createdDate);
 	}
@@ -48,11 +68,32 @@ abstract class AbstractTodoItem {
 		$this->context = $context;
 	}
 	
+	public function getActionRoute() {
+		return $this->actionRoute;
+	}
+	protected function setActionRoute($actionRoute) {
+		$this->actionRoute = $actionRoute;
+	}
+	
+	public function getActionRouteParams() {
+		return $this->actionRouteParams;
+	}
+	protected function setActionRouteParams($actionRouteParams) {
+		$this->actionRouteParams = $actionRouteParams;
+	}
+	
 	public function getActionUrl() {
 		return $this->formatActionUrl();
 	}
 	protected function setActionUrl($actionUrl) {
 		$this->actionUrl = $actionUrl;
+	}
+	
+	public function isUseActionRoute() {
+		return $this->useActionRoute;
+	}
+	protected function setUseActionRoute($useActionRoute) {
+		$this->useActionRoute = $useActionRoute;
 	}
 	
 	public function getCreatedDate() {
@@ -61,32 +102,4 @@ abstract class AbstractTodoItem {
 	protected function setCreatedDate($createdDate) {
 		$this->createdDate = $createdDate;
 	}
-	
-	public function getData($name) {
-		if(isset($this->datas[$name])) {
-			return $this->datas[$name];
-		}
-		return null;
-	}
-	public function hasData($name) {
-		return isset($this->datas[$name]);
-	}
-	public function setData($name, $value) {
-		$this->datas[$name] = $value;
-	}
-	
-	public function __get($name) {
-		return $this->getData($name);
-	}
-	public function __set($name, $value) {
-		$this->setData($name, $value);
-	}
-	public function __isset($name) {
-		return $this->hasData($name);
-	}
-	
-	/**
-	 * @return url string
-	 */
-	abstract protected function formatActionUrl();
 }

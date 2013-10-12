@@ -13,7 +13,7 @@ interface ListProviderInterface {
 	 * 
 	 * @param array $contexDatas
 	 */
-	public function setContextDatas($contexDatas);
+	public function setContextDatas(array $contexDatas, $partial = true);
 	
 	/**
 	 * Retrieve list data.

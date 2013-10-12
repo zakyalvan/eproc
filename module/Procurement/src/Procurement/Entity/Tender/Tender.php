@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping as Orm;
 use Application\Entity\Kantor;
 use Contract\Entity\Kontrak\Kontrak;
 use Doctrine\Common\Collections\ArrayCollection;
+use Application\Entity\User;
 
 /**
  * @Orm\Entity
@@ -105,16 +106,19 @@ class Tender {
 	}
 	
 	/**
-	 * Kode user pemohon.
+	 * User pemohon.
 	 * 
-	 * @Orm\Column(name="KODE_USER_PEMOHON", type="string", nullable=true)
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="EAGER")
+	 * @Orm\JoinColumn(name="KODE_USER_PEMOHON", referencedColumnName="KODE_USER", nullable=true)
+	 * 
+	 * @var User
 	 */
-	private $kodePemohon;
-	public function getKodePemohon() {
-		return $this->kodePemohon;
+	private $userPemohon;
+	public function getUserPemohon() {
+		return $this->userPemohon;
 	}
-	public function setKodePemohon($kodePemohon) {
-		$this->kodePemohon = $kodePemohon;
+	public function setUserPemohon(User $userPemohon) {
+		$this->userPemohon = $userPemohon;
 	}
 	/**
 	 * @Orm\Column(name="NAMA_PEMOHON", type="string", nullable=true)
@@ -140,16 +144,19 @@ class Tender {
 	
 	
 	/**
-	 * Kode user perencana.
+	 * User perencana.
 	 * 
-	 * @Orm\Column(name="KODE_USER_PERENCANA", type="string", nullable=true)
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="EAGER")
+	 * @Orm\JoinColumn(name="KODE_USER_PERENCANA", referencedColumnName="KODE_USER", nullable=true)
+	 * 
+	 * @var User
 	 */
-	private $kodePerencana;
-	public function getKodePerencana() {
-		return $this->kodePerencana;
+	private $userPerencana;
+	public function getUserPerencana() {
+		return $this->userPerencana;
 	}
-	public function setKodePerencana($kodePerencana) {
-		$this->kodePerencana = $kodePerencana;
+	public function setUserPerencana(User $userPerencana) {
+		$this->userPerencana = $userPerencana;
 	}
 	/**
 	 * @Orm\Column(name="NAMA_PERENCANA", type="string", nullable=true)
@@ -177,15 +184,19 @@ class Tender {
 	/**
 	 * Kode user pelaksana.
 	 * 
-	 * @Orm\Column(name="KODE_USER_PELAKSANA", type="string", nullable=true)
+	 * @Orm\ManyToOne(targetEntity="Application\Entity\User", fetch="EAGER")
+	 * @Orm\JoinColumn(name="KODE_USER_PELAKSANA", referencedColumnName="KODE_USER", nullable=true)
+	 * 
+	 * @var User
 	 */
-	private $kodePelaksana;
-	public function getKodePelaksana() {
-		return $this->kodePelaksana;
+	private $userPelaksana;
+	public function getUserPelaksana() {
+		return $this->userPelaksana;
 	}
-	public function setKodePelaksana($kodePelaksana) {
-		$this->kodePelaksana = $kodePelaksana;
+	public function setUserPelaksana(User $userPelaksana) {
+		$this->userPelaksana = $userPelaksana;
 	}
+	
 	/**
 	 * @Orm\Column(name="NAMA_PELAKSANA", type="string", nullable=true)
 	 */
@@ -211,12 +222,12 @@ class Tender {
 	/**
 	 * @Orm\Column(name="TGL_PEMBUATAN", type="datetime", nullable=true)
 	 */
-	private $tanggalPembutan;
+	private $tanggalPembuatan;
 	public function getTanggalPembuatan() {
-		return $this->tanggalPembutan;
+		return $this->tanggalPembuatan;
 	}
 	public function setTanggalPembuatan($tanggalPembuatan) {
-		$this->tanggalPembutan = $tanggalPembuatan;
+		$this->tanggalPembuatan = $tanggalPembuatan;
 	}
 	
 	/**

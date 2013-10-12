@@ -3,6 +3,7 @@ namespace Contract\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
+use Contract\Todo\ContractInitTodoListProvider;
 
 /**
  * Kelas index dari module Contract.
@@ -18,6 +19,7 @@ class TodoController extends AbstractActionController {
 	const CONTRACT_INVOICE_TODO_LIST_PROVIDER = 'Contract\Todo\ContractInvoice';
 	
 	private $acceptCriteria = array(
+		'Zend\View\Model\ViewModel' => array('text/html'),
 		'Zend\View\Model\JsonModel' => array('application/json')
 	);
 	
@@ -25,7 +27,19 @@ class TodoController extends AbstractActionController {
 	 * Tampilin todo list untuk seluruh seluruh proses manajemen kontrak.
 	 */
 	public function indexAction() {
-		return array();
+		$pageNumber = $this->params()->fromRoute('page');
+		$itemCountPerPage = $this->params()->fromRoute('rows');
+		
+		/* @var $initTodoListProvider ContractInitTodoListProvider */
+		$initTodoListProvider = $this->getServiceLocator()->get(self::CONTRACT_INIT_TODO_LIST_PROVIDER);
+		$initTodoListProvider->setContextDatas(array(
+				ContractInitTodoListProvider::KODE_FUNGSI_CONTEXT_KEY => '410',
+				ContractInitTodoListProvider::KODE_KANTOR_CONTEXT_KEY => '44A'
+		));
+		
+		return array(
+			'initTodoList' => $initTodoListProvider->getListData($pageNumber, $itemCountPerPage)
+		);
 	}
 	
 	/**

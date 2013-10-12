@@ -1,0 +1,159 @@
+<?php 
+	/* @var $tender Procurement\Entity\Tender\Tender */
+	$tender = $this->tender;
+	
+	/* @var $items Doctrine\Common\Collections\ArrayCollection */
+	$items = $tender->getListItem();
+	
+	/* @var $vendor Vendor\Entity\Vendor */
+	$vendor = $this->vendor;
+?>
+<div id="right">
+	<div class="section">
+		<!-- Start Contract Header -->
+		<div class="box">
+			<div class="title">
+				HEADER
+				<span class="hide"></span>
+			</div>
+			<div class="content">
+				<table class="form formStyle2">
+					<tr>
+						<td class="head" style="width: 200px;">Nomor Pengadaan</td>
+						<td>
+							<div>
+								<?php echo $tender->getKode();?>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="head" style="width: 200px;">Pengguna Barang / Jasa</td>
+						<td>
+							<div>
+								<?php echo $tender->getUserPemohon() ? $tender->getUserPemohon()->getNama() : '' ?>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="head" style="width: 200px;">Vendor</td>
+						<td>
+							<div>
+								<?php echo $vendor->getNama() ?>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="head" style="width: 200px;">Tipe Kontrak</td>
+						<td>
+							<div>
+								<?php echo $tender->getTipeKontrak()?>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="head" style="width: 200px;">Tanggal Penetapan Pemenang</td>
+						<td>
+							<div>
+								<?php echo $tender->getTanggalSelesai() != null ? $tender->getTanggalSelesai()->format('d M Y') : '' ?>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="head" style="width: 200px;">Nilai HPS</td>
+						<td>
+							<div>
+								
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="head" style="width: 200px;">Nilai Kontrak</td>
+						<td>
+							<div>
+								
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<!-- End Contract Header -->
+		<!-- Start Contract Item -->
+		<div class="box">
+			<div class="title">
+				ITEM
+				<span class="hide"></span>
+			</div>
+			<div class="content">
+				<table class="style1" id="contractItem">
+					<thead>
+						<tr>
+							<th style="width: 50px;">No</th>
+							<th style="width: 150px;">Kode Barang / Jasa</th>
+							<th>Deskripsi</th>
+							<th style="width: 100px;">Harga Satuan</th>
+							<th style="width: 100px;">Satuan</th>
+							<th style="width: 100px;">Jumlah</th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php 
+						/* @var $item Procurement\Entity\Tender\Item */
+						foreach ($items as $item ) : 
+					?>
+						<tr>
+							<td style="text-align: center;"><?php echo $item->getNomorUrut()?></td>
+							<td></td>
+							<td></td>
+							<td style="text-align: right;"><?php echo $item->getHarga()?></td>
+							<td style="text-align: center;"><?php echo $item->getUnit()?></td>
+							<td style="text-align: right;"><?php echo $item->getJumlah()?></td>
+						</tr>
+					<?php 
+						endforeach; 
+					?>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- End Contract Item -->
+		<!-- Start Contract Comment -->
+		<div class="box">
+			<div class="title">
+				PENUNJUKAN PENGELOLA KONTRAK
+				<span class="hide"></span>
+			</div>
+			<div class="content">
+				<table class="form formStyle2">
+					<tr>
+						<td class="head" style="width: 200px;">Pengelola Kontrak</td>
+						<td>
+							<div>
+								<!-- Select user pengelola kontrak -->
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="head" style="width: 200px;">Komentar Anda</td>
+						<td>
+							<div>
+								<!-- Textarea komentar -->
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<!-- End Contract Comment -->
+		
+		<!-- Start Button Container -->
+		<div class="box">
+			<div class="uibutton-toolbar">
+				<input type="submit" value="Simpan Sementara" class="uibutton" />
+				<input type="submit" value="Simpan" class="uibutton" />
+				<input type="submit" value="Kembali" class="uibutton">
+			</div>
+		</div>
+		<!-- End Button Container -->
+	</div>
+</div>
