@@ -21,7 +21,7 @@ class WorkitemRepository extends EntityRepository {
 	 * @param unknown $transitionId
 	 * @return Workitem
 	 */
-	public function getWorkitemByIdentity($workitemId, $workflowId, $instanceId, $transitionId) {
+	public function getWorkitem($workitemId, $workflowId, $instanceId, $transitionId) {
 		$queryBuilder = $this->_em->createQueryBuilder();
 		return $queryBuilder->select(array('workitem', 'transition', 'task', 'transitionWorkflow', 'instance', 'instanceWorkflow'))
 			->from('Workflow\Entity\Workitem', 'workitem')

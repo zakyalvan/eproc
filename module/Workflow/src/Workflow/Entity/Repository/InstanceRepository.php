@@ -6,6 +6,7 @@ use Workflow\Entity\Instance;
 use Workflow\Entity\WorkflowAttribute;
 use Workflow\Entity\InstanceData;
 use Doctrine\ORM\Query\Expr\Join;
+use Workflow\Entity\Workflow;
 
 /**
  * Custom repository untuk entity Instance
@@ -14,6 +15,67 @@ use Doctrine\ORM\Query\Expr\Join;
  */
 class InstanceRepository extends EntityRepository {
 	/**
+	 * Create new instance.
+	 * 
+	 * @param mixed $workflow
+	 * @param integer $id
+	 * @return Instance
+	 */
+	public function createNewInstance($workflow) {
+		$instance = new Instance();
+		$instance->setWorkflow($workflow);
+		$instance->setContext('Context');
+		$instance->setStatus(Instance::STATUS_OPERATED);
+		$instance->setStartDate(new \DateTime(null, null));
+		return $this->_em->merge($instance);
+	}
+	
+	/**
+	 * Apakah sebuah instance sudah beres atau belum.
+	 * 
+	 * @param unknown $instance
+	 * @param unknown $workflow
+	 * @throws \InvalidArgumentException
+	 * @return boolean
+	 */
+	public function isFinishedInstance($instance, $workflow) {
+		$workflowId = $workflow;
+		if($workflow instanceof Workflow) {
+			$workflowId = $workflow->getId();
+		}
+		
+		$instanceId = $instance;
+		if($instance instanceof Instance) {
+			$instanceId = $instance->getId();
+			
+			if($instance->getWorkflow() != null) {
+				if($instance->getWorkflow()->getId() != null && $instance->getWorkflow()->getId() != $workflowId) {
+					throw new \InvalidArgumentException('', 100, null);
+				}
+			}
+		}
+		
+		if($instanceId == null || $workflowId == null) {
+			throw new \InvalidArgumentException('Parameter instance dan workflow yang diberikan tidak valid', 100, null);
+		}
+		
+		$queryBuilder = $this->_em->createQueryBuilder();
+		$status = $queryBuilder->select('instance.status')
+			->from('Workflow\Entity\Instance', 'instance')
+			->innerJoin('instance.workflow', 'workflow', Join::WITH, $queryBuilder->expr()->eq('workflow.id', ':workflowId'))
+			->where($queryBuilder->expr()->eq('instance.id', ':instanceId'))
+			->setParameter('workflowId', $workflowId)
+			->setParameter('instanceId', $instanceId)
+			->getQuery()
+			->getSingleScalarResult();
+		
+		if($status == Instance::STATUS_FINISHED) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
 	 * Retrieve instance data untuk instance yang diberikan.
 	 * 
 	 * @param Instance $instance
@@ -21,7 +83,7 @@ class InstanceRepository extends EntityRepository {
 	 */
 	public function getInstanceDatas(Instance $instance) {
 		$queryBuilder = $this->_em->createQueryBuilder();
-		$queryBuilder->select('workflowAttribute.name, workflowAttribute.type, instanceData.value')
+		$tempDatas = $queryBuilder->select(array('workflowAttribute.name', 'workflowAttribute.type', 'instanceData.value'))
 			->from('Workflow\Entity\InstanceData', 'instanceData')
 			->innerJoin('instanceData.instance', 'instance', Join::WITH, $queryBuilder->expr()->eq('instance', ':instance'))
 			->innerJoin('instanceData.workflowAttribute', 'workflowAttribute')
@@ -86,8 +148,7 @@ class InstanceRepository extends EntityRepository {
 				
 				$this->_em->persist($instanceData);
 			}
-			
-			$this->_em->flush();
+
 			$this->_em->commit();
 		}
 		catch (\Exception $e) {

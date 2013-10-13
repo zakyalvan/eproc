@@ -5,7 +5,7 @@ use Doctrine\ORM\Mapping as Orm;
 use Workflow\Entity\Workflow;
 
 /**
- * @Orm\Entity
+ * @Orm\Entity(classRepository="Workflow\Entity\Arc")
  * @Orm\Table(name="EP_WF_ARC")
  * 
  * @author zakyalvan

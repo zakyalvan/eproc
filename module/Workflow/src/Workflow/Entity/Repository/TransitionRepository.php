@@ -25,7 +25,7 @@ class TransitionRepository extends EntityRepository {
 		$classType = "Workflow\Entity\{$typeTemp}Transition";
 		
 		if(!class_exists($classType, true)) {
-			throw new \InvalidArgumentException("Kelas transition untuk type ({$type}) tidak ditemukan.", 100, null);
+			throw new \InvalidArgumentException(sprintf('Kelas transition (%s) untuk type %s tidak ditemukan.', $classType, $type), 100, null);
 		}
 		
 		if($returnParent) {
@@ -51,7 +51,17 @@ class TransitionRepository extends EntityRepository {
 	 * @param mixed $transition
 	 * @return array
 	 */
-	public function getTransitionAttributeArray($transition) {
+	public function getTransitionAttributes($transition, $workflow) {
+		$transitionId = $transition;
+		if($transition instanceof Transition) {
+			$transitionId = $transition->getId();
+		}
+		
+		$workflowId = $workflow;
+		if($workflow instanceof Workflow) {
+			$workflowId = $workflow->getId();
+		}
+		
 		$queryBuilder = $this->_em->createQueryBuilder();
 		$queryBuilder->select('workflowAttribute.name')
 			->from('Workflow\Entity\TransitionAttribute', 'transitionAttribute')

@@ -30,14 +30,6 @@ interface ExecutionServiceInterface {
 	public function startWorkflow(Workflow $workflow, array $datas);
 	
 	/**
-	 * Manage work item, didelegasiin ke object dari kelas {@link WorkitemManager}.
-	 *
-	 * @param Workitem $workitem
-	 * @return WorkitemManager
-	 */
-	public function manageWorkitem(Workitem $workitem);
-	
-	/**
 	 * Eksekusi workitem, setelah itu route token pada palce sebelum trnsition dimana workitem ini berada.
 	 * 
 	 * @param Workitem $workitem

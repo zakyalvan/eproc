@@ -43,7 +43,8 @@ class DefinitionService implements DefinitionServiceInterface, ServiceLocatorAwa
 		
 		if($populateRelations) {
 			$queryBuilder->innerJoin('workflow.places', 'places')
-				->innerJoin('worflow.transitions', 'transitions');
+				->innerJoin('workflow.transitions', 'transitions')
+				->innerJoin('workflow.places', 'places');
 		}
 		
 		return $queryBuilder->getQuery()->getSingleResult();

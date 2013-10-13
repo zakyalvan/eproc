@@ -3,7 +3,9 @@ namespace Workflow\Execution;
 
 use Zend\ServiceManager\ServiceLocatorAwareInterface as ServiceLocatorAware;
 use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
+use Zend\Json\Json;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
+use Application\Common\KeyGeneratorInterface;
 use Workflow\Execution\Router\ProcessRouterInterface as ProcessRouter;
 use Workflow\Execution\Router\RouteResult;
 use Workflow\Entity\Instance;
@@ -12,12 +14,12 @@ use Workflow\Entity\Workflow;
 use Workflow\Entity\Token;
 use Workflow\Entity\WorkflowAttribute;
 use Workflow\Entity\InstanceData;
-use Application\Common\KeyGeneratorInterface;
 use Workflow\Entity\Repository\WorkitemRepository;
 use Workflow\Entity\Workitem;
-use Zend\Json\Json;
 use Workflow\Entity\Repository\TransitionRepository;
 use Workflow\Entity\Repository\InstanceRepository;
+use Workflow\Entity\Repository\PlaceRepository;
+use Workflow\Entity\Repository\TokenRepository;
 
 /**
  * Implementasi default dari ExecutionServiceInterface
@@ -50,19 +52,12 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 		/* @var $entityManager EntityManager */
 		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
 		
-		
-		
 		/* @var $keyGenerator KeyGeneratatorInterface */ 
 		$keyGenerator = $this->serviceLocator->get('Application\Common\KeyGeneratator');
 		
 		// Start transaksi.
 		$entityManager->beginTransaction();
 		try {
-			// Ambil ulang data workflow dari database.
-			$persitedWorkflow = $entityManager->createQuery('SELECT workflow FROM Workflow\Entity\Workflow workflow WHERE workflow.id = :workflowId')
-				->setParameter('workflowId', $workflow->getId())
-				->getOneOrNullResult();
-			
 			if($persitedWorkflow == null) {
 				$workflow = $entityManager->merge($workflow);
 			}
@@ -70,99 +65,33 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 				$workflow = $persitedWorkflow;
 			}
 			
-			
-			
-			// Pertama create instance.
-			$instance = new Instance();
+			/* @var $instanceRepository InstanceRepository */ 
+			$instanceRepository = $entityManager->getRepository('Workflow\Entity\Instance');
+			$instance = $instanceRepository->createNewInstance($workflow);
 			$instance->setId($keyGenerator->generateNextKey($instance, 'id'));
-			$instance->setWorkflow($workflow);
-			$instance->setContext('Context');
-			$instance->setStatus(Instance::STATUS_OPERATED);
-			/**
-			 * TODO Set start data untuk instance.
-			 */
+			$instanceRepository->setInstanceDatas($instance, $datas);
 			
-			$entityManager->persist($instance);
+			/* @var $placeRepository PlaceRepository */
+			$placeRepository = $entityManager->getRepository('Workflow\Entity\Place');
+			$startPlace = $placeRepository->getStartPlace($workflow);
 			
-			// Masukin instance datas.
-			foreach ($datas as $key => $value) {
-				$workflowAttribute = new WorkflowAttribute();
-				$workflowAttribute->setWorkflow($workflow);
-				$workflowAttribute->setName($key);
-				if(is_numeric($value) && is_integer($value)) {
-					$workflowAttribute->setType(WorkflowAttribute::TYPE_INTEGER);
-				}
-				else if(is_numeric($value) && is_double($value)) {
-					$workflowAttribute->setType(WorkflowAttribute::TYPE_DOUBLE);
-				}
-				else if(is_bool($value)) {
-					$workflowAttribute->setType(WorkflowAttribute::TYPE_BOOLEAN);
-				}
-				else if(is_string($value)) {
-					$workflowAttribute->setType(WorkflowAttribute::TYPE_STRING);
-				}
-				
-				$entityManager->persist($workflowAttribute);
-				
-				$instanceData = new InstanceData();
-				$instanceData->setInstance($instance);
-				$instanceData->setAttribute($workflowAttribute);
-				$instanceData->setValue($value);
-				
-				$entityManager->persist($instanceData);
-			}
+			/* @var $tokenRepository TokenRepository */ 
+			$tokenRepository = $entityManager->getRepository('Workflow\Entity\Token');
+			$token = $tokenRepository->createFreeToken($instance, $startPlace);
 			
-			// Ambil start place dari workflow.
-			$startPlace = $entityManager->getRepository('Workflow\Entity\Place')->getStartPlace($workflow->getId());
+			// Route token to next place.
+			$this->routeTokenToNextPlace($token);
 			
-			// Create token pada start place.
-			$token = new Token();
-			$token->setInstance($instance);
-			$token->setPlace($startPlace);
-			$token->setStatus(Token::STATUS_FREE);
-			
-			$entityManager->persist($token);
-			
-			/* @var $processRouter ProcessRouter */
-			$processRouter = $this->serviceLocator->get('Workflow\Execution\Router\ProcessRouter');
-			
-			$routeSuccess = true;
-			$tokenToRoute = $token;
-
-			// Sekarang waktunya route token sampain proses routing gagal/berhenti.
-			while($routeSuccess) {
-				$result = $this->processRouter->routeToNextPlace($tokenToRoute);
-				
-				if($result->isSuccess()) {
-					$nextTokensCount = count($result->getNextTokens());
-					if($nextTokensCount == 1) {
-						$nextTokens = $result->getNextTokens();
-						$tokenToRoute = $nextTokens[0];
-					}
-					else if($nextTokensCount < 1) {
-						throw new \RuntimeException("Jumlah proses next token setelah proses routing == 1, ini aneh.", 0, null);
-					}
-					else if($nextTokensCount > 1) {
-						throw new \RuntimeException("Belum bisa handle percabangan pada transisi (dua free token pada satu instance setelah proses routing)");
-					}
-				}
-				else {
-					$routeSuccess = false;
-					if($result->getCode() == RouteResult::EXCEPTION_ON_ROUTING_CODE) {
-						// Lempar kembali exception dari proses routing.
-						throw $result->getException();
-					}
-				}
-			}
-			
-			// Commit transaksi.
+			// Flush perubahan dan commit transaksi.
+			$entityManager->flush();
 			$entityManager->commit();
+			
 			return $instance;
 		}
 		catch (\Exception $e) {
-			// Rollback transaksi.
+			// Rollback transaksi karena terjadi eksepsi.
 			$entityManager->rollback();
-			throw new \RuntimeException('Terjadi kesalahan dalam proses start workflow. Silahkan perhatikan trace exception.', 100, $e);
+			throw new \RuntimeException('Terjadi kesalahan dalam proses start workflow instance. Silahkan perhatikan trace exception.', 100, $e);
 		}
 	}
 	
@@ -189,7 +118,7 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 					$tokenToRoute = $nextTokens[0];
 				}
 				else if($nextTokensCount < 1) {
-					throw new \RuntimeException("Jumlah proses next token setelah proses routing == 1, ini aneh.", 0, null);
+					throw new \RuntimeException("Jumlah proses next token setelah proses routing < 1, ini aneh.", 0, null);
 				}
 				else if($nextTokensCount > 1) {
 					throw new \RuntimeException("Belum bisa handle percabangan pada transisi (dua free token pada satu instance setelah proses routing)");
@@ -225,7 +154,7 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 			/* @var $workitemRepository WorkitemRepository */
 			$workitemRepository = $entityManager->getRepository('Workflow\Entity\Workitem');
 			
-			$workitem = $workitemRepository->getWorkitemByIdentity($workitemIdentity['id'], $workitemIdentity['workflow'], $workitemIdentity['instance'], $workitemIdentity['transition']);
+			$workitem = $workitemRepository->getWorkitem($workitemIdentity['id'], $workitemIdentity['workflow'], $workitemIdentity['instance'], $workitemIdentity['transition']);
 			
 			if(!$workitemRepository->isEnabledWorkitem($workitem)) {
 				throw new \InvalidArgumentException('Workitem sudah dieksekusi sebelumnya, tidak dapat mengeksekusi workitem yang diberikan', 100, null);
@@ -233,7 +162,7 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 
 			/* @var $transitionRepository TransitionRepository */
 			$transitionRepository = $entityManager->getRepository('Workflow\Entity\Transition');
-			$transitionAttributes = $transitionRepository->getTransitionAttributeArray($workitem->getTransition());
+			$transitionAttributes = $transitionRepository->getTransitionAttributes($workitem->getTransition(), $workitem->getTransition()->getWorkflow());
 			
 			foreach ($transitionAttributes as $transitionAttribute) {
 				if(!array_key_exists($transitionAttribute, $datas)) {
@@ -245,12 +174,17 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 			$instanceRepository = $entityManager->getRepository('Workflow\Entity\Instance');
 			$instanceRepository->setInstanceDatas($workitem->getInstance(), $datas);
 			
+			// Ubah status workitem.
 			$workitem->setStatus(Workitem::STATUS_FINISHED);
-			
 			$entityManager->persist($workitem);
 			
-			// Ambil token sebelumnya.
+			/* @var $placeRepository PlaceRepository */ 
+			$placeRepository = $entityManager->getRepository('Workflow\Entity\Place');
+			$inputPlaces = $placeRepository->getInputPlaces($workitem->getTransition(), $workitem->getTransition()->getWorkflow());
 			
+			/* @var $tokenRepository TokenRepository */ 
+			$tokenRepository = $entityManager->getRepository('Workflow\Entity\Token');
+			$tokenRepository->getFreeToken($instance, $place);
 			
 			$this->routeTokenToNextPlace($token);
 			
@@ -265,28 +199,12 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see \Workflow\Execution\ExecutionServiceInterface::manageWorkitem()
-	 */
-	public function manageWorkitem(Workitem $workitem) {
-		$manager = $this->serviceLocator->get('Workflow\Execution\WorkitemManager');
-		$manager->setManaged($workitem);
-		return $manager;
-	}
-	
-	/**
-	 * (non-PHPdoc)
 	 * @see \Workflow\Execution\ExecutionServiceInterface::isCompletedInstance()
 	 */
 	public function isCompletedInstance(Instance $instance) {
-		$status = $this->entityManager
-			->createQuery('SELECT instance.status FROM Workflow\Entity\Instance instance WHERE instance.id = :instanceId')
-			->setParameter('instanceId', $instance->getId())
-			->getScalarResult();
-		
-		if($status == Instance::STATUS_FINISHED) {
-			return true;
-		}
-		return false;
+		/* @var $instanceRepository InstanceRepository */ 
+		$instanceRepository = $this->serviceLocator->get('Doctrine\ORM\EntityManager')->getRepository('Workflow\Entity\Instance');
+		$instanceRepository->isFinishedInstance($instance, $instance->getWorkflow());
 	}
 	
 	/**
@@ -300,10 +218,17 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 			->getResult();
 	}
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see \Zend\ServiceManager\ServiceLocatorAwareInterface::setServiceLocator()
+	 */
 	public function setServiceLocator(ServiceLocator $serviceLocator) {
 		$this->serviceLocator = $serviceLocator;
 	}
-	
+	/**
+	 * (non-PHPdoc)
+	 * @see \Zend\ServiceManager\ServiceLocatorAwareInterface::getServiceLocator()
+	 */
 	public function getServiceLocator() {
 		return $this->serviceLocator;
 	}

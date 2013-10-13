@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Entity yang menyimpan informasi untuk definisi workflow.
  * 
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Workflow\Entity\Repository\WorkflowRepository")
  * @ORM\Table(name="EP_WF_WORKFLOW")
  */
 class Workflow {
