@@ -5,6 +5,7 @@ use Doctrine\ORM\EntityRepository;
 use Workflow\Entity\Instance;
 use Workflow\Entity\Transition;
 use Workflow\Entity\Workitem;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * Custom repository untuk entity {@link Workitem}
@@ -12,6 +13,36 @@ use Workflow\Entity\Workitem;
  * @author zakyalvan
  */
 class WorkitemRepository extends EntityRepository {
+	/**
+	 * 
+	 * @param unknown $workitemId
+	 * @param unknown $workflowId
+	 * @param unknown $instanceId
+	 * @param unknown $transitionId
+	 * @return Workitem
+	 */
+	public function getWorkitemByIdentity($workitemId, $workflowId, $instanceId, $transitionId) {
+		$queryBuilder = $this->_em->createQueryBuilder();
+		return $queryBuilder->select(array('workitem', 'transition', 'task', 'transitionWorkflow', 'instance', 'instanceWorkflow'))
+			->from('Workflow\Entity\Workitem', 'workitem')
+			->innerJoin('workitem.transition', 'transition', Join::WITH, $queryBuilder->expr()->eq('transition.id', ':transitionId'))
+			->innerJoin('transition.task', 'task')
+			->innerJoin('transition.workflow', 'transitionWorkflow', Join::WITH, $queryBuilder->expr()->eq('transitionWorkflow.id', ':transitionWorkflowId'))
+			->innerJoin('workitem.instance', 'instance', Join::WITH, $queryBuilder->expr()->eq('instance.id', ':isntanceId'))
+			->innerJoin('instance.workflow', 'instanceWorkflow', Join::WITH, $queryBuilder->expr()->eq('instanceWorkflow.id', ':instanceWorkflowId'))
+			->where($queryBuilder->expr()->andX(
+				$queryBuilder->expr()->eq('workitem.id', ':workitemId')
+			))
+			->setParameter('instanceWorkflowId', $workflowId)
+			->setParameter('transitionWorkflowId', $workflowId)
+			->setParameter('transitionId', $tra)
+			->setParameter('instanceId', $instanceId)
+			->setParameter('workitemId', $workitemId)
+			->getQuery()
+			->getSingleResult();
+	}
+	
+	
 	public function isEnabledWorkitem(Workitem $workitem) {
 		return $this->isWorkitemInStatus($workitem, Workitem::STATUS_ENABLED);
 	}

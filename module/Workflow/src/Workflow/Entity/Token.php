@@ -17,6 +17,27 @@ class Token {
 	const STATUS_CANCELED = 'CANC';
 	
 	/**
+	 * @Orm\Column(name="WORKFLOW_ID", type="string")
+	 * 
+	 * @var string
+	 */
+	private $workflowId;
+	
+	/**
+	 * @Orm\Column(name="INSTANCE_ID", type="integer")
+	 * 
+	 * @var integer
+	 */
+	private $instanceId;
+	
+	/**
+	 * @Orm\Column(name="PLACE_ID", type="integer")
+	 * 
+	 * @var integer
+	 */
+	private $placeId;
+	
+	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="TOKEN_ID", type="integer")
 	 */
@@ -29,7 +50,6 @@ class Token {
 	}
 	
 	/**
-	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Instance", fetch="LAZY")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="INSTANCE_ID", referencedColumnName="INSTANCE_ID")})
 	 * 
@@ -46,7 +66,6 @@ class Token {
 	/**
 	 * Di mana token ini berada.
 	 * 
-	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Place", fetch="LAZY")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", type="string", length="5", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="PLACE_ID", type="integer", referencedColumnName="PLACE_ID")})
 	 * 

@@ -13,6 +13,11 @@ use Workflow\Entity\Token;
 use Workflow\Entity\WorkflowAttribute;
 use Workflow\Entity\InstanceData;
 use Application\Common\KeyGeneratorInterface;
+use Workflow\Entity\Repository\WorkitemRepository;
+use Workflow\Entity\Workitem;
+use Zend\Json\Json;
+use Workflow\Entity\Repository\TransitionRepository;
+use Workflow\Entity\Repository\InstanceRepository;
 
 /**
  * Implementasi default dari ExecutionServiceInterface
@@ -197,6 +202,64 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 					throw $result->getException();
 				}
 			}
+		}
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see \Workflow\Execution\ExecutionServiceInterface::executeWorkitem()
+	 */
+	public function executeWorkitem(Workitem $workitem, $user, array $datas) {
+		/* @var $entityManager EntityManager */
+		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
+		
+		$workitemIdentity = array(
+			'id' => $workitem->getId(),
+			'workflow' => $workitem->getInstance()->getWorkflow()->getId(),
+			'instance' => $workitem->getInstance(),
+			'transition' => $workitem->getTransition()->getId()
+		);
+		
+		$entityManager->beginTransaction();
+		try {
+			/* @var $workitemRepository WorkitemRepository */
+			$workitemRepository = $entityManager->getRepository('Workflow\Entity\Workitem');
+			
+			$workitem = $workitemRepository->getWorkitemByIdentity($workitemIdentity['id'], $workitemIdentity['workflow'], $workitemIdentity['instance'], $workitemIdentity['transition']);
+			
+			if(!$workitemRepository->isEnabledWorkitem($workitem)) {
+				throw new \InvalidArgumentException('Workitem sudah dieksekusi sebelumnya, tidak dapat mengeksekusi workitem yang diberikan', 100, null);
+			}
+
+			/* @var $transitionRepository TransitionRepository */
+			$transitionRepository = $entityManager->getRepository('Workflow\Entity\Transition');
+			$transitionAttributes = $transitionRepository->getTransitionAttributeArray($workitem->getTransition());
+			
+			foreach ($transitionAttributes as $transitionAttribute) {
+				if(!array_key_exists($transitionAttribute, $datas)) {
+					throw new \InvalidArgumentException(sprintf('Transition attribute %s yang dibutuhkan untuk mengeksekusi workitem belum diberikan dalam parameter datas', $transitionAttribute), 100, null);
+				}
+			}
+			
+			/* @var $instanceRepository InstanceRepository */
+			$instanceRepository = $entityManager->getRepository('Workflow\Entity\Instance');
+			$instanceRepository->setInstanceDatas($workitem->getInstance(), $datas);
+			
+			$workitem->setStatus(Workitem::STATUS_FINISHED);
+			
+			$entityManager->persist($workitem);
+			
+			// Ambil token sebelumnya.
+			
+			
+			$this->routeTokenToNextPlace($token);
+			
+			$entityManager->flush();
+			$entityManager->commit();
+		}
+		catch(\Exception $e) {
+			$entityManager->rollback();
+			throw new \RuntimeException(sprintf('Proses eksekusi workitem dengan identity %s gagal, terjadi eksepsi internal database', Json::encode($workitemIdentity)), 100, null);
 		}
 	}
 	

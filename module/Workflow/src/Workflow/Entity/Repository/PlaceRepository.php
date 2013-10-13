@@ -6,6 +6,8 @@ use Workflow\Entity\Place;
 use Workflow\Entity\Arc;
 use Workflow\Entity\Workflow;
 use Doctrine\ORM\Query\Expr\Join;
+use Workflow\Entity\Transition;
+use Doctrine\ORM\UnitOfWork;
 
 /**
  * Custom repository untuk entity place.
@@ -59,9 +61,14 @@ class PlaceRepository extends EntityRepository {
 		if(!$this->isValidWorkflowId($workflowId)) {
 			throw new \InvalidArgumentException('Parameter workflow yang diberikan tidak valid', 100, null);
 		}
-		return $this->_em->createQuery('SELECT place FROM Workflow\Entity\Place AS place INNER JOIN place.workflow WITH place.workflow.id = :workflowId WHERE place.type = :placeType')
+		$queryBuilder = $this->_em->createQueryBuilder();
+		$queryBuilder->select('place')
+			->from('Workflow\Entity\Place', 'place')
+			->innerJoin('place.workflow', 'workflow', Join::WITH, $queryBuilder->expr()->eq('workflow.id', ':workflowId'))
+			->where($queryBuilder->expr()->eq('place.type', ':placeType'))
 			->setParameter('placeType', Place::TYPE_INTERMEDIATE_PLACE)
-			->setParameter('workflowId', $workflow->getId())
+			->setParameter('workflowId', $workflowId)
+			->getQuery()
 			->getResult();
 	}
 	/**
@@ -78,9 +85,159 @@ class PlaceRepository extends EntityRepository {
 		if(!$this->isValidWorkflowId($workflowId)) {
 			throw new \InvalidArgumentException('Parameter workflow yang diberikan tidak valid', 100, null);
 		}
-		return $this->_em->createQuery('SELECT place FROM Workflow\Entity\Place AS place INNER JOIN place.workflow WITH place.workflow.id = :workflowId WHERE place.type = :placeType')
+		$queryBuilder = $this->_em->createQueryBuilder();
+		$queryBuilder->select('place')
+			->from('Workflow\Entity\Place', 'place')
+			->innerJoin('place.workflow', 'workflow', Join::WITH, $queryBuilder->expr()->eq('workflow.id', ':workflowId'))
+			->where($queryBuilder->expr()->eq('place.type', ':placeType'))
 			->setParameter('placeType', Place::TYPE_END_PLACE)
-			->setParameter('workflowId', $workflow->getId())
+			->setParameter('workflowId', $workflowId)
+			->getQuery()
 			->getSingleResult();
+	}
+	
+	/**
+	 * Count input places kepada sebuah transisi dalam sebuah workflow.
+	 *
+	 * @param unknown $transition
+	 * @param unknown $workflow
+	 * @return integer
+	 */
+	public function countInputPlaces($transition, $workflow) {
+		$transitionId = $transition;
+		if($transition instanceof Transition) {
+			$transitionId = $transition->getId();
+		}
+	
+		$workflowId = $workflow;
+		if($workflow instanceof Workflow) {
+			$workflowId = $workflow->getId();
+		}
+	
+		$queryBuuilder = $this->_em->createQueryBuilder();
+		return $queryBuuilder->select($queryBuuilder->expr()->count('place'))
+			->from('Workflow\Entity\Place', 'place')
+			->innerJoin('place.workflow', 'workflow', Join::WITH, $queryBuuilder->expr()->eq('workflow.id', ':workflowId'))
+			->innerJoin('place.arcs', 'arcs', Join::WITH, $queryBuuilder->expr()->eq('arcs.direction', ':arcDirection'))
+			->innerJoin('arcs.transition', 'transition', Join::WITH, $queryBuuilder->expr()->eq('transition.id', ':transitionId'))
+			->setParameter('workflowId', $workflowId)
+			->setParameter('arcDirection', Arc::ARC_DIRECTION_INPUT)
+			->setParameter('transitionId', $transitionId)
+			->getQuery()
+			->getSingleScalarResult();
+	}
+	
+	/**
+	 * Retrieve input place kepada sebuah transisi dalam sebuah workflow.
+	 * 
+	 * @param unknown $transition
+	 * @param unknown $workflow
+	 * @return array
+	 */
+	public function getInputPlaces($transition, $workflow) {
+		$transitionId = $transition;
+		if($transition instanceof Transition) {
+			$transitionId = $transition->getId();
+		}
+		
+		$workflowId = $workflow;
+		if($workflow instanceof Workflow) {
+			$workflowId = $workflow->getId();
+		}
+		
+		$queryBuuilder = $this->_em->createQueryBuilder();
+		return $queryBuuilder->select('place')
+			->from('Workflow\Entity\Place', 'place')
+			->innerJoin('place.workflow', 'workflow', Join::WITH, $queryBuuilder->expr()->eq('workflow.id', ':workflowId'))
+			->innerJoin('place.arcs', 'arcs', Join::WITH, $queryBuuilder->expr()->eq('arcs.direction', ':arcDirection'))
+			->innerJoin('arcs.transition', 'transition', Join::WITH, $queryBuuilder->expr()->eq('transition.id', ':transitionId'))
+			->setParameter('workflowId', $workflowId)
+			->setParameter('arcDirection', Arc::ARC_DIRECTION_INPUT)
+			->setParameter('transitionId', $transitionId)
+			->getQuery()
+			->getResult();
+	}
+	
+	/**
+	 * Retrieve output place.
+	 *
+	 * @param unknown $transition
+	 * @param unknown $workflow
+	 * @throws \InvalidArgumentException
+	 * @return integer
+	 */
+	public function getOutputPlaces($transition, $workflow) {
+		$transitionId = $transition;
+		$workflowId = $workflow;
+	
+		if($transition instanceof Transition) {
+			$transitionId = $transition->getId();
+				
+			$transitionState = $this->_em->getUnitOfWork()->getEntityState($transition);
+			if($transitionState == UnitOfWork::STATE_DETACHED || $transitionState == UnitOfWork::STATE_MANAGED) {
+				$transition = $this->_em->merge($transition);
+				$workflowId = $transition->getWorkflow()->getId();
+			}
+		}
+	
+		if($workflow instanceof Workflow) {
+			if($workflow->getId() !== $workflowId) {
+				throw new \InvalidArgumentException('Parameter yang diberikan tidak valid', 100, null);
+			}
+		}
+	
+		$queryBuuilder = $this->_em->createQueryBuilder();
+		return $queryBuuilder->select('place')
+			->from('Workflow\Entity\Place', 'place')
+			->innerJoin('place.workflow', 'workflow', Join::WITH, $queryBuuilder->expr()->eq('workflow.id', ':workflowId'))
+			->innerJoin('place.arcs', 'arcs', Join::WITH, $queryBuuilder->expr()->eq('arcs.direction', ':arcDirection'))
+			->innerJoin('arcs.transition', 'transition', Join::WITH, $queryBuuilder->expr()->eq('transition.id', ':transitionId'))
+			->setParameter('workflowId', $workflowId)
+			->setParameter('arcDirection', Arc::ARC_DIRECTION_OUTPUT)
+			->setParameter('transitionId', $transitionId)
+			->getQuery()
+			->getSingleScalarResult();
+	}
+	
+	/**
+	 * Retrieve output place.
+	 * 
+	 * @param unknown $transition
+	 * @param unknown $workflow
+	 * @throws \InvalidArgumentException
+	 * @return array
+	 */
+	public function getOutputPlaces($transition, $workflow) {
+		$transitionId = $transition;
+		$workflowId = $workflow;
+		
+		if($transition instanceof Transition) {
+			$transitionId = $transition->getId();
+			
+			$transitionState = $this->_em->getUnitOfWork()->getEntityState($transition);
+			if($transitionState == UnitOfWork::STATE_DETACHED || $transitionState == UnitOfWork::STATE_MANAGED) {
+				/* @var $transition Transition */
+				$transition = $this->_em->merge($transition);
+				$workflowId = $transition->getWorkflow()->getId();
+			}
+		}
+		
+		if($workflow instanceof Workflow) {
+			if($workflow->getId() !== $workflowId) {
+				throw new \InvalidArgumentException('Parameter yang diberikan tidak valid', 100, null);
+			}
+		}
+		
+		$queryBuuilder = $this->_em->createQueryBuilder();
+		return $queryBuuilder->select('place')
+			->from('Workflow\Entity\Place', 'place')
+			->innerJoin('place.workflow', 'workflow', Join::WITH, $queryBuuilder->expr()->eq('workflow.id', ':workflowId'))
+			->innerJoin('place.arcs', 'arcs', Join::WITH, $queryBuuilder->expr()->eq('arcs.direction', ':arcDirection'))
+			->innerJoin('arcs.transition', 'transition', Join::WITH, $queryBuuilder->expr()->eq('transition.id', ':transitionId'))
+			->setParameter('workflowId', $workflowId)
+			->setParameter('arcDirection', Arc::ARC_DIRECTION_OUTPUT)
+			->setParameter('transitionId', $transitionId)
+			->getQuery()
+			->getResult();
 	}
 }

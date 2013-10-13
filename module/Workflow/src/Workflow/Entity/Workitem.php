@@ -17,6 +17,32 @@ class Workitem {
 	
 	/**
 	 * @Orm\Id
+	 * @Orm\Column(name="WORKFLOW_ID", type="string")
+	 * 
+	 * @var string
+	 */
+	private $workflowId;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="INSTANCE_ID", type="integer")
+	 * 
+	 * @var integer
+	 */
+	private $instanceId;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="TRANSITION_ID", type="integer")
+	 * 
+	 * @var integer
+	 */
+	private $transitionId;
+	
+	
+	
+	/**
+	 * @Orm\Id
 	 * @Orm\Column(name="WORKITEM_ID", type="integer")
 	 */
 	private $id;
@@ -30,7 +56,6 @@ class Workitem {
 	/**
 	 * Instance referensi dari workitem.
 	 * 
-	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Instance", fetch="LAZY")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", type="string", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="INSTANCE_ID", type="integer", referencedColumnName="INSTANCE_ID")})
 	 * 
@@ -45,7 +70,6 @@ class Workitem {
 	}
 	
 	/**
-	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Transition", fetch="LAZY")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", type="string", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="TRANSITION_ID", type="integer", referencedColumnName="TRANSITION_ID")})
 	 * 

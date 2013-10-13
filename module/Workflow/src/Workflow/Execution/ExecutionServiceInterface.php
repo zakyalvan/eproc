@@ -38,6 +38,13 @@ interface ExecutionServiceInterface {
 	public function manageWorkitem(Workitem $workitem);
 	
 	/**
+	 * Eksekusi workitem, setelah itu route token pada palce sebelum trnsition dimana workitem ini berada.
+	 * 
+	 * @param Workitem $workitem
+	 */
+	public function executeWorkitem(Workitem $workitem, $user, array $datas);
+	
+	/**
 	 * Apakah instance sudah complete atau belum.
 	 * 
 	 * @param Instance $instance

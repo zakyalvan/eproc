@@ -4,6 +4,8 @@ namespace Workflow\Entity\Repository;
 use Doctrine\ORM\EntityRepository;
 use Workflow\Entity\Transition;
 use Workflow\Entity\Workflow;
+use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\AbstractQuery;
 
 /**
  * Custom repository untuk entity {@link Transition}.
@@ -41,5 +43,24 @@ class TransitionRepository extends EntityRepository {
 	
 	public function getTransitionTriggerType($transition) {
 		
+	}
+	
+	/**
+	 * Retrieve workflow attribute yang menjadi attribute dari sebuah transisi.
+	 * 
+	 * @param mixed $transition
+	 * @return array
+	 */
+	public function getTransitionAttributeArray($transition) {
+		$queryBuilder = $this->_em->createQueryBuilder();
+		$queryBuilder->select('workflowAttribute.name')
+			->from('Workflow\Entity\TransitionAttribute', 'transitionAttribute')
+			->innerJoin('transitionAttribute.transition', 'transition', Join::WITH, $queryBuilder->expr()->eq('transition.id', ':transitionId'))
+			->innerJoin('transition.workflow', 'workflow', Join::WITH, $queryBuilder->expr()->eq('workflow.id', ':workflowId'))
+			->innerJoin('transition.workflowAttribute', 'workflowAttribute')
+			->setParameter('transitionId', $transition)
+			->setParameter('workflowId', $workflowId)
+			->getQuery()
+			->getScalarResult();
 	}
 }
