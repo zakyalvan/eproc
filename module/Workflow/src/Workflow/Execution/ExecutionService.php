@@ -4,7 +4,7 @@ namespace Workflow\Execution;
 use Zend\ServiceManager\ServiceLocatorAwareInterface as ServiceLocatorAware;
 use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
 use Zend\Json\Json;
-use Doctrine\ORM\EntityManagerInterface as EntityManager;
+use Doctrine\ORM\EntityManager;
 use Application\Common\KeyGeneratorInterface;
 use Workflow\Execution\Router\ProcessRouterInterface as ProcessRouter;
 use Workflow\Execution\Router\RouteResult;
@@ -14,12 +14,14 @@ use Workflow\Entity\Workflow;
 use Workflow\Entity\Token;
 use Workflow\Entity\WorkflowAttribute;
 use Workflow\Entity\InstanceData;
-use Workflow\Entity\Repository\WorkitemRepository;
 use Workflow\Entity\Workitem;
+use Workflow\Entity\Repository\WorkitemRepository;
 use Workflow\Entity\Repository\TransitionRepository;
 use Workflow\Entity\Repository\InstanceRepository;
 use Workflow\Entity\Repository\PlaceRepository;
 use Workflow\Entity\Repository\TokenRepository;
+use Doctrine\ORM\UnitOfWork;
+use Workflow\Entity\Repository\WorkflowRepository;
 
 /**
  * Implementasi default dari ExecutionServiceInterface
@@ -96,68 +98,92 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 	}
 	
 	/**
-	 * Route token to next place.
-	 * 
-	 * @param Token $token
+	 * (non-PHPdoc)
+	 * @see \Workflow\Execution\ExecutionServiceInterface::getActiveInstances()
 	 */
-	protected function routeTokenToNextPlace(Token $token) {
-		/* @var $processRouter ProcessRouter */
-		$processRouter = $this->serviceLocator->get('Workflow\Execution\Router\ProcessRouter');
+	public function getActiveInstances(Workflow $workflow, $datas = array()) {
+		/* @var $entityManager EntityManager */
+		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
 		
-		$routeSuccess = true;
-		$tokenToRoute = $token;
+		if($datas) {
+			/* @var $workflowRepository WorkflowRepository */ 
+			$workflowRepository = $entityManager->getRepository('Workflow\Entity\Workflow');
+			
+			// Cek apakah key datas yang diberikan merupakan attribute workflow yang valid atau tidak. Exception jika tidak valid.
+			$workflowRepository->isValidWorkflowAttributes($workflow, array_keys($datas), true);
+		}
 		
-		// Sekarang waktunya route token sampain proses routing gagal/berhenti.
-		while($routeSuccess) {
-			$result = $this->processRouter->routeToNextPlace($tokenToRoute);
+		/* @var $instanceRepository InstanceRepository */
+		$instanceRepository = $entityManager->getRepository('Workflow\Entity\Instance');
+		$instanceRepository->getActiveInstances($workflow, $datas);
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see \Workflow\Execution\ExecutionServiceInterface::canExecuteWorkitem()
+	 */
+	public function canExecuteWorkitem(Workitem $workitem, array $datas, $userContext, $userRole, $userId) {
+		/* @var $entityManager EntityManager */
+		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
 		
-			if($result->isSuccess()) {
-				$nextTokensCount = count($result->getNextTokens());
-				if($nextTokensCount == 1) {
-					$nextTokens = $result->getNextTokens();
-					$tokenToRoute = $nextTokens[0];
-				}
-				else if($nextTokensCount < 1) {
-					throw new \RuntimeException("Jumlah proses next token setelah proses routing < 1, ini aneh.", 0, null);
-				}
-				else if($nextTokensCount > 1) {
-					throw new \RuntimeException("Belum bisa handle percabangan pada transisi (dua free token pada satu instance setelah proses routing)");
-				}
-			}
-			else {
-				$routeSuccess = false;
-				if($result->getCode() == RouteResult::EXCEPTION_ON_ROUTING_CODE) {
-					// Lempar kembali exception dari proses routing.
-					throw $result->getException();
-				}
+		// Untuk sementara, object workitem harus dalam state managed atau detached dalam entity-manager.
+		$workitemState = $entityManager->getUnitOfWork()->getEntityState($workitem);
+		if($workitemState !== UnitOfWork::STATE_MANAGED || $workitemState !== UnitOfWork::STATE_DETACHED) {
+			throw new \InvalidArgumentException(sprintf('Tidak dapat mengeksekusi workitem yang diberikan. Object workitem harus dalam state managed atau detached dalam entity-manager.'), 100, null);
+		}
+		/* @var $workitem Workitem */
+		$workitem = $entityManager->merge($workitem);
+		
+		/* @var $workitemRepository WorkitemRepository */
+		$workitemRepository = $entityManager->getRepository('Workflow\Entity\Workitem');
+				
+		if(!$workitemRepository->isValidWorkitemExecutor($workitem, $userContext, $userId, $userRole)) {
+			throw new \InvalidArgumentException(sprintf('Tidak dapat mengeksekusi workitem yang diberikan. User yang diberikan bukan user yang dapat mengeksekusi workitem tersebut,'), 100, null);
+		}
+				
+		if(!$workitemRepository->isEnabledWorkitem($workitem)) {
+			throw new \InvalidArgumentException(sprintf('Workitem sudah dieksekusi sebelumnya, tidak dapat mengeksekusi workitem yang diberikan'), 100, null);
+		}
+		
+		/* @var $transitionRepository TransitionRepository */
+		$transitionRepository = $entityManager->getRepository('Workflow\Entity\Transition');
+		$transitionAttributes = $transitionRepository->getTransitionAttributes($workitem->getTransition(), $workitem->getTransition()->getWorkflow());
+				
+		foreach ($transitionAttributes as $transitionAttribute) {
+			if(!array_key_exists($transitionAttribute, $datas)) {
+				throw new \InvalidArgumentException(sprintf('Transition attribute %s yang dibutuhkan untuk mengeksekusi workitem belum diberikan dalam parameter datas', $transitionAttribute), 100, null);
 			}
 		}
+		return true;
 	}
 	
 	/**
 	 * (non-PHPdoc)
 	 * @see \Workflow\Execution\ExecutionServiceInterface::executeWorkitem()
 	 */
-	public function executeWorkitem(Workitem $workitem, $user, array $datas) {
+	public function executeWorkitem(Workitem $workitem, array $datas, $userContext, $userRole, $userId) {
 		/* @var $entityManager EntityManager */
 		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
 		
-		$workitemIdentity = array(
-			'id' => $workitem->getId(),
-			'workflow' => $workitem->getInstance()->getWorkflow()->getId(),
-			'instance' => $workitem->getInstance(),
-			'transition' => $workitem->getTransition()->getId()
-		);
-		
 		$entityManager->beginTransaction();
 		try {
+			// Untuk sementara, object workitem harus dalam state managed atau detached dalam entity-manager.
+			$workitemState = $entityManager->getUnitOfWork()->getEntityState($workitem);
+			if($workitemState !== UnitOfWork::STATE_MANAGED || $workitemState !== UnitOfWork::STATE_DETACHED) {
+				throw new \InvalidArgumentException(sprintf('Tidak dapat mengeksekusi workitem yang diberikan. Object workitem harus dalam state managed atau detached dalam entity-manager.'), 100, null);
+			}
+			/* @var $workitem Workitem */
+			$workitem = $entityManager->merge($workitem);
+		
 			/* @var $workitemRepository WorkitemRepository */
 			$workitemRepository = $entityManager->getRepository('Workflow\Entity\Workitem');
 			
-			$workitem = $workitemRepository->getWorkitem($workitemIdentity['id'], $workitemIdentity['workflow'], $workitemIdentity['instance'], $workitemIdentity['transition']);
+			if(!$workitemRepository->isValidWorkitemExecutor($workitem, $userContext, $userId, $userRole)) {
+				throw new \InvalidArgumentException(sprintf('Tidak dapat mengeksekusi workitem yang diberikan. User yang diberikan bukan user yang dapat mengeksekusi workitem tersebut,'), 100, null);
+			}
 			
 			if(!$workitemRepository->isEnabledWorkitem($workitem)) {
-				throw new \InvalidArgumentException('Workitem sudah dieksekusi sebelumnya, tidak dapat mengeksekusi workitem yang diberikan', 100, null);
+				throw new \InvalidArgumentException(sprintf('Workitem sudah dieksekusi sebelumnya, tidak dapat mengeksekusi workitem yang diberikan'), 100, null);
 			}
 
 			/* @var $transitionRepository TransitionRepository */
@@ -182,11 +208,26 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 			$placeRepository = $entityManager->getRepository('Workflow\Entity\Place');
 			$inputPlaces = $placeRepository->getInputPlaces($workitem->getTransition(), $workitem->getTransition()->getWorkflow());
 			
-			/* @var $tokenRepository TokenRepository */ 
+			/* @var $tokenRepository TokenRepository */
 			$tokenRepository = $entityManager->getRepository('Workflow\Entity\Token');
-			$tokenRepository->getFreeToken($instance, $place);
 			
-			$this->routeTokenToNextPlace($token);
+			$freeTokens = array();
+			foreach ($inputPlaces as $inputPlace) {
+				/* @var $inputPlace Place */
+				if($tokenRepository->hasFreeToken($instance, $inputPlace)) {
+					$freeTokensToRoute[] = $tokenRepository->getFreeToken($instance, $inputPlace);
+				}
+			}
+			
+			if(count($freeTokens) == 0) {
+				throw new \RuntimeException(sprintf('Eksekusi workitem gagal. Tidak ditemukan free token(s) pada input place untuk transisi dari instance'), 100, null);
+			}
+			if(count($freeTokens) > 1) {
+				throw new \RuntimeException(sprintf('Sementara belum dapat menghandle dua token pada lebih dari satu input place'), 100, null);
+			}
+			
+			// Sementara hanya bisa route dari satu free token.
+			$this->routeTokenToNextPlace($freeTokens[0]);
 			
 			$entityManager->flush();
 			$entityManager->commit();
@@ -194,6 +235,45 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 		catch(\Exception $e) {
 			$entityManager->rollback();
 			throw new \RuntimeException(sprintf('Proses eksekusi workitem dengan identity %s gagal, terjadi eksepsi internal database', Json::encode($workitemIdentity)), 100, null);
+		}
+	}
+	
+	/**
+	 * Route token to next place.
+	 *
+	 * @param Token $token
+	 */
+	protected function routeTokenToNextPlace(Token $token) {
+		/* @var $processRouter ProcessRouter */
+		$processRouter = $this->serviceLocator->get('Workflow\Execution\Router\ProcessRouter');
+	
+		$routeSuccess = true;
+		$tokenToRoute = $token;
+	
+		// Sekarang waktunya route token sampain proses routing gagal/berhenti.
+		while($routeSuccess) {
+			$result = $this->processRouter->routeToNextPlace($tokenToRoute);
+	
+			if($result->isSuccess()) {
+				$nextTokensCount = count($result->getNextTokens());
+				if($nextTokensCount == 1) {
+					$nextTokens = $result->getNextTokens();
+					$tokenToRoute = $nextTokens[0];
+				}
+				else if($nextTokensCount < 1) {
+					throw new \RuntimeException("Jumlah proses next token setelah proses routing < 1, ini aneh.", 0, null);
+				}
+				else if($nextTokensCount > 1) {
+					throw new \RuntimeException("Belum bisa handle percabangan pada transisi (dua free token pada satu instance setelah proses routing)");
+				}
+			}
+			else {
+				$routeSuccess = false;
+				if($result->getCode() == RouteResult::EXCEPTION_ON_ROUTING_CODE) {
+					// Lempar kembali exception dari proses routing.
+					throw $result->getException();
+				}
+			}
 		}
 	}
 	

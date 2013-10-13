@@ -28,6 +28,7 @@ class WorkflowRepository extends EntityRepository {
 			->innerJoin('attribute.workflow', 'workflow', Join::WITH, $queryBuilder->expr()->eq('workflow.id', ':workflowId'))
 			->where($queryBuilder->expr()->in('attribute.name', ':attributeNames'))
 			->setParameter('attributeNames', $attributes)
+			->setParameter('workflowId', $workflowId)
 			->getQuery()
 			->getScalarResult();
 		
@@ -37,6 +38,20 @@ class WorkflowRepository extends EntityRepository {
 			}
 			return false;
 		}
+
+		$invalidAttributes = array();
+		foreach ($attributes as $attribute) {
+			if(!in_array($attribute, $registeredAttributes)) {
+				$invalidAttributes[] = $attribute;
+			}
+		}
+		if(count($invalidAttributes) > 0) {
+			if($throwExceptionOnInvalid) {
+				throw new \InvalidArgumentException(sprintf('Sebagian atau seluruh attribute yang diberikan tidak valid. Attribut yang diberikan yang tidak valid %s', implode(', ', $invalidAttributes)), 100, null);
+			}
+			return false;
+		}
+		
 		return true;
 	}
 	

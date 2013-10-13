@@ -42,7 +42,6 @@ class WorkitemRepository extends EntityRepository {
 			->getSingleResult();
 	}
 	
-	
 	public function isEnabledWorkitem(Workitem $workitem) {
 		return $this->isWorkitemInStatus($workitem, Workitem::STATUS_ENABLED);
 	}
@@ -84,5 +83,38 @@ class WorkitemRepository extends EntityRepository {
 			->setParameter('transitionId', $transition->getId())
 			->setParameter('workitemStatus', Workitem::STATUS_ENABLED)
 			->getSingleScalarResult();
+	}
+	
+	/**
+	 * Apakah user yang diberikan adalah executor yang valid untuk workitem.
+	 * 
+	 * @param Workitem $workitem
+	 * @param string $userId
+	 * @param string $userContext
+	 */
+	public function isValidWorkitemExecutor(Workitem $workitem, $userContext, $userId, $userRole = null) {
+		$queryBuilder = $this->_em->createQueryBuilder();
+		$queryBuilder->select($queryBuilder->expr()->count('workitem'))
+			->from('Workflow\Entity\Workitem', 'workitem');
+			
+		if($userRole != null) {	
+			$queryBuilder->innerJoin('workitem.transition', 'transition', Join::WITH, $queryBuilder->expr()->andX(
+				$queryBuilder->expr()->eq('transition.userContext', ':userContext'),
+				$queryBuilder->expr()->eq('transition.userRole', ':userRole')
+			))
+				->setParameter('userContext', $userContext)
+				->setParameter('userRole', $userRole);
+		}
+		else {
+			$queryBuilder->innerJoin('workitem.transition', 'transition', Join::WITH, $queryBuilder->expr()->eq('transition.userContext', ':userContext'))
+				->setParameter('userContext', $userContext);
+		}
+		
+		$queryBuilder->where($queryBuilder->expr()->eq('workitem.executor', ':executorId'))
+			->setParameter('executorId', $userId);
+		
+		$validExecutor = $queryBuilder->getQuery()->getSingleScalarResult();
+		
+		return $validExecutor > 0 ? true : false;
 	}
 }

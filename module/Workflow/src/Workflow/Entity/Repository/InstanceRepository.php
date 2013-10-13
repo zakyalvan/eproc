@@ -30,6 +30,33 @@ class InstanceRepository extends EntityRepository {
 		return $this->_em->merge($instance);
 	}
 	
+	public function getActiveInstances($workflow, $datas = array()) {
+		$workflowId = $workflow;
+		if($workflow instanceof Workflow) {
+			$workflowId = $workflow->getId();
+		}
+		
+		$queryBuilder = $this->_em->createQueryBuilder();
+		$queryBuilder->select(array('instance'))
+			->from('Workflow\Entity\Instance', 'instance')
+			->innerJoin('instance.workflow', 'workflow', Join::WITH, $queryBuilder->expr()->eq('workflow.id', ':workflowId'))
+			->innerJoin('instance.datas', 'datas')
+			->innerJoin('datas.attribute', 'workflowAttribute');
+		
+		foreach($datas as $name => $value) {
+			$queryBuilder->andWhere($queryBuilder->expr()->andX(
+				$queryBuilder->expr()->eq('workflowAttribute.name', $name),
+				$queryBuilder->expr()->eq('datas.value', $value)
+			));
+		}
+		
+		//
+		
+		return $queryBuilder
+			->setParameter('workflowId', $workflowId)
+			->getQuery()->getResult();
+	}
+	
 	/**
 	 * Apakah sebuah instance sudah beres atau belum.
 	 * 

@@ -30,11 +30,30 @@ interface ExecutionServiceInterface {
 	public function startWorkflow(Workflow $workflow, array $datas);
 	
 	/**
+	 * Retrieve active instance (instance yang sedang berjalan) dengan berdasarkan workflow dan data yang diberikan.
+	 * 
+	 * @param Workflow $workflow
+	 * @param unknown $datas
+	 */
+	public function getActiveInstances(Workflow $workflow, $datas = array());
+	
+	/**
+	 * Apakah workitem dapat dieksekusi dengan parameter yang diberikan.
+	 * 
+	 * @param Workitem $workitem
+	 * @param array $datas
+	 * @param unknown $userContext
+	 * @param unknown $userRole
+	 * @param unknown $userId
+	 */
+	public function canExecuteWorkitem(Workitem $workitem, array $datas, $userContext, $userRole, $userId);
+	
+	/**
 	 * Eksekusi workitem, setelah itu route token pada palce sebelum trnsition dimana workitem ini berada.
 	 * 
 	 * @param Workitem $workitem
 	 */
-	public function executeWorkitem(Workitem $workitem, $user, array $datas);
+	public function executeWorkitem(Workitem $workitem, array $datas, $userContext, $userRole, $userId);
 	
 	/**
 	 * Apakah instance sudah complete atau belum.
