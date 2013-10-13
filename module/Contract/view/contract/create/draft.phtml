@@ -3,6 +3,12 @@
 	use Contract\Form\Kontrak\HeaderFieldset;
 	use Contract\Form\Kontrak\KomentarFieldset;
 	use Contract\Form\Kontrak\PembuatanForm;
+	use Zend\Form\Element\Select;
+	use Zend\Form\Element\Text;
+	use Zend\Form\Element\File;
+	use Zend\Form\Element\Checkbox;
+	
+	$this->headTitle($this->pageTitle);
 	
 	/* @var $form Contract\Form\Kontrak\PembuatanForm */
 	$form = $this->form;
@@ -13,7 +19,20 @@
 	/* @var $kontrak Contract\Entity\Kontrak\Kontrak */
 	$kontrak = $this->kontrak;
 ?>
-
+<script type="text/javascript">
+<!--
+$(function(){
+	$.datepicker.setDefaults($.datepicker.regional['in_ID']);
+	$('.datepicker').datepicker();
+	$('.datepicker').datepicker({
+		changeYear: true,
+		changeMonth: true,
+		yearRange: '1999:2030',
+		format: "dd-mm-yy"
+	});
+});
+//-->
+</script>
 <div id="right">
 	<?php 
 		$form->prepare();
@@ -170,6 +189,9 @@
 				<span class="hide"></span>
 			</div>
 			<div class="content">
+				<div class="uibutton-toolbar">
+					<button class="uibutton">Tambah Milestone</button>
+				</div>
 				<table class="style1" id="contractMilestone">
 					<thead>
 						<tr>
@@ -177,18 +199,16 @@
 							<th>Deskripsi</th>
 							<th style="width: 200px;">Tanggal Target</th>
 							<th style="width: 100px;">Bobot</th>
-							<th style="width: 75px;"></th>
-							<th style="width: 75px;"></th>
+							<th style="width: 125px;"></th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
+							<td style="text-align: center;"></td>
 							<td></td>
 							<td></td>
 							<td></td>
-							<td></td>
-							<td style="text-align: center;"><input type="button" class="uibutton" value="Ubah" /></td>
-							<td style="text-align: center;"><input type="button" class="uibutton" value="Hapus" /></td>
+							<td style="text-align: center;"><input type="button" class="uibutton" value="Ubah" /><input type="button" class="uibutton" value="Hapus" /></td>
 						</tr>
 					</tbody>
 				</table>
@@ -210,22 +230,54 @@
 					<thead>
 						<tr>
 							<th style="width: 50px;">No</th>
-							<th style="width: 200px;">Kategori</th>
-							<th>Deskripsi Lampiran</th>
-							<th style="width: 300px;">File</th>
+							<th style="width: 250px;">Kategori</th>
+							<th style="width: 300px;">Deskripsi Lampiran</th>
+							<th>File</th>
 							<th style="width: 75px;">Kirim Ke Vendor</th>
 						</tr>
 					</thead>
 					<tbody>
+					<?php 
+						/* @var $kodeKategoriSelect Select */
+						$kodeKategoriSelect = $documentFieldsetCollection->getTargetElement()->get('kodeKategori');
+						$kodeKategoriSelect->setName(sprintf('%s[][%s]', $documentFieldsetCollection->getName(), $kodeKategoriSelect->getName()));
 					
+						/* @var $keteranganText Text */
+						$keteranganText = $documentFieldsetCollection->getTargetElement()->get('keterangan');
+						$keteranganText->setName(sprintf('%s[][%s]', $documentFieldsetCollection->getName(), $keteranganText->getName()));
+						
+						/* @var $namaFile File */
+						$namaFile = $documentFieldsetCollection->getTargetElement()->get('namaFile');
+						$namaFile->setName(sprintf('%s[][%s]', $documentFieldsetCollection->getName(), $namaFile->getName()));
+						
+						/* @var $statusPublishCheckbox Checkbox */
+						$statusPublishCheckbox = $documentFieldsetCollection->getTargetElement()->get('statusPublish');
+						$statusPublishCheckbox->setName(sprintf('%s[][%s]', $documentFieldsetCollection->getName(), $statusPublishCheckbox->getName()));
+						
+						for ($index = 0; $index < $documentFieldsetCollection->getCount(); $index++) : 
+					?>
 						<tr>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td style="text-align: center;"><input type="checkbox" /></td>
+							<td style="text-align: center;"><?php echo $index+1 ?></td>
+							<?php 
+							//$kodeKategoriSelect->setName(str_replace('index', $index, $kodeKategoriSelect->getName()));
+							?>
+							<td><?php echo $this->formSelect($kodeKategoriSelect)?></td>
+							<?php 
+							//$keteranganText->setName(str_replace('index', $index, $keteranganText->getName()));
+							?>
+							<td><?php echo $this->formText($keteranganText)?></td>
+							<?php 
+							//$namaFile->setName(str_replace('index', $index, $namaFile->getName()));
+							?>
+							<td><?php echo $this->formFile($namaFile)?></td>
+							<?php 
+							//$statusPublishCheckbox->setName(str_replace('index', $index, $statusPublishCheckbox->getName()));
+							?>
+							<td style="text-align: center;"><?php echo $this->formCheckbox($statusPublishCheckbox)?></td>
 						</tr>
-					
+					<?php 
+						endfor; 
+					?>
 					</tbody>
 				</table>
 			</div>

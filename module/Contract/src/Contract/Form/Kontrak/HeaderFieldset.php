@@ -65,7 +65,8 @@ class HeaderFieldset extends Fieldset implements InputFilterProvider {
 			),
 			'attributes' => array(
 				'id' => 'tanggalMulaiKontrak',
-				'style' => 'width: 150px;'
+				'style' => 'width: 150px;',
+				'class' => 'datepicker'
 			)
 		));
 		
@@ -77,7 +78,8 @@ class HeaderFieldset extends Fieldset implements InputFilterProvider {
 			),
 			'attributes' => array(
 				'id' => 'tanggalAkhirKontrak',
-				'style' => 'width: 150px;'
+				'style' => 'width: 150px;',
+				'class' => 'datepicker'
 			)
 		));
 		

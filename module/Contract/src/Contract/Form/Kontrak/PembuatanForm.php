@@ -89,6 +89,8 @@ class PembuatanForm extends Form implements InputFilterProvider {
 		$this->add($jaminanPelaksanaanFieldset);
 		
 		$dokumenFieldsetCollection = new FormElementCollection(self::DOKUMEN_FIELDSET_COLLECTION_NAME);
+		$dokumenFieldsetCollection->setCount(5);
+		$dokumenFieldsetCollection->setShouldCreateTemplate(false);
 		$dokumenFieldset = new DokumenFieldset($serviceLocator);
 		$dokumenFieldsetCollection->setTargetElement($dokumenFieldset);
 		$this->add($dokumenFieldsetCollection);

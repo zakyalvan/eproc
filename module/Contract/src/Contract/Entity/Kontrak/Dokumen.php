@@ -12,6 +12,12 @@ use Doctrine\ORM\Mapping as Orm;
  * @author zakyalvan
  */
 class Dokumen {
+	const DOKUMEN_KONTRAK_UTAMA = '1';
+	const DOKUMEN_LAMPIRAN_A_PERSYARATAN_KHUSUS = '2';
+	const DOKUMEN_LAMPIRAN_B_LINGKUP_PEKERJAAN = '3';
+	const DOKUMEN_LAMPIRAN_C_HARGA_PEMBAYARAN = '4';
+	const DOKUMEN_LAMPIRAN_C_PERSYARATAN_UMUM = '5';
+	
 	/**
 	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Kontrak\Kontrak", fetch="LAZY")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", referencedColumnName="KODE_KONTRAK")})
