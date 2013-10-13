@@ -3,6 +3,7 @@ namespace Contract\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Contract\Form\DelegateCreationForm;
+use Contract\Form\Kontrak\PembuatanForm;
 
 /**
  * Kelas kontroler ini mewakili aktifitas-aktifitas dalam proses flow 
@@ -11,6 +12,11 @@ use Contract\Form\DelegateCreationForm;
  * @author zakyalvan
  */
 class CreateController extends AbstractActionController {
+	private $acceptCriteria = array(
+		'Zend\View\Model\ViewModel' => array('text/html'),
+		'Zend\View\Model\JsonModel' => array('application/json')
+	);
+	
 	/**
 	 * List draft kontrak.
 	 */
@@ -39,27 +45,58 @@ class CreateController extends AbstractActionController {
 	 * Pembuatan draft kontrak baru
 	 */
 	public function draftAction() {
+		$viewModel = $this->acceptableViewModelSelector($this->acceptCriteria);
+		
+		$form = new PembuatanForm($this->getServiceLocator());
+		
+		$kodeTender = $this->params()->fromRoute('tender');
+		$kodeKantor = $this->params()->fromRoute('kantor');
 		
 		// Proses input data draft kontrak dari user.
-		if($this->getRequest()->isPost()) {
+		if($this->request->isPost()) {
+			$form->setData($this->request->getPost());
 			
+			// Jika form yang disubmit valid, simpan draft kontrak.
+			if($form->isValid()) {
+				
+			}
 		}
 		
 		// Render form create draft kontrak.
 		return array(
-			"pageTitle" => "Kontrak - Pembuatan Draft",
-			"contentData" => array()
+			'pageTitle' => 'Draft Kontrak',
+			'kontrak' => $kontrak,
+			'form' => $form
 		);
 	}
 	
 	/**
 	 * Review draft kontrak, aktifitas ini akan dilakuakan oleh user
-	 * setelah proses pembuatan kontrak baru (jika type kontrak adalah perjanjian).
+	 * setelah proses pembuatan draft kontrak baru (jika type kontrak adalah perjanjian).
 	 */
 	public function reviewAction() {
-		// Render informasi dan form review draft kontrak.
+		$viewModel = $this->acceptableViewModelSelector($this->acceptCriteria);
+		
+		$form = new PembuatanForm($this->getServiceLocator());
+		
+		$kodeTender = $this->params()->fromRoute('tender');
+		$kodeKantor = $this->params()->fromRoute('kantor');
+		
+		// Proses input data draft kontrak dari user.
+		if($this->request->isPost()) {
+			$form->setData($this->request->getPost());
+			
+			// Jika form yang disubmit valid, simpan draft kontrak.
+			if($form->isValid()) {
+				$this->redirect()->toRoute('contract/todo');
+			}
+		}
+		
+		// Render form create draft kontrak.
 		return array(
-			"pageTitle" => "Kontrak - Review Draft",
+			'pageTitle' => 'Review Kontrak',
+			'kontrak' => $kontrak,
+			'form' => $form
 		);
 	}
 	

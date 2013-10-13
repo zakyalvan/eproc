@@ -1,4 +1,24 @@
+<?php 
+	use Zend\Form\Element\Collection;
+	use Contract\Form\Kontrak\HeaderFieldset;
+	use Contract\Form\Kontrak\KomentarFieldset;
+	use Contract\Form\Kontrak\PembuatanForm;
+	
+	/* @var $form Contract\Form\Kontrak\PembuatanForm */
+	$form = $this->form;
+	
+	/* @var $tender Procurement\Entity\Tender\Tender */
+	$tender = $this->tender;
+	
+	/* @var $kontrak Contract\Entity\Kontrak\Kontrak */
+	$kontrak = $this->kontrak;
+?>
+
 <div id="right">
+	<?php 
+		$form->prepare();
+		echo $this->form()->openTag($form);
+	?>
 	<div class="section">
 		<!-- Start Contract Header -->
 		<div class="box">
@@ -53,22 +73,25 @@
 						<td>
 							<div>
 								<!-- Select Jenis Kontrak, SPK atau Perjanjian -->
+								<?php echo $this->formSelect($form->get(HeaderFieldset::DEFAULT_NAME)->get('jenisKontrak')) ?>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;">Tanggal Mulai Kontrak</td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(HeaderFieldset::DEFAULT_NAME)->get('tanggalMulaiKontrak')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Datepicker tanggal mulai kontrak -->
+								<?php echo $this->formInput($form->get(HeaderFieldset::DEFAULT_NAME)->get('tanggalMulaiKontrak'))?>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;">Tanggal Berakhir Kontrak</td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(HeaderFieldset::DEFAULT_NAME)->get('tanggalAkhirKontrak')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Datepicker tanggal berakhir kontrak -->
+								<?php echo $this->formInput($form->get(HeaderFieldset::DEFAULT_NAME)->get('tanggalAkhirKontrak'))?>
 							</div>
 						</td>
 					</tr>
@@ -173,6 +196,10 @@
 		</div>
 		<!-- End Contract Milestone -->
 		<!-- Start Contract Lampiran -->
+		<?php 
+			/* @var $documentFieldsetCollection Collection */
+			$documentFieldsetCollection = $form->get(PembuatanForm::DOKUMEN_FIELDSET_COLLECTION_NAME);
+		?>
 		<div class="box">
 			<div class="title">
 				LAMPIRAN
@@ -190,6 +217,7 @@
 						</tr>
 					</thead>
 					<tbody>
+					
 						<tr>
 							<td></td>
 							<td></td>
@@ -197,6 +225,7 @@
 							<td></td>
 							<td style="text-align: center;"><input type="checkbox" /></td>
 						</tr>
+					
 					</tbody>
 				</table>
 			</div>
@@ -212,10 +241,11 @@
 			<div class="content">
 				<table class="form formStyle2">
 					<tr>
-						<td class="head" style="width: 200px;">Komentar Anda</td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(KomentarFieldset::DEFAULT_NAME)->get('isi')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Textarea komentar -->
+								<?php echo $this->formTextarea($form->get(KomentarFieldset::DEFAULT_NAME)->get('isi'))?>
 							</div>
 						</td>
 					</tr>
@@ -227,11 +257,14 @@
 		<!-- Start Button Container -->
 		<div class="box">
 			<div class="uibutton-toolbar">
-				<input type="submit" value="Simpan Sementara" class="uibutton" />
-				<input type="submit" value="Simpan" class="uibutton" />
-				<input type="submit" value="Kembali" class="uibutton">
+				<?php echo $this->formElement($form->get('submitDraft'))?>
+				<?php echo $this->formElement($form->get('submit'))?>
+				<a href="<?php echo $this->url('contract/todo')?>" class="uibutton">Kembali</a>
 			</div>
 		</div>
 		<!-- End Button Container -->
 	</div>
+	<?php 
+		echo $this->form()->closeTag();
+	?>
 </div>

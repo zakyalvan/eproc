@@ -47,10 +47,18 @@ class GeneratedKey {
 	 */
 	private $generated;
 	
+	/**
+	 * @Orm\Column(name="GENERATED_DATE", type="datetime")
+	 * 
+	 * @var \DateTime
+	 */
+	private $createdDate;
+	
 	public function __construct($context, $key, $generated) {
 		$this->context = $context;
 		$this->key = $key;
 		$this->generated = $generated;
+		$this->createdDate = new \DateTime(null, null);
 	}
 	
 	public function getContext() {

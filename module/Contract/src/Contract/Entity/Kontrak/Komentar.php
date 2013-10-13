@@ -14,6 +14,24 @@ use Doctrine\ORM\Mapping as Orm;
 class Komentar {
 	/**
 	 * @Orm\Id
+	 * @Orm\Column(name="KODE_KONTRAK", nullable=false)
+	 * @Orm\GeneratedValue(strategy="NONE")
+	 * 
+	 * @var string
+	 */
+	private $kodeKontrak;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_KANTOR", nullable=false)
+	 * @Orm\GeneratedValue(strategy="NONE")
+	 * 
+	 * @var string
+	 */
+	private $kodeKantor;
+	
+	/**
+	 * @Orm\Id
 	 * @Orm\Column(name="KODE_KOMENTAR", type="integer")
 	 * @Orm\GeneratedValue(strategy="NONE")
 	 * 
@@ -28,7 +46,6 @@ class Komentar {
 	}
 	
 	/**
-	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Kontrak\Kontrak", fetch="LAZY")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KONTRAK", referencedColumnName="KODE_KONTRAK"), @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR")})
 	 * 
@@ -82,7 +99,7 @@ class Komentar {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_KOMENTAR", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_KOMENTAR", type="datetime", nullable=true)
 	 * 
 	 * @var \DateTime
 	 */
@@ -134,7 +151,7 @@ class Komentar {
 	}
 	
 	/**
-	 * @Orm\Column(name="KOMENTAR", type="string", length=4000, nullable=false)
+	 * @Orm\Column(name="KOMENTAR", type="string", length=4000, nullable=true)
 	 * 
 	 * @var string
 	 */

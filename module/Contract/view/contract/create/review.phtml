@@ -1,4 +1,23 @@
+<?php 
+	use Contract\Form\Kontrak\HeaderFieldset;
+	use Contract\Form\Kontrak\KomentarFieldset;
+	use Contract\Form\Kontrak\JaminanPelaksanaanFieldset;
+	
+	/* @var $form Contract\Form\Kontrak\PembuatanForm */
+	$form = $this->form;
+	
+	/* @var $tender Procurement\Entity\Tender\Tender */
+	$tender = $this->tender;
+	
+	/* @var $kontrak Contract\Entity\Kontrak\Kontrak */
+	$kontrak = $this->kontrak;
+?>
+
 <div id="right">
+	<?php 
+		$form->prepare();
+		echo $this->form()->openTag($form);
+	?>
 	<div class="section">
 		<!-- Start Contract Header -->
 		<div class="box">
@@ -49,26 +68,29 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;">Jenis Kontrak</td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(HeaderFieldset::DEFAULT_NAME)->get('jenisKontrak')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Select Jenis Kontrak, SPK atau Perjanjian -->
+								<?php echo $this->formSelect($form->get(HeaderFieldset::DEFAULT_NAME)->get('jenisKontrak')) ?>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;">Tanggal Mulai Kontrak</td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(HeaderFieldset::DEFAULT_NAME)->get('tanggalMulaiKontrak')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Datepicker tanggal mulai kontrak -->
+								<?php echo $this->formInput($form->get(HeaderFieldset::DEFAULT_NAME)->get('tanggalMulaiKontrak'))?>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;">Tanggal Berakhir Kontrak</td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(HeaderFieldset::DEFAULT_NAME)->get('tanggalAkhirKontrak')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Datepicker tanggal berakhir kontrak -->
+								<?php echo $this->formInput($form->get(HeaderFieldset::DEFAULT_NAME)->get('tanggalAkhirKontrak'))?>
 							</div>
 						</td>
 					</tr>
@@ -89,18 +111,20 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;">Judul Pekerjaan</td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(HeaderFieldset::DEFAULT_NAME)->get('judulPekerjaan')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Textfield judul pekerjaan -->
+								<?php echo $this->formInput($form->get(HeaderFieldset::DEFAULT_NAME)->get('judulPekerjaan'))?>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;">Deskripsi Pekerjaan</td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(HeaderFieldset::DEFAULT_NAME)->get('deskripsiPekerjaan')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Textarea deksripsi pekerjaan -->
+								<?php echo $this->formTextarea($form->get(HeaderFieldset::DEFAULT_NAME)->get('deskripsiPekerjaan'))?>
 							</div>
 						</td>
 					</tr>
@@ -117,50 +141,56 @@
 			<div class="content">
 				<table class="form formStyle2">
 					<tr>
-						<td class="head" style="width: 200px;">Nama Bank</td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('bankJaminan')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Textfield Nama Bank -->
+								<?php echo $this->formInput($form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('bankJaminan'))?>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;">Nomor Jaminan</td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('nomorJaminan')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Textfield Nomor Jaminan -->
+								<?php echo $this->formInput($form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('nomorJaminan'))?>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;">Mulai Berlaku</td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('tanggalMulaiJaminan')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Datepicker mulai berlaku -->
+								<?php echo $this->formInput($form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('tanggalMulaiJaminan'))?>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;">Berlaku Hingga</td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('tanggalAkhirJaminan')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Datepicker berlaku hingga -->
+								<?php echo $this->formInput($form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('tanggalAkhirJaminan'))?>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;">Nilai Jaminan</td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('nilaiJaminan')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Textfield Nilai Jaminan -->
+								<?php echo $this->formInput($form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('nilaiJaminan'))?>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;">Lampiran</td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('lampiranJaminan')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- File Lampiran jaminan -->
+								<?php echo $this->formFile($form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('lampiranJaminan'))?>
 							</div>
 						</td>
 					</tr>
@@ -272,10 +302,11 @@
 			<div class="content">
 				<table class="form formStyle2">
 					<tr>
-						<td class="head" style="width: 200px;">Komentar Anda</td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(KomentarFieldset::DEFAULT_NAME)->get('isi')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Textarea komentar -->
+								<?php echo $this->formTextarea($form->get(KomentarFieldset::DEFAULT_NAME)->get('isi'))?>
 							</div>
 						</td>
 					</tr>
@@ -305,11 +336,15 @@
 		
 		<!-- Start Button Container -->
 		<div class="box">
-			<div class="content" style="text-align: center">
-				<input type="submit" value="Simpan dan Aktifkan" class="uibutton" />
-				<a class="uibutton">Kembali</a>
+			<div class="uibutton-toolbar">
+				<?php echo $this->formElement($form->get('submitDraft'))?>
+				<?php echo $this->formElement($form->get('submit'))?>
+				<a href="<?php echo $this->url('contract/todo')?>" class="uibutton">Kembali</a>
 			</div>
 		</div>
 		<!-- End Button Container -->
 	</div>
+	<?php 
+		echo $this->form()->closeTag();
+	?>
 </div>

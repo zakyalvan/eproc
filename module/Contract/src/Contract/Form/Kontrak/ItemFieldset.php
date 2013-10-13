@@ -10,7 +10,7 @@ use Zend\Stdlib\Hydrator\ClassMethods as ClassMethodsHydrator;
  * 
  * @author zakyalvan
  */
-class ItemKontrakFieldset extends Fieldset implements InputFilterProvider {
+class ItemFieldset extends Fieldset implements InputFilterProvider {
 	public function __construct() {
 		parent::__construct('ItemKontrak');
 		$this->setHydrator(new ClassMethodsHydrator());

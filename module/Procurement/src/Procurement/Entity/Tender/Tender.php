@@ -72,6 +72,7 @@ class Tender {
 	
 	/**
 	 * @Orm\OneToMany(targetEntity="Procurement\Entity\Tender\Item", fetch="LAZY", mappedBy="tender")
+	 * @Orm\OrderBy({"nomorUrut" = "ASC"})
 	 *
 	 * @var array
 	 */

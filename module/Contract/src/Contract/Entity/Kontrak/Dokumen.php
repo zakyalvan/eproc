@@ -13,8 +13,8 @@ use Doctrine\ORM\Mapping as Orm;
  */
 class Dokumen {
 	/**
-	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Kontrak\Kontrak", fetch="lazy")
-	 * @Orm\JoinColumns({@JoinColumn(name="KODE_KANTOR", type="string", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", type="string", referencedColumnName="KODE_KONTRAK")})
+	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Kontrak\Kontrak", fetch="LAZY")
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", referencedColumnName="KODE_KONTRAK")})
 	 * 
 	 * @var Kontrak
 	 */
@@ -82,7 +82,7 @@ class Dokumen {
     }
     
     /**
-     * @Orm\Column(name="STATUS", type="string", length="1", nullable=true)
+     * @Orm\Column(name="STATUS", type="string", length=1, nullable=true)
      *
      * @var string
      */
@@ -95,7 +95,7 @@ class Dokumen {
     }
     
     /**
-     * @Orm\Column(name="STATUS_PUBLISH", type="string", length="1", nullable=true)
+     * @Orm\Column(name="STATUS_PUBLISH", type="string", length=1, nullable=true)
      *
      * @var string
      */
@@ -108,7 +108,7 @@ class Dokumen {
     } 
     
     /**
-     * @Orm\Column(name="TGL_REKAM", type="date", nullable=true)
+     * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
      *
      * @var date
      */
@@ -134,7 +134,7 @@ class Dokumen {
     }
     
     /**
-     * @Orm\Column(name="TGL_UBAH", type="date", nullable=true)
+     * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
      *
      * @var date
      */

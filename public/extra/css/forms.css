@@ -68,6 +68,7 @@ select option{
 /* //////////////////// TEXTAREA \\\\\\\\\\\\\\\\\\\\ */
 
 textarea {
+	font : 12px/1.2em Arial;
 	display : inline-block;
 	background : url(../images/form-style/input-back.gif) repeat;
 	border : 1px solid #dcdcdc;

@@ -45,7 +45,8 @@ class InitiateService implements InitiateServiceInterface, ServiceLocatorAware {
 			/* @var $executionService ExecutionServiceInterface */
 			$executionService = $this->serviceLocator->get('Workflow\Execution\ExecutionService');
 			
-			$executionService->startWorkflow($workflow, $instanceDatas);
+			//$executionService->startWorkflow($workflow, $instanceDatas);
+			$entityManager->flush();
 			$entityManager->commit();
 		}
 		catch (\Exception $e) {

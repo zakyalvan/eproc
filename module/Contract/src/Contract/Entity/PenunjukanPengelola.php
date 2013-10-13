@@ -117,7 +117,7 @@ class PenunjukanPengelola {
 		return $this->tanggalRekam;
 	}
 	public function setTanggalRekam($tanggalRekam) {
-		$this->tanggalRekam;
+		$this->tanggalRekam = $tanggalRekam;
 	}
 	
 	/**

@@ -1,5 +1,5 @@
 <?php
-namespace Contract\Entity;
+namespace Contract\Entity\Jangka;
 
 use Doctrine\ORM\Mapping as Orm;
 
