@@ -19,7 +19,7 @@ class Dokumen {
 	const DOKUMEN_LAMPIRAN_C_PERSYARATAN_UMUM = '5';
 	
 	/**
-	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Kontrak\Kontrak", fetch="LAZY")
+	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Kontrak\Kontrak", fetch="LAZY", inversedBy="listDokumen")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", referencedColumnName="KODE_KONTRAK")})
 	 * 
 	 * @var Kontrak

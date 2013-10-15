@@ -1,5 +1,5 @@
 <?php
-namespace Contract\Entity\Jangka;
+namespace Contract\Entity\Kontrak;
 
 use Doctrine\ORM\Mapping as Orm;
 use Contract\Entity\Kontrak\Kontrak;
@@ -10,9 +10,25 @@ use Contract\Entity\Kontrak\Kontrak;
  * 
  * @author zakyalvan
  */
-class JangkaKontrak {
+class Milestone {
 	/**
-	 * Kode jangka.
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_KONTRAK", type="string")
+	 *
+	 * @var string
+	 */
+	private $kodeKontrak;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_KANTOR", type="string")
+	 * 
+	 * @var string
+	 */
+	private $kodeKantor;
+	
+	/**
+	 * Kode jangka/milestone.
 	 * 
 	 * @Orm\Id
 	 * @Orm\Column(name="KODE_JANGKA", type="integer")
@@ -29,9 +45,8 @@ class JangkaKontrak {
 	}
 	
 	/**
-	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Kontrak\Entity\Kontrak\Kontrak", fetch="lazy")
-	 * @Orm\JoinColumns({@JoinColumn(name="KODE_KANTOR", type="string", length="5", referencedColumnName="KODE_KANTOR"), @JoinColumn(name="KODE_KONTRAK", type="string", length="50", referencedColumnName="KODE_KONTRAK")})
+	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Kontrak\Kontrak", fetch="LAZY", inversedBy="listMilestone")
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", referencedColumnName="KODE_KONTRAK")})
 	 * 
 	 * @var Kontrak
 	 */
@@ -43,6 +58,18 @@ class JangkaKontrak {
 		$this->kontrak = $kontrak;
 	}
 	
+	/**
+	 * @Orm\Column(name="KETERANGAN", type="string", length=4000, nullable=true)
+	 *
+	 * @var string
+	 */
+	private $keterangan;
+	public function getKeterangan() {
+		return $this->keterangan;
+	}
+	public function setKeterangan($keterangan) {
+		$this->keterangan = $keterangan;
+	}
 	
 	/**
 	 * @Orm\Column(name="PERSENTASI", type="integer", nullable=true)
@@ -58,9 +85,9 @@ class JangkaKontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_TARGET", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_TARGET", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalTarget;
 	public function getTanggalTarget() {
@@ -84,7 +111,7 @@ class JangkaKontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="STATUS_PERKEMBANGAN", type="string", length="2", nullable=true)
+	 * @Orm\Column(name="STATUS_PERKEMBANGAN", type="string", length=2, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -97,7 +124,7 @@ class JangkaKontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="NO_BASTP", type="string", length="50", nullable=true)
+	 * @Orm\Column(name="NO_BASTP", type="string", length=50, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -110,9 +137,9 @@ class JangkaKontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_BASTP", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_BASTP", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalBastp;
 	public function getTanggalBastp() {
@@ -123,7 +150,7 @@ class JangkaKontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="JUDUL_BASTP", type="string", length="1024", nullable=true)
+	 * @Orm\Column(name="JUDUL_BASTP", type="string", length=1024, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -136,7 +163,7 @@ class JangkaKontrak {
 	} 
 	
 	/**
-	 * @Orm\Column(name="LAMPIRAN_BASTP", type="string", length="250", nullable=true)
+	 * @Orm\Column(name="LAMPIRAN_BASTP", type="string", length=250, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -149,9 +176,9 @@ class JangkaKontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_BUAT_BASTP", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_BUAT_BASTP", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalPembuatanBastp;
 	public function getTanggalPembuatanBastp() {
@@ -162,7 +189,7 @@ class JangkaKontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="STATUS_BASTP", type="string", length="2", nullable=true)
+	 * @Orm\Column(name="STATUS_BASTP", type="string", length=2, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -175,7 +202,7 @@ class JangkaKontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="KETERANGAN_BASTP", type="string", length="4000", nullable=true)
+	 * @Orm\Column(name="KETERANGAN_BASTP", type="string", length=4000, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -211,25 +238,12 @@ class JangkaKontrak {
 	}
 	public function setPersentasiUangMuka($persentasiUangMuka) {
 		$this->persentasiUangMuka = $persentasiUangMuka;
-	} 
-	
-	/**
-	 * @Orm\Column(name="KETERANGAN", type="string", length="4000", nullable=true)
-	 *
-	 * @var string
-	 */
-	private $keterangan;
-	public function getKeterangan() {
-		return $this->keterangan;
 	}
-	public function setKeterangan($keterangan) {
-		$this->keterangan = $keterangan;
-	} 
 	
 	/**
-	 * @Orm\Column(name="JUMLAH_UANG", type="double", nullable=true)
+	 * @Orm\Column(name="JUMLAH_UANG", type="float", nullable=true)
 	 *
-	 * @var double
+	 * @var float
 	 */
 	private $jumlahUang;
 	public function getJumlahUang() {
@@ -240,9 +254,9 @@ class JangkaKontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_REKAM", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalRekam;
 	public function getTanggalRekam() {
@@ -266,9 +280,9 @@ class JangkaKontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_UBAH", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalUbah;
 	public function getTanggalUbah() {

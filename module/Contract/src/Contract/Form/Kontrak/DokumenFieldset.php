@@ -13,7 +13,8 @@ use Contract\Entity\Invoice\Dokumen;
  * @author zakyalvan
  */
 class DokumenFieldset extends Fieldset implements InputFilterProvider {
-	const DEFAULT_NAME = 'dokumenFieldset';
+	const DEFAULT_NAME = 'dokumen';
+	const DEFAULT_COLLECTION_NAME = 'listDokumen';
 	
 	private $serviceLocator;
 	

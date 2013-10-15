@@ -6,6 +6,7 @@ use Vendor\Entity\Vendor;
 use Procurement\Entity\Tender\Tender;
 use Application\Entity\MataUang;
 use Application\Entity\Kantor;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Entity header dari sebuah kontrak.
@@ -22,6 +23,13 @@ class Kontrak {
 	
 	const JENIS_SPK = 'SPK';
 	const JENIS_PERJANJIAN = 'PERJANJIAN';
+	
+	public function __construct() {
+		$this->listItem = new ArrayCollection();
+		$this->listMilestone = new ArrayCollection();
+		$this->listDokumen = new ArrayCollection();
+		$this->listKomentar = new ArrayCollection();
+	}
 	
 	/**
 	 * @Orm\Id
@@ -327,73 +335,16 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="NILAI_JAMINAN", type="float", nullable=true)
-	 */
-	private $nilaiJaminan;
-	public function getNilaiJaminan() {
-		return $this->nilaiJaminan;
-	}
-	public function setNilaiJaminan($nilaiJaminan) {
-		$this->nilaiJaminan = $nilaiJaminan;
-	}
-	
-	/**
-	 * @Orm\Column(name="BANK_JAMINAN", type="string", nullable=true)
-	 */
-	private $bankJaminan;
-	public function getBankJaminan() {
-		return $this->bankJaminan;
-	}
-	public function setBankJaminan($bankJaminan) {
-		$this->bankJaminan = $bankJaminan;
-	}
-	
-	/**
-	 * @Orm\Column(name="NO_JAMINAN", type="string", nullable=true)
-	 */
-	private $nomorJaminan;
-	public function getNomorJaminan() {
-		return $this->nomorJaminan;
-	}
-	public function setNomorJaminan($nomorJaminan) {
-		$this->nomorJaminan = $nomorJaminan;
-	}
-	
-	/**
-	 * @Orm\Column(name="TGL_MULAI_JAMINAN", type="datetime", nullable=true)
+	 * @Orm\OneToOne(targetEntity="Contract\Entity\Kontrak\JaminanPelaksanaan", fetch="EAGER", mappedBy="kontrak")
 	 * 
-	 * @var \DateTime
+	 * @var JaminanPelaksanaan
 	 */
-	private $tanggalMulaiJaminan;
-	public function getTanggalMulaiJaminan() {
-		return $this->tanggalMulaiJaminan;
+	private $jaminanPelaksanaan;
+	public function getJaminanPelaksanaan() {
+		return $this->jaminanPelaksanaan;
 	}
-	public function setTanggalMulaiJaminan($tanggalMulaiJaminan) {
-		$this->tanggalMulaiJaminan = $tanggalMulaiJaminan;
-	}
-	
-	/**
-	 * @Orm\Column(name="TGL_AKHIR_JAMINAN", type="datetime", nullable=true)
-	 * 
-	 * @var \DateTime
-	 */
-	private $tanggalAkhirJaminan;
-	public function getTanggalAkhirJaminan() {
-		return $this->tanggalAkhirJaminan;
-	}
-	public function setTanggalAkhirJaminan($tanggalAkhirJaminan) {
-		$this->tanggalAkhirJaminan = $tanggalAkhirJaminan;
-	}
-	
-	/**
-	 * @Orm\Column(name="LAMPIRAN_JAMINAN", type="string", nullable=true)
-	 */
-	private $lampiranJaminan;
-	public function getLampiranJaminan() {
-		return $this->lampiranJaminan;
-	}
-	public function setLampiranJaminan($lampiranJaminan) {
-		$this->lampiranJaminan = $lampiranJaminan;
+	public function setJaminanPelaksanaan(JaminanPelaksanaan $jaminanPelaksanaan) {
+		$this->jaminanPelaksanaan = $jaminanPelaksanaan;
 	}
 	
 	/**
@@ -434,7 +385,7 @@ class Kontrak {
 	 */
 	private $alasanPemutusan;
 	public function getAlasanPemutusan() {
-		return $this->getAlasanPemutusan();
+		return $this->alasanPemutusan;
 	}
 	public function setAlasanPemutusan($alasanPemutusan) {
 		$this->alasanPemutusan = $alasanPemutusan;
@@ -482,6 +433,61 @@ class Kontrak {
 	}
 	public function setCatatanUangMuka($catatanUangMuka) {
 		$this->catatanUangMuka = $catatanUangMuka;
+	}
+	
+	/**
+	 * @Orm\OneToMany(targetEntity="Contract\Entity\Kontrak\Item", fetch="LAZY", mappedBy="kontrak")
+	 * 
+	 * @var ArrayCollection
+	 */
+	private $listItem;
+	public function getListItem() {
+		return $this->listItem;
+	}
+	public function setListItem(ArrayCollection $listItem) {
+		$this->listItem = $listItem;
+	}
+	
+	/**
+	 * @Orm\OneToMany(targetEntity="Contract\Entity\Kontrak\Milestone", fetch="LAZY", mappedBy="kontrak")
+	 *
+	 * @var ArrayCollection
+	 */
+	private $listMilestone;
+	public function getListMilestone() {
+		return $this->listMilestone;
+	}
+	public function setListMilestone(ArrayCollection $listMilestone) {
+		$this->listMilestone = $listMilestone;
+	}
+	
+	/**
+	 * @Orm\OneToMany(targetEntity="Contract\Entity\Kontrak\Dokumen", fetch="LAZY", mappedBy="kontrak")
+	 *
+	 * @var ArrayCollection
+	 */
+	private $listDokumen;
+	public function getListDokumen() {
+		return $this->listDokumen;
+	}
+	public function setListDokumen(ArrayCollection $listDokumen) {
+		$this->listDokumen = $listDokumen;
+	}
+	
+	/**
+	 * List dari komentar, disusun berdasarkan tanggal pembuatan kontrak.
+	 * 
+	 * @Orm\OneToMany(targetEntity="Contract\Entity\Kontrak\Komentar", fetch="LAZY", mappedBy="kontrak")
+	 * @Orm\OrderBy({"tanggal" = "DESC"})
+	 *
+	 * @var ArrayCollection
+	 */
+	private $listKomentar;
+	public function getListKomentar() {
+		return $this->listKomentar;
+	}
+	public function setListKomentar(ArrayCollection $listKomentar) {
+		$this->listKomentar = $listKomentar;
 	}
 	
 	/**

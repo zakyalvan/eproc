@@ -4,6 +4,9 @@ namespace Contract\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Contract\Form\DelegateCreationForm;
 use Contract\Form\Kontrak\PembuatanForm;
+use Contract\Entity\Kontrak\Kontrak;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * Kelas kontroler ini mewakili aktifitas-aktifitas dalam proses flow 
@@ -47,18 +50,30 @@ class CreateController extends AbstractActionController {
 	public function draftAction() {
 		$viewModel = $this->acceptableViewModelSelector($this->acceptCriteria);
 		
-		$form = new PembuatanForm($this->getServiceLocator());
-		
 		$kodeTender = $this->params()->fromRoute('tender');
 		$kodeKantor = $this->params()->fromRoute('kantor');
+		
+		$form = new PembuatanForm($this->getServiceLocator());
+		$form->setValidationGroup(array('kontrak' => array()));
+		
+		$kontrak = new Kontrak();
+		$kontrak->setJenisKontrak(Kontrak::JENIS_SPK);
+		$form->bind($kontrak);
 		
 		// Proses input data draft kontrak dari user.
 		if($this->request->isPost()) {
 			$form->setData($this->request->getPost());
 			
+			if($form->isFinal()) {
+				exit('Final');
+			}
+			if($form->isDraft()) {
+				exit('Draft');
+			}
+			
 			// Jika form yang disubmit valid, simpan draft kontrak.
 			if($form->isValid()) {
-				
+				$this->redirect()->toRoute('contract/todo');
 			}
 		}
 		
@@ -116,7 +131,7 @@ class CreateController extends AbstractActionController {
 	public function kbhAction() {
 		// Render informasi dan form approval draft kontrak.
 		return array(
-			"pageTitle" => "Kontrak - Pembuatan KBH",
+			"pageTitle" => "Pembuatan KBH",
 		);
 	}
 	
@@ -129,7 +144,7 @@ class CreateController extends AbstractActionController {
 		
 		// Render informasi dan form inisiasi kontrak.
 		return array(
-			"pageTitle" => "Kontrak - Finalisasi Draft"
+			"pageTitle" => "Finalisasi Kontrak"
 		);
 	}
 }

@@ -5,6 +5,7 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface as ServiceLocatorAware;
 use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
 use Zend\Json\Json;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\UnitOfWork;
 use Application\Common\KeyGeneratorInterface;
 use Workflow\Execution\Router\ProcessRouterInterface as ProcessRouter;
 use Workflow\Execution\Router\RouteResult;
@@ -20,7 +21,6 @@ use Workflow\Entity\Repository\TransitionRepository;
 use Workflow\Entity\Repository\InstanceRepository;
 use Workflow\Entity\Repository\PlaceRepository;
 use Workflow\Entity\Repository\TokenRepository;
-use Doctrine\ORM\UnitOfWork;
 use Workflow\Entity\Repository\WorkflowRepository;
 
 /**

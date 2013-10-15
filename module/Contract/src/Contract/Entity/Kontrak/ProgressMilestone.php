@@ -1,5 +1,5 @@
 <?php
-namespace Contract\Entity\Jangka;
+namespace Contract\Entity\Kontrak;
 
 use Doctrine\ORM\Mapping as Orm;
 
@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as Orm;
  *
  * @author zakyalvan
  */
-class Perkembangan {
+class ProgressMilestone {
 	/**
 	 * Kode jangka perkembangan
 	 * 
@@ -30,9 +30,9 @@ class Perkembangan {
 	/**
 	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Jangka\JangkaKontrak", fetch="lazy")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", type="string", length="5", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", type="string", length="50", referencedColumnName="KODE_KONTRAK"), @Orm\JoinColumn(name="KODE_JANGKA", type="integer", referencedColumnName="KODE_JANGKA")})
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", type="string", length="50", referencedColumnName="KODE_KONTRAK"), @Orm\JoinColumn(name="KODE_JANGKA", referencedColumnName="KODE_JANGKA")})
 	 * 
-	 * @var JangkaKontrak
+	 * @var Milestone
 	 */
 	private $jangkaKontrak;
 	public function getJangkaKontrak() {
@@ -43,9 +43,9 @@ class Perkembangan {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_PERKEMBANGAN", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_PERKEMBANGAN", type="datetime", nullable=true)
 	 * 
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalPerkembangan;
 	public function getTanggalPerkembangan() {
@@ -69,7 +69,7 @@ class Perkembangan {
 	}
 	
 	/**
-	 * @Orm\Column(name="STATUS", type="string", length="2", nullable=true)
+	 * @Orm\Column(name="STATUS", type="string", length=2, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -82,7 +82,7 @@ class Perkembangan {
 	}
 	
 	/**
-	 * @Orm\Column(name="KETERANGAN", type="string", length="4000", nullable=true)
+	 * @Orm\Column(name="KETERANGAN", type="string", length=4000, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -95,9 +95,9 @@ class Perkembangan {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_REKAM", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalRekam;
 	public function getTanggalRekam() {
@@ -121,9 +121,9 @@ class Perkembangan {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_UBAH", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalUbah;
 	public function getTanggalUbah() {

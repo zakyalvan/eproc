@@ -14,7 +14,7 @@ use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
  * @author zakyalvan
  */
 class JaminanPelaksanaanFieldset extends Fieldset implements InputFilterProvider {
-	const DEFAULT_NAME = 'jaminanFieldset';
+	const DEFAULT_NAME = 'listJaminanPelaksanaan';
 	
 	/**
 	 * @var ServiceLocator

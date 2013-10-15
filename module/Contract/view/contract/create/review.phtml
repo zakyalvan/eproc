@@ -1,7 +1,15 @@
-<?php 
-	use Contract\Form\Kontrak\HeaderFieldset;
+<?php
+	use Contract\Form\Kontrak\PembuatanForm;
+	use Contract\Form\Kontrak\KontrakFieldset;
 	use Contract\Form\Kontrak\KomentarFieldset;
-	use Contract\Form\Kontrak\JaminanPelaksanaanFieldset;
+	use Contract\Form\Kontrak\DokumenFieldset;
+	use Zend\Form\Element\Select;
+	use Zend\Form\Element\Text;
+	use Zend\Form\Element\File;
+	use Zend\Form\Element\Checkbox;
+use Contract\Form\Kontrak\JaminanPelaksanaanFieldset;
+	
+	$this->headTitle($this->pageTitle);
 	
 	/* @var $form Contract\Form\Kontrak\PembuatanForm */
 	$form = $this->form;
@@ -12,7 +20,20 @@
 	/* @var $kontrak Contract\Entity\Kontrak\Kontrak */
 	$kontrak = $this->kontrak;
 ?>
-
+<script type="text/javascript">
+<!--
+$(function(){
+	$.datepicker.setDefaults($.datepicker.regional['in_ID']);
+	$('.datepicker').datepicker();
+	$('.datepicker').datepicker({
+		changeYear: true,
+		changeMonth: true,
+		yearRange: '1999:2030',
+		format: "dd-mm-yy"
+	});
+});
+//-->
+</script>
 <div id="right">
 	<?php 
 		$form->prepare();
@@ -68,29 +89,29 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;"><?php echo $form->get(HeaderFieldset::DEFAULT_NAME)->get('jenisKontrak')->getOption('label')?></td>
+						<td class="head" style="width: 200px;">Jenis Kontrak</td>
 						<td>
 							<div>
 								<!-- Select Jenis Kontrak, SPK atau Perjanjian -->
-								<?php echo $this->formSelect($form->get(HeaderFieldset::DEFAULT_NAME)->get('jenisKontrak')) ?>
+								<?php echo $this->formSelect($form->get(KontrakFieldset::DEFAULT_NAME)->get('jenisKontrak')) ?>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;"><?php echo $form->get(HeaderFieldset::DEFAULT_NAME)->get('tanggalMulaiKontrak')->getOption('label')?></td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(KontrakFieldset::DEFAULT_NAME)->get('tanggalMulaiKontrak')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Datepicker tanggal mulai kontrak -->
-								<?php echo $this->formInput($form->get(HeaderFieldset::DEFAULT_NAME)->get('tanggalMulaiKontrak'))?>
+								<?php echo $this->formInput($form->get(KontrakFieldset::DEFAULT_NAME)->get('tanggalMulaiKontrak'))?>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;"><?php echo $form->get(HeaderFieldset::DEFAULT_NAME)->get('tanggalAkhirKontrak')->getOption('label')?></td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(KontrakFieldset::DEFAULT_NAME)->get('tanggalAkhirKontrak')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Datepicker tanggal berakhir kontrak -->
-								<?php echo $this->formInput($form->get(HeaderFieldset::DEFAULT_NAME)->get('tanggalAkhirKontrak'))?>
+								<?php echo $this->formInput($form->get(KontrakFieldset::DEFAULT_NAME)->get('tanggalAkhirKontrak'))?>
 							</div>
 						</td>
 					</tr>
@@ -111,20 +132,20 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;"><?php echo $form->get(HeaderFieldset::DEFAULT_NAME)->get('judulPekerjaan')->getOption('label')?></td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(KontrakFieldset::DEFAULT_NAME)->get('judulPekerjaan')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Textfield judul pekerjaan -->
-								<?php echo $this->formInput($form->get(HeaderFieldset::DEFAULT_NAME)->get('judulPekerjaan'))?>
+								<?php echo $this->formInput($form->get(KontrakFieldset::DEFAULT_NAME)->get('judulPekerjaan'))?>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;"><?php echo $form->get(HeaderFieldset::DEFAULT_NAME)->get('deskripsiPekerjaan')->getOption('label')?></td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(KontrakFieldset::DEFAULT_NAME)->get('deskripsiPekerjaan')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Textarea deksripsi pekerjaan -->
-								<?php echo $this->formTextarea($form->get(HeaderFieldset::DEFAULT_NAME)->get('deskripsiPekerjaan'))?>
+								<?php echo $this->formTextarea($form->get(KontrakFieldset::DEFAULT_NAME)->get('deskripsiPekerjaan'))?>
 							</div>
 						</td>
 					</tr>
@@ -141,56 +162,56 @@
 			<div class="content">
 				<table class="form formStyle2">
 					<tr>
-						<td class="head" style="width: 200px;"><?php echo $form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('bankJaminan')->getOption('label')?></td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(KontrakFieldset::DEFAULT_NAME)->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('bankJaminan')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Textfield Nama Bank -->
-								<?php echo $this->formInput($form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('bankJaminan'))?>
+								<?php echo $this->formInput($form->get(KontrakFieldset::DEFAULT_NAME)->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('bankJaminan'))?>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;"><?php echo $form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('nomorJaminan')->getOption('label')?></td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(KontrakFieldset::DEFAULT_NAME)->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('nomorJaminan')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Textfield Nomor Jaminan -->
-								<?php echo $this->formInput($form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('nomorJaminan'))?>
+								<?php echo $this->formInput($form->get(KontrakFieldset::DEFAULT_NAME)->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('nomorJaminan'))?>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;"><?php echo $form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('tanggalMulaiJaminan')->getOption('label')?></td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(KontrakFieldset::DEFAULT_NAME)->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('tanggalMulaiJaminan')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Datepicker mulai berlaku -->
-								<?php echo $this->formInput($form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('tanggalMulaiJaminan'))?>
+								<?php echo $this->formInput($form->get(KontrakFieldset::DEFAULT_NAME)->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('tanggalMulaiJaminan'))?>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;"><?php echo $form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('tanggalAkhirJaminan')->getOption('label')?></td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(KontrakFieldset::DEFAULT_NAME)->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('tanggalAkhirJaminan')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Datepicker berlaku hingga -->
-								<?php echo $this->formInput($form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('tanggalAkhirJaminan'))?>
+								<?php echo $this->formInput($form->get(KontrakFieldset::DEFAULT_NAME)->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('tanggalAkhirJaminan'))?>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;"><?php echo $form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('nilaiJaminan')->getOption('label')?></td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(KontrakFieldset::DEFAULT_NAME)->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('nilaiJaminan')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Textfield Nilai Jaminan -->
-								<?php echo $this->formInput($form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('nilaiJaminan'))?>
+								<?php echo $this->formInput($form->get(KontrakFieldset::DEFAULT_NAME)->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('nilaiJaminan'))?>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;"><?php echo $form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('lampiranJaminan')->getOption('label')?></td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(KontrakFieldset::DEFAULT_NAME)->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('lampiranJaminan')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- File Lampiran jaminan -->
-								<?php echo $this->formFile($form->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('lampiranJaminan'))?>
+								<?php echo $this->formFile($form->get(KontrakFieldset::DEFAULT_NAME)->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->get('lampiranJaminan'))?>
 							</div>
 						</td>
 					</tr>
@@ -263,6 +284,10 @@
 		</div>
 		<!-- End Contract Milestone -->
 		<!-- Start Contract Lampiran -->
+		<?php 
+			/* @var $documentFieldsetCollection Collection */
+			$documentFieldsetCollection = $form->get(KontrakFieldset::DEFAULT_NAME)->get(DokumenFieldset::DEFAULT_COLLECTION_NAME);
+		?>
 		<div class="box">
 			<div class="title">
 				LAMPIRAN
@@ -273,27 +298,40 @@
 					<thead>
 						<tr>
 							<th style="width: 50px;">No</th>
-							<th style="width: 200px;">Kategori</th>
-							<th>Deskripsi Lampiran</th>
-							<th style="width: 300px;">File</th>
+							<th style="width: 250px;">Kategori</th>
+							<th style="width: 300px;">Deskripsi Lampiran</th>
+							<th>File</th>
 							<th style="width: 75px;">Kirim Ke Vendor</th>
 						</tr>
 					</thead>
 					<tbody>
+					<?php 
+						foreach ($documentFieldsetCollection as $documentFieldset) : 
+					?>
 						<tr>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td style="text-align: center;"><input type="checkbox" /></td>
+							<td style="text-align: center;"><?php echo $index += 1?></td>
+							<td><?php echo $this->formSelect($documentFieldset->get('kodeKategori'))?></td>
+							<td><?php echo $this->formText($documentFieldset->get('keterangan'))?></td>
+							<td><?php echo $this->formFile($documentFieldset->get('namaFile'))?></td>
+							<td style="text-align: center;"><?php echo $this->formCheckbox($documentFieldset->get('statusPublish'))?></td>
 						</tr>
+					<?php 
+						endforeach; 
+					?>
 					</tbody>
 				</table>
 			</div>
 		</div>
 		<!-- End Contract Lampiran -->
-		
 		<!-- Start Contract Comment -->
+		<?php 
+			/* @var $komentarFieldsetCollection Collection */
+			$komentarFieldsetCollection = $form->get(KontrakFieldset::DEFAULT_NAME)->get(KomentarFieldset::DEFAULT_COLLECTION_NAME);
+			$komentarFieldsetTemplate = $komentarFieldsetCollection->getTemplateElement();
+			foreach ($komentarFieldsetTemplate->getIterator() as $element) {
+				$element->setName(str_replace($komentarFieldsetCollection->getTemplatePlaceholder(), $komentarFieldsetCollection->getCount(), $element->getName()));
+			}
+		?>
 		<div class="box">
 			<div class="title">
 				KOMENTAR
@@ -302,17 +340,19 @@
 			<div class="content">
 				<table class="form formStyle2">
 					<tr>
-						<td class="head" style="width: 200px;"><?php echo $form->get(KomentarFieldset::DEFAULT_NAME)->get('isi')->getOption('label')?></td>
+						<td class="head" style="width: 200px;"><?php echo $komentarFieldsetTemplate->get('isi')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Textarea komentar -->
-								<?php echo $this->formTextarea($form->get(KomentarFieldset::DEFAULT_NAME)->get('isi'))?>
+								<?php echo $this->formTextarea($komentarFieldsetTemplate->get('isi')) ?>
+								
 							</div>
 						</td>
 					</tr>
 				</table>
 				
-				<table class="style1" id="contractAttachment">
+				<?php if($komentarFieldsetCollection->getCount() > 0) : ?>
+				<table class="style1" id="contractComments">
 					<thead>
 						<tr>
 							<th style="width: 50px;">No</th>
@@ -322,14 +362,17 @@
 						</tr>
 					</thead>
 					<tbody>
+					<?php foreach ($komentarFieldsetCollection->getObject() as $komentar) : /* @var $komentar Komentar */ ?>
 						<tr>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
+							<td><?php echo $indexKomentar += 1?></td>
+							<td><?php ?></td>
+							<td><?php echo $komentar->getIsi()?></td>
+							<td><?php echo $komentar->getTanggal()->format('d M Y') ?></td>
 						</tr>
+					<?php endforeach; ?>
 					</tbody>
 				</table>
+				<?php endif; ?>
 			</div>
 		</div>
 		<!-- End Contract Comment -->
@@ -337,6 +380,7 @@
 		<!-- Start Button Container -->
 		<div class="box">
 			<div class="uibutton-toolbar">
+				<?php echo $this->formHidden($form->get('security')) ?>
 				<?php echo $this->formElement($form->get('submitDraft'))?>
 				<?php echo $this->formElement($form->get('submit'))?>
 				<a href="<?php echo $this->url('contract/todo')?>" class="uibutton">Kembali</a>

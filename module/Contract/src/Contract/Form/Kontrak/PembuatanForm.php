@@ -9,24 +9,20 @@ use Zend\Form\Fieldset;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineObjectHydarator;
 use Contract\Entity\Kontrak\Kontrak;
 use Contract\Entity\Kontrak\Komentar;
-use Contract\Form\Kontrak\DokumenFieldset;
-use Zend\Form\Element\Collection as FormElementCollection;
 
 /**
  * Form untuk pembuatan kontrak.
  * 
  * @author zakyalvan
  */
-class PembuatanForm extends Form implements InputFilterProvider {
-	const DOKUMEN_FIELDSET_COLLECTION_NAME = 'dokumenFiledsetCollection';
-	
+class PembuatanForm extends Form implements InputFilterProvider {	
 	/**
 	 * Konstanta array validation group untuk pembuatan kontrak.
 	 * 
 	 * @var array
 	 */
 	public static $VALIDATION_DRAFT_KONTRAK = array(
-		HeaderFieldset::DEFAULT_NAME => array(
+		KontrakFieldset::DEFAULT_NAME => array(
 			'jenisKontrak',
 			'tanggalMulaiKontrak',
 			'tanggalAkhirKontrak',
@@ -51,7 +47,7 @@ class PembuatanForm extends Form implements InputFilterProvider {
 	 * @var unknown
 	 */
 	public static $VALIDATION_FINALIZE_KONTRAK = array(
-		HeaderFieldset::DEFAULT_NAME => array(
+		KontrakFieldset::DEFAULT_NAME => array(
 			'nomorKontrak'
 		),
 		JaminanPelaksanaanFieldset::DEFAULT_NAME => array(
@@ -82,22 +78,14 @@ class PembuatanForm extends Form implements InputFilterProvider {
 		$this->setInputFilter(new InputFilter());
 		$this->setAttribute('method', 'post');
 		
-		$headerFieldset = new HeaderFieldset($serviceLocator);
-		$this->add($headerFieldset);
+		$kontrakFieldset = new KontrakFieldset($serviceLocator);
+		$kontrakFieldset->setUseAsBaseFieldset(true);
+		$this->add($kontrakFieldset);
 		
-		$jaminanPelaksanaanFieldset = new JaminanPelaksanaanFieldset($serviceLocator);
-		$this->add($jaminanPelaksanaanFieldset);
-		
-		$dokumenFieldsetCollection = new FormElementCollection(self::DOKUMEN_FIELDSET_COLLECTION_NAME);
-		$dokumenFieldsetCollection->setCount(5);
-		$dokumenFieldsetCollection->setShouldCreateTemplate(false);
-		$dokumenFieldset = new DokumenFieldset($serviceLocator);
-		$dokumenFieldsetCollection->setTargetElement($dokumenFieldset);
-		$this->add($dokumenFieldsetCollection);
-		
-		$komentarFieldset = new KomentarFieldset($serviceLocator);
-		$this->add($komentarFieldset);
-		
+		$this->add(array(
+			'name' => 'security',
+			'type' => 'Zend\Form\Element\Csrf'
+		));
 		
 		$this->add(array(
 			'name' => 'submit',
@@ -118,23 +106,10 @@ class PembuatanForm extends Form implements InputFilterProvider {
 		));
 	}
 	
-	/**
-	 * Set object kontrak.
-	 * 
-	 * @param Kontrak $kontrak
-	 */
-	public function setKontrakObject(Kontrak $kontrak) {
-		$this->kontrak = $kontrak;
+	public function isDraft() {
 		
-		$this->get(HeaderFieldset::DEFAULT_NAME)->setObject($kontrak);
-		$this->get(JaminanPelaksanaanFieldset::DEFAULT_NAME)->setObject($kontrak);
 	}
-	
-	public function setKomentarObject(Komentar $komentar) {
-		$this->get(KomentarFieldset::DEFAULT_NAME)->setObject($komentar);
-	}
-	
-	public function setKontrakItemObjects($items) {
+	public function isFinal() {
 		
 	}
 	

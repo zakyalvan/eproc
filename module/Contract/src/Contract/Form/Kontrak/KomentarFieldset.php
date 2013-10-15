@@ -12,7 +12,8 @@ use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineObjectHydrator;
  * @author zakyalvan
  */
 class KomentarFieldset extends Fieldset implements InputFilterProvider {
-	const DEFAULT_NAME = 'komentarFieldset';
+	const DEFAULT_NAME = 'komentar';
+	const DEFAULT_COLLECTION_NAME = 'listKomentar';
 	
 	/**
 	 * @var ServiceLocator
@@ -33,6 +34,9 @@ class KomentarFieldset extends Fieldset implements InputFilterProvider {
 			'type' => 'Zend\Form\Element\Textarea',
 			'options' => array(
 				'label' => 'Komentar Anda'
+			),
+			'attributes' => array(
+				'class' => 'grow'
 			)
 		));
 	}
