@@ -24,6 +24,8 @@ class AuthController extends AbstractActionController {
 	public function loginAction() {
 		$authService = $this->getAuthenticationService();
 		
+		$this->securityInterceptor()->intercept();
+		
 		// Jika sebelumnya udah login, redirect ke home.
 		if($authService->hasIdentity()) {
 			$this->redirect()->toRoute("home");
@@ -44,6 +46,7 @@ class AuthController extends AbstractActionController {
 				$authService->getAdapter()->setCredentialValue($password);
 				
 				$result = $authService->authenticate();
+				
 				if($result->isValid()) {
 					// Berhasil, redirect ke home.
 					$this->redirect()->toRoute('home');

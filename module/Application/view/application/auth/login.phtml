@@ -10,8 +10,10 @@ $form = $this->loginForm;
 $form->prepare();
 
 echo $this->form()->openTag($form);
+echo $this->formElementErrors($form);
 echo $this->formRow($form->get('username'));
 echo $this->formRow($form->get('password'));
+echo $this->formRow($form->get('security'));
 echo $this->formSubmit($form->get('submit'));
 echo $this->form()->closeTag();
 ?>

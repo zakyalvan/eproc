@@ -15,6 +15,11 @@ return array(
 			'Application\Controller\File' => 'Application\Controller\FileController'
 		),
 	),
+	'controller_plugins' => array(
+		'invokables' => array(
+			'SecurityInterceptor' => 'Application\Controller\Plugin\SecurityInterceptor',
+		)
+	),
     'router' => array(
         'routes' => array(
             'home' => array(
@@ -98,7 +103,8 @@ return array(
             'Zend\Log\LoggerAbstractServiceFactory',
         ),
         'factories' => array(
-			'Zend\Navigation\Navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory'
+			'Zend\Navigation\Navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory',
+			'Zend\Authentication\AuthenticationService' => 'Application\Security\Factory\AuthenticationServiceFactory'
         ),
         'invokables' => array(
         	'Application\Service\ApplicationService' => 'Application\Service\ApplicationService',
@@ -161,22 +167,22 @@ return array(
     				)
     			)
     	),
-    	'authentication' => array(
-    		'orm_default' => array(
-    			'object_manager' => 'Doctrine\ORM\EntityManager',
-    			'identity_class' => 'Application\Entity\User',
-    			'identity_property' => 'kode',
-    			'credential_property' => 'password',
-    			/**
-    			 * Ini callable function untuk ngebandingin password yang diberikan dengan password yang tersimpan
-    			 * dalam database. Callable ini digunakan dalam kelas auth adapter bawaan doctrine-module.
-    			 * 
-    			 * @see https://github.com/doctrine/DoctrineModule/blob/master/docs/authentication.md
-    			 */
-    			'credential_callable' => function(User $user, $passwordGiven) {
-    				return true;
-    			}
-    		)
-    	)
+//     	'authentication' => array(
+//     		'orm_default' => array(
+//     			'object_manager' => 'Doctrine\ORM\EntityManager',
+//     			'identity_class' => 'Application\Entity\User',
+//     			'identity_property' => 'kode',
+//     			'credential_property' => 'password',
+//     			/**
+//     			 * Ini callable function untuk ngebandingin password yang diberikan dengan password yang tersimpan
+//     			 * dalam database. Callable ini digunakan dalam kelas auth adapter bawaan doctrine-module.
+//     			 * 
+//     			 * @see https://github.com/doctrine/DoctrineModule/blob/master/docs/authentication.md
+//     			 */
+//     			'credential_callable' => function(User $user, $passwordGiven) {
+//     				return true;
+//     			}
+//     		)
+//     	)
     )
 );

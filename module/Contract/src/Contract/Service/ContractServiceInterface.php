@@ -8,8 +8,6 @@ use Contract\Entity\Kontrak\Kontrak;
  * @author zakyalvan
  */
 interface ContractServiceInterface {
-	public function hasRegisteredContractForTender($tender);
-	
 	/**
 	 * Apakah tender yang diberikan dapat dibuatkan kontraknya.
 	 * 
@@ -18,12 +16,20 @@ interface ContractServiceInterface {
 	public function canCreateContractForTender($tender);
 	
 	/**
-	 * Create contract berdasarkan informasi tender.
+	 * Apakah kontrak untuk tender yang diberikan sudah terdaftar atau belum.
 	 * 
-	 * @param Tender|integer $tender
-	 * @return Kontrak
+	 * @param unknown $tender
 	 */
-	public function createContractForTender($tender, $persist = false);
+	public function hasContractForTender($tender);
+	
+	/**
+	 * Retrieve (atau bikin dan simpan jika belum ada)
+	 *
+	 * @param unknown $tender
+	 * @throws \InvalidArgumentException
+	 * @return \Contract\Entity\Kontrak\Kontrak
+	 */
+	public function getContractForTender($tender);
 	
 	/**
 	 * Save draft kontrak.

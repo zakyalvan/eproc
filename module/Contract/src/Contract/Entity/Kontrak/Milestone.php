@@ -3,6 +3,7 @@ namespace Contract\Entity\Kontrak;
 
 use Doctrine\ORM\Mapping as Orm;
 use Contract\Entity\Kontrak\Kontrak;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @Orm\Entity
@@ -11,6 +12,10 @@ use Contract\Entity\Kontrak\Kontrak;
  * @author zakyalvan
  */
 class Milestone {
+	public function __construct() {
+		$this->listProgress = new ArrayCollection();
+	}
+	
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="KODE_KONTRAK", type="string")
@@ -59,6 +64,19 @@ class Milestone {
 	}
 	
 	/**
+	 * @Orm\OneToMany(targetEntity="Contract\Entity\Kontrak\ProgressMilestone", fetch="LAZY", mappedBy="milestone")
+	 * 
+	 * @var ArrayCollection
+	 */
+	private $listProgress;
+	public function getListProgress() {
+		return $this->listProgress;
+	}
+	public function setListProgress($listProgress) {
+		$this->listProgress = $listProgress;
+	}
+	
+	/**
 	 * @Orm\Column(name="KETERANGAN", type="string", length=4000, nullable=true)
 	 *
 	 * @var string
@@ -102,12 +120,12 @@ class Milestone {
 	 *
 	 * @var integer
 	 */
-	private $persentasiPerkembangan;
-	public function getPersentasiPerkembangan() {
-		return $this->persentasiPerkembangan;
+	private $persentasiProgress;
+	public function getPersentasiProgress() {
+		return $this->persentasiProgress;
 	}
-	public function setPersentasiPerkembangan($persentasiPerkembangan) {
-		$this->persentasiPerkembangan = $persentasiPerkembangan;
+	public function setPersentasiProgress($persentasiProgress) {
+		$this->persentasiProgress = $persentasiProgress;
 	}
 	
 	/**
@@ -115,12 +133,12 @@ class Milestone {
 	 *
 	 * @var string
 	 */
-	private $statusPerkembangan;
-	public function getStatusPerkembangan() {
-		return $this->statusPerkembangan;
+	private $statusProgress;
+	public function getStatusProgress() {
+		return $this->statusProgress;
 	}
-	public function setStatusPerkembangan($statusPerkembangan) {
-		$this->statusPerkembangan = $statusPerkembangan;
+	public function setStatusProgress($statusProgress) {
+		$this->statusProgress = $statusProgress;
 	}
 	
 	/**

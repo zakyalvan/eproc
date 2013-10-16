@@ -29,17 +29,17 @@ class ProgressMilestone {
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Jangka\JangkaKontrak", fetch="lazy")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", type="string", length="50", referencedColumnName="KODE_KONTRAK"), @Orm\JoinColumn(name="KODE_JANGKA", referencedColumnName="KODE_JANGKA")})
+	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Kontrak\Milestone", fetch="LAZY", inversedBy="listProgress")
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", referencedColumnName="KODE_KONTRAK"), @Orm\JoinColumn(name="KODE_JANGKA", referencedColumnName="KODE_JANGKA")})
 	 * 
 	 * @var Milestone
 	 */
-	private $jangkaKontrak;
-	public function getJangkaKontrak() {
-		return $this->jangkaKontrak;
+	private $milestone;
+	public function getMilestone() {
+		return $this->milestone;
 	}
-	public function setJangkaKontrak(JangkaKontrak $jangkaKontrak) {
-		$this->jangkaKontrak = $jangkaKontrak;
+	public function setMilestone(Milestone $milestone) {
+		$this->milestone = $milestone;
 	}
 	
 	/**
@@ -64,7 +64,7 @@ class ProgressMilestone {
 	public function getPersentasi() {
 		return $this->persentasi;
 	}
-	public function getPersentasi($persentasi) {
+	public function setPersentasi($persentasi) {
 		$this->persentasi = $persentasi;
 	}
 	

@@ -14,6 +14,12 @@ use Application\Entity\User;
  * @author zakyalvan
  */
 class Tender {
+	public function __construct() {
+		$this->listItem = new ArrayCollection();
+		$this->listTenderVendor = new ArrayCollection();
+		$this->listKontrak = new ArrayCollection();
+	}
+	
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="KODE_TENDER", type="string", length=50, nullable=false)
@@ -74,7 +80,7 @@ class Tender {
 	 * @Orm\OneToMany(targetEntity="Procurement\Entity\Tender\Item", fetch="LAZY", mappedBy="tender")
 	 * @Orm\OrderBy({"nomorUrut" = "ASC"})
 	 *
-	 * @var array
+	 * @var ArrayCollection
 	 */
 	private $listItem;
 	public function getListItem() {

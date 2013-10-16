@@ -2,6 +2,7 @@
 namespace Procurement\Entity\Tender;
 
 use Doctrine\ORM\Mapping as Orm;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @Orm\Entity
@@ -35,32 +36,17 @@ class Penawaran {
 	private $kodeVendor;
 	
 	/**
-	 * @Orm\ManyToOne(targetEntity="Procurement\Entity\Tender\Tender", fetch="LAZY", inversedBy="tenderVendors")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_TENDER", referencedColumnName="KODE_TENDER"), @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR")})
-	 *
-	 * @var Tender
+	 * @Orm\OneToOne(targetEntity="Procurement\Entity\Tender\TenderVendor", fetch="LAZY", inversedBy="vendorStatus")
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_TENDER", referencedColumnName="KODE_TENDER"), @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_VENDOR", referencedColumnName="KODE_VENDOR")})
+	 * 
+	 * @var TenderVendor
 	 */
-	private $tender;
-	public function getTender() {
-		return $this->tender;
+	private $tenderVendor;
+	public function getTenderVendor() {
+		return $this->tenderVendor;
 	}
-	public function setTender(Tender $tender) {
-		$this->tender = $tender;
-	}
-	
-	/**
-	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Vendor\Entity\Vendor", fetch="LAZY")
-	 * @Orm\JoinColumn(name="KODE_VENDOR", referencedColumnName="KODE_VENDOR")
-	 *
-	 * @var Vendor
-	 */
-	private $vendor;
-	public function getVendor() {
-		return $this->vendor;
-	}
-	public function setVendor(Vendor $vendor) {
-		$this->vendor = $vendor;
+	public function setTenderVendor(TenderVendor $tenderVendor) {
+		$this->tenderVendor = $tenderVendor;
 	}
 	
 	/**
@@ -74,6 +60,19 @@ class Penawaran {
 	}
 	public function setNomorPenawaran($nomorPenawaran) {
 		$this->nomorPenawaran = $nomorPenawaran;
+	}
+	
+	/**
+	 * @Orm\OneToMany(targetEntity="Procurement\Entity\Tender\ItemPenawaran", fetch="LAZY", mappedBy="penawaran")
+	 * 
+	 * @var ArrayCollection
+	 */
+	private $listItem;
+	public function getListItem() {
+		return $this->listItem;
+	}
+	public function setListItem($listItem) {
+		$this->listItem = $listItem;
 	}
 	
 	/**

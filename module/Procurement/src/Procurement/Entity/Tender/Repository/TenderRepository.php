@@ -54,6 +54,7 @@ class TenderRepository extends EntityRepository {
 			->from($this->getClassMetadata()->getName(), 'tender')
 			->innerJoin('tender.kantor', 'kantor', Join::WITH, $queryBuilder->expr()->eq('kantor.kode', ':kodeKantor'))
 			->innerJoin('tender.listItem', 'listItem')
+			->innerJoin('tender.listTenderVendor', 'listTenderVendor')
 			->where($queryBuilder->expr()->eq('tender.kode', ':kodeTender'))
 			->setParameter('kodeKantor', $tender->getKantor()->getKode())
 			->setParameter('kodeTender', $tender->getKode())

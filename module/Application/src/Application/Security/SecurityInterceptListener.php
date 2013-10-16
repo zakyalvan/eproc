@@ -7,6 +7,7 @@ use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Authentication\AuthenticationService;
 use Zend\Navigation\Navigation;
+use Zend\Mvc\Router\Http\RouteMatch;
 
 /**
  * Intercept setiap request, pastikan resource (controller dan action) yang hendak diakses
@@ -42,12 +43,5 @@ class SecurityInterceptListener implements ListenerAggregate {
 		
 		/* @var $pageContainer Navigation */
 		$pageContainer = $serviceLocator->get('Zend\Navigation\Navigation');
-		
-		$routeMatch = $event->getRouteMatch();
-		
-		
-		if($authService->hasIdentity()) {
-			
-		}
 	}
 }

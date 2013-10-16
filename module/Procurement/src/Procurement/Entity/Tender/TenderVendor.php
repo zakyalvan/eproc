@@ -58,7 +58,18 @@ class TenderVendor {
 		$this->vendor = $vendor;
 	}
 	
-	
+	/**
+	 * @Orm\OneToOne(targetEntity="Procurement\Entity\Tender\Penawaran", fetch="LAZY", mappedBy="tenderVendor")
+	 *
+	 * @var Penawaran
+	 */
+	private $penawaran;
+	public function getPenawaran() {
+		return $this->penawaran;
+	}
+	public function setPenawaran(Penawaran $penawaran) {
+		$this->penawaran = $penawaran;
+	}
 	
 	/**
 	 * @Orm\OneToOne(targetEntity="Procurement\Entity\Tender\VendorStatus", fetch="LAZY", mappedBy="tenderVendor")

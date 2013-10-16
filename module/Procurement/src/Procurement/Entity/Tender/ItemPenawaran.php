@@ -35,32 +35,17 @@ class ItemPenawaran {
 	private $kodeVendor;
 	
 	/**
-	 * @Orm\ManyToOne(targetEntity="Procurement\Entity\Tender\Tender", fetch="LAZY", inversedBy="tenderVendors")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_TENDER", referencedColumnName="KODE_TENDER"), @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR")})
+	 * @Orm\ManyToOne(targetEntity="Procurement\Entity\Tender\Penawaran", fetch="LAZY", inversedBy="listItem")
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_TENDER", referencedColumnName="KODE_TENDER"), @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_VENDOR", referencedColumnName="KODE_VENDOR")})
 	 *
-	 * @var Tender
+	 * @var Penawaran
 	 */
-	private $tender;
-	public function getTender() {
-		return $this->tender;
+	private $penawaran;
+	public function getPenawaran() {
+		return $this->penawaran;
 	}
-	public function setTender(Tender $tender) {
-		$this->tender = $tender;
-	}
-	
-	/**
-	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Vendor\Entity\Vendor", fetch="LAZY")
-	 * @Orm\JoinColumn(name="KODE_VENDOR", referencedColumnName="KODE_VENDOR")
-	 *
-	 * @var Vendor
-	 */
-	private $vendor;
-	public function getVendor() {
-		return $this->vendor;
-	}
-	public function setVendor(Vendor $vendor) {
-		$this->vendor = $vendor;
+	public function setPenawaran(Penawaran $penawaran) {
+		$this->penawaran = $penawaran;
 	}
 	
 	/**

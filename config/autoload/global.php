@@ -63,9 +63,9 @@ return array(
 			'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
 			'Zend\Session\Config\ConfigInterface' => 'Zend\Session\Service\SessionConfigFactory',
 			'Zend\Session\SessionManager' => 'Zend\Session\Service\SessionManagerFactory',
-			'Zend\Authentication\AuthenticationService' => function($serviceManager) {
-				return $serviceManager->get('doctrine.authenticationservice.orm_default');
-			}
+			//'Zend\Authentication\AuthenticationService' => function($serviceManager) {
+			//	return $serviceManager->get('doctrine.authenticationservice.orm_default');
+			//}
 		)
 	)
 );
