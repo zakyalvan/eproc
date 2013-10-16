@@ -253,10 +253,11 @@ $(function(){
 					</thead>
 					<tbody>
 					<?php 
+						$indexDokumen = 0;
 						foreach ($documentFieldsetCollection->getIterator() as $documentFieldset) : 
 					?>
 						<tr>
-							<td style="text-align: center;"><?php echo $index += 1?></td>
+							<td style="text-align: center;"><?php echo $indexDokumen += 1?></td>
 							<td><?php echo $this->formSelect($documentFieldset->get('kodeKategori'))?></td>
 							<td><?php echo $this->formText($documentFieldset->get('keterangan'))?></td>
 							<td><?php echo $this->formFile($documentFieldset->get('namaFile'))?></td>
@@ -274,10 +275,10 @@ $(function(){
 		<?php 
 			/* @var $komentarFieldsetCollection Collection */
 			$komentarFieldsetCollection = $form->get(KontrakFieldset::DEFAULT_NAME)->get(KomentarFieldset::DEFAULT_COLLECTION_NAME);
-			$komentarFieldsetTemplate = $komentarFieldsetCollection->getTemplateElement();
-			foreach ($komentarFieldsetTemplate->getIterator() as $element) {
-				$element->setName(str_replace($komentarFieldsetCollection->getTemplatePlaceholder(), $komentarFieldsetCollection->getCount(), $element->getName()));
-			}
+			
+			//$newKomentarIndex = $komentarFieldsetCollection->getCount()+1;
+			//$komentarFieldsetCollection->setCount($newKomentarIndex);
+			$newKomentarFieldset = end($komentarFieldsetCollection->getIterator()->toArray());
 		?>
 		<div class="box">
 			<div class="title">
@@ -287,18 +288,18 @@ $(function(){
 			<div class="content">
 				<table class="form formStyle2">
 					<tr>
-						<td class="head" style="width: 200px;"><?php echo $komentarFieldsetTemplate->get('isi')->getOption('label')?></td>
+						<td class="head" style="width: 200px;"><?php echo $newKomentarFieldset->get('isi')->getOption('label')?></td>
 						<td>
 							<div>
 								<!-- Textarea komentar -->
-								<?php echo $this->formTextarea($komentarFieldsetTemplate->get('isi')) ?>
+								<?php echo $this->formTextarea($newKomentarFieldset->get('isi')) ?>
 								
 							</div>
 						</td>
 					</tr>
 				</table>
 				
-				<?php if($komentarFieldsetCollection->getCount() > 0) : ?>
+				<?php if($komentarFieldsetCollection->getCount() > 1) : ?>
 				<table class="style1" id="contractComments">
 					<thead>
 						<tr>
@@ -309,14 +310,19 @@ $(function(){
 						</tr>
 					</thead>
 					<tbody>
-					<?php foreach ($komentarFieldsetCollection->getObject() as $komentar) : /* @var $komentar Komentar */ ?>
+					<?php
+						$indexKomentar = 0;
+						/* @var $komentar Komentar */
+						foreach ($komentarFieldsetCollection->getObject() as $komentar) :  ?>
 						<tr>
-							<td><?php echo $indexKomentar += 1?></td>
+							<td style="text-align: center;"><?php echo $indexKomentar += 1?></td>
 							<td><?php ?></td>
 							<td><?php echo $komentar->getIsi()?></td>
-							<td><?php echo $komentar->getTanggal()->format('d M Y') ?></td>
+							<td style="text-align: center;"><?php echo $komentar->getTanggal() ? $komentar->getTanggal()->format('d M Y') : '' ?></td>
 						</tr>
-					<?php endforeach; ?>
+					<?php 
+						endforeach; 
+					?>
 					</tbody>
 				</table>
 				<?php endif; ?>

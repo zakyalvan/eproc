@@ -4,22 +4,40 @@ namespace Procurement\Entity\Tender;
 use Doctrine\ORM\Mapping as Orm;
 
 /**
- * Item pengadaan/tender.
- * 
  * @Orm\Entity
- * @Orm\Table(name="EP_PGD_ITEM_TENDER")
+ * @Orm\Table(name="EP_PGD_ITEM_PENAWARAN")
  * 
  * @author zakyalvan
  */
-class Item {
-	const STATUS_PPN_YES = 'Y';
-	const STATUS_PPN_NO = 'N';
+class ItemPenawaran {
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_TENDER", type="string")
+	 *
+	 * @var string
+	 */
+	private $kodeTender;
 	
 	/**
-	 * 
-	 * @Orm\ManyToOne(targetEntity="Procurement\Entity\Tender\Tender", fetch="LAZY", inversedBy="listItem")
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_KANTOR", type="string")
+	 *
+	 * @var string
+	 */
+	private $kodeKantor;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_VENDOR", type="integer")
+	 *
+	 * @var integer
+	 */
+	private $kodeVendor;
+	
+	/**
+	 * @Orm\ManyToOne(targetEntity="Procurement\Entity\Tender\Tender", fetch="LAZY", inversedBy="tenderVendors")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_TENDER", referencedColumnName="KODE_TENDER"), @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR")})
-	 * 
+	 *
 	 * @var Tender
 	 */
 	private $tender;
@@ -32,20 +50,21 @@ class Item {
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\Column(name="NOMOR_URUT", type="integer")
+	 * @Orm\ManyToOne(targetEntity="Vendor\Entity\Vendor", fetch="LAZY")
+	 * @Orm\JoinColumn(name="KODE_VENDOR", referencedColumnName="KODE_VENDOR")
 	 *
-	 * @var integer
+	 * @var Vendor
 	 */
-	private $nomorUrut;
-	public function getNomorUrut() {
-		return $this->nomorUrut;
+	private $vendor;
+	public function getVendor() {
+		return $this->vendor;
 	}
-	public function setNomorUrut($nomorUrut) {
-		$this->nomorUrut = $nomorUrut;
+	public function setVendor(Vendor $vendor) {
+		$this->vendor = $vendor;
 	}
 	
 	/**
-	 * @Orm\Column(name="KETERANGAN", type="string", length=1024, nullable=true)
+	 * @Orm\Column(name="KETERANGAN", type="string", length=1024)
 	 * 
 	 * @var string
 	 */
@@ -56,10 +75,10 @@ class Item {
 	public function setKeterangan($keterangan) {
 		$this->keterangan = $keterangan;
 	}
-	
+	 
 	/**
-	 * @Orm\Column(name="JUMLAH", type="integer", nullable=true)
-	 *
+	 * @Orm\Column(name="JUMLAH", type="integer")
+	 * 
 	 * @var integer
 	 */
 	private $jumlah;
@@ -71,22 +90,9 @@ class Item {
 	}
 	
 	/**
-	 * @Orm\Column(name="UNIT", type="string", length=50, nullable=true)
-	 *
-	 * @var string
-	 */
-	private $unit;
-	public function getUnit() {
-		return $this->unit;
-	}
-	public function setUnit($unit) {
-		$this->unit = $unit;
-	}
-	
-	/**
-	 * @Orm\Column(name="HARGA", type="float", nullable=true)
-	 *
-	 * @var double
+	 * @Orm\Column(name="HARGA", type="float")
+	 * 
+	 * @var float
 	 */
 	private $harga;
 	public function getHarga() {
@@ -97,23 +103,9 @@ class Item {
 	}
 	
 	/**
-	 * @Orm\Column(name="PPN", type="string", length=1, nullable=true)
-	 *
-	 * @var string
-	 */
-	private $ppn;
-	public function getPpn() {
-		return $this->ppn;
-	}
-	public function isPpn() {
-		return (strtoupper($this->ppn) == 'Y') ? true : false;
-	}
-	public function setPpn($ppn) {
-		$this->ppn = $ppn;
-	}
-	
-	/**
 	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
+	 *
+	 * @var \DateTime
 	 */
 	private $tanggalRekam;
 	public function getTanggalRekam() {
@@ -125,10 +117,12 @@ class Item {
 	
 	/**
 	 * @Orm\Column(name="PETUGAS_REKAM", type="string", nullable=true)
+	 *
+	 * @var string
 	 */
 	private $petugasRekam;
 	public function getPetugasRekam() {
-		return $this->petugasRekam;
+		return $this->petugasUbah;
 	}
 	public function setPetugasRekam($petugasRekam) {
 		$this->petugasRekam = $petugasRekam;
@@ -136,6 +130,8 @@ class Item {
 	
 	/**
 	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
+	 *
+	 * @var \DateTime
 	 */
 	private $tanggalUbah;
 	public function getTanggalUbah() {
@@ -147,6 +143,8 @@ class Item {
 	
 	/**
 	 * @Orm\Column(name="PETUGAS_UBAH", type="string", nullable=true)
+	 *
+	 * @var string
 	 */
 	private $petugasUbah;
 	public function getPetugasUbah() {

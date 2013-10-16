@@ -10,6 +10,10 @@ use Procurement\Service\ProcurementServiceInterface;
 use Vendor\Entity\Vendor;
 use Application\Common\KeyGeneratatorInterface;
 use DoctrineModule\Validator\ObjectExists;
+use Contract\Entity\Kontrak\Repository\KontrakRepository;
+use Procurement\Entity\Tender\Repository\TenderRepository;
+use Procurement\Entity\Tender\Item as TenderItem;
+use Contract\Entity\Kontrak\Item as KontrakItem;
 
 /**
  * Implementasi default dari {@link ContractServiceInterface}
@@ -55,6 +59,104 @@ class ContractService implements ContractServiceInterface, ServiceLocatorAware {
 		
 		
 		return true;
+	}
+	
+	public function hasContractForTender($tender) {
+		/* @var $procurementService ProcurementServiceInterface */
+		$procurementService = $this->serviceLocator->get('Procurement\Service\ProcurementService');
+		$tender = $procurementService->getRegisteredTender($tender);
+	
+		/* @var $entityManager EntityManager */
+		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
+	
+		/* @var $kontrakRepository KontrakRepository */
+		$kontrakRepository = $entityManager->getRepository('Contract\Entity\Kontrak\Kontrak');
+	
+		if($kontrakRepository->countByTender($tender) > 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Retrieve (atau bikin dan simpan jika belum ada)
+	 * 
+	 * @param unknown $tender
+	 * @throws \InvalidArgumentException
+	 * @return \Contract\Entity\Kontrak\Kontrak
+	 */
+	public function getContractForTender($tender) {
+		/* @var $procurementService ProcurementServiceInterface */
+		$procurementService = $this->serviceLocator->get('Procurement\Service\ProcurementService');
+		
+		/* @var $entityManager EntityManager */
+		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
+		
+		$tender = $procurementService->getRegisteredTender($tender);
+		
+		// Jika sudah terdaftar, ambil yang sudah terdaftar.
+		if($this->hasContractForTender($tender)) {
+			/* @var $kontrakRepository KontrakRepository */
+			$kontrakRepository = $entityManager->getRepository('Contract\Entity\Kontrak\Kontrak');
+			return $kontrakRepository->findOneByTender($tender, true);
+		}
+		// Jika belum terdaftar, bikin baru.
+		else {
+			if(!$procurementService->isCompletedWithWinnerVendor($tender)) {
+				throw new \InvalidArgumentException(sprintf('Tidak dapat membuat kontrak untuk vendor yang diberikan.'), 100, null);
+			}
+			
+			$entityManager->beginTransaction();
+			try {
+				/* @var $tenderRepository TenderRepository */ 
+				$tenderRepository = $entityManager->getRepository('Procurement\Entity\Tender\Tender');
+				$tender = $tenderRepository->extractRelations($tender);
+				
+				/* @var $vendor Vendor */
+				$vendor = $procurementService->getWinnerVendor($tender);
+				
+				/* @var $keyGenerator KeyGeneratatorInterface */
+				$keyGenerator = $this->serviceLocator->get('Application\Common\KeyGeneratator');
+			
+				$kontrak = new Kontrak();
+				$kontrak->setKode($keyGenerator->generateNextKey($kontrak, 'kode'));
+				$kontrak->setTender($tender);
+				$kontrak->setKantor($tender->getKantor());
+				$kontrak->setVendor($vendor);
+				$kontrak->setNamaVendor($vendor->getNama());
+				$kontrak->setTipeKontrak($tender->getTipeKontrak());
+				$kontrak->setJudulPekerjaan($tender->getJudulPekerjaan());
+				$kontrak->setLingkupPekerjaan($tender->getLingkupPekerjaan());
+				$kontrak->setMataUang($tender->getMataUang());
+				$kontrak->setTanggalBuat(new \DateTime(null, null));
+				$kontrak->setTanggalRekam(new \DateTime(null, null));
+				
+				$entityManager->persist($kontrak);
+				
+				foreach ($tender->getListItem() as $itemTender) {
+					/* @var $itemTender TenderItem */
+					
+					$itemKontrak = new KontrakItem();
+					$itemKontrak->setKontrak($kontrak);
+					$itemKontrak->setHarga($itemTender->getHarga());
+					$itemKontrak->setJumlah($itemTender->getJumlah());
+					$itemKontrak->setUnit($itemTender->getUnit());
+					$itemKontrak->setKeterangan($itemTender->getKeterangan());
+					$itemKontrak->setTanggalRekam(new \DateTime(null, null));
+					
+					$entityManager->persist($itemKontrak);
+				}
+				
+				$entityManager->flush();
+				$entityManager->commit();
+				
+				return $kontrak;
+			}
+			catch (\Exception $e) {
+				$entityManager->rollback();
+				throw new \RuntimeException('Pembuatan kontrak baru gagal. Perhatikan stack trace', 100, $e);
+			}
+		}
 	}
 	
 	/**

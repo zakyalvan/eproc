@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Application\Entity\User;
 
 /**
- * @Orm\Entity
+ * @Orm\Entity(repositoryClass="Procurement\Entity\Tender\Repository\TenderRepository")
  * @Orm\Table(name="EP_PGD_TENDER")
  * 
  * @author zakyalvan

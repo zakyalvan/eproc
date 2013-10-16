@@ -5,6 +5,7 @@ use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface as InputFilterProvider;
 use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineObjectHydrator;
+use Contract\Entity\Kontrak\Komentar;
 
 /**
  * Fieldset komentar kontrak.
@@ -28,6 +29,7 @@ class KomentarFieldset extends Fieldset implements InputFilterProvider {
 		$objectManager = $serviceLocator->get('Doctrine\ORM\EntityManager');
 		
 		$this->setHydrator(new DoctrineObjectHydrator($objectManager, 'Contract\Entity\Kontrak\Komentar'));
+		$this->setObject(new Komentar());
 		
 		$this->add(array(
 			'name' => 'isi',

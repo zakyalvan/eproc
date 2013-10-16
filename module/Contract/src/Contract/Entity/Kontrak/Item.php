@@ -97,18 +97,18 @@ class Item {
 	 *
 	 * @var string
 	 */
-	private $satuan;
-	public function getSatuan() {
-		return $this->satuan;
+	private $unit;
+	public function getUnit() {
+		return $this->unit;
 	}
-	public function setSatuan($satuan) {
-		$this->satuan = $satuan;
+	public function setUnit($unit) {
+		$this->unit = $unit;
 	}
 	
 	/**
-	 * @Orm\Column(name="SUB_TOTAL", type="double", nullable=true)
+	 * @Orm\Column(name="SUB_TOTAL", type="float", nullable=true)
 	 *
-	 * @var double
+	 * @var float
 	 */
 	private $subTotal;
 	public function getSubTotal() {
@@ -132,9 +132,9 @@ class Item {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_REKAM", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalRekam;
 	public function getTanggalRekam() {
@@ -158,9 +158,9 @@ class Item {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_UBAH", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalUbah;
 	public function getTanggalUbah() {

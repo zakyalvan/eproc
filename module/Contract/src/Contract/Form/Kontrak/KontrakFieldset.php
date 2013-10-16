@@ -131,7 +131,7 @@ class KontrakFieldset extends Fieldset implements InputFilterProvider {
 		
 		$komentarFieldsetCollection = new FormElementCollection(KomentarFieldset::DEFAULT_COLLECTION_NAME);
 		$komentarFieldsetCollection->setAllowAdd(true);
-		$komentarFieldsetCollection->setAllowRemove(false);
+		$komentarFieldsetCollection->setAllowRemove(true);
 		$komentarFieldsetCollection->setShouldCreateTemplate(true);
 		$komentarFieldset = new KomentarFieldset($serviceLocator);
 		$komentarFieldsetCollection->setTargetElement($komentarFieldset);

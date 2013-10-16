@@ -7,6 +7,7 @@ use Contract\Form\Kontrak\PembuatanForm;
 use Contract\Entity\Kontrak\Kontrak;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\Expr\Join;
+use Contract\Entity\Kontrak\Komentar;
 
 /**
  * Kelas kontroler ini mewakili aktifitas-aktifitas dalam proses flow 
@@ -56,23 +57,30 @@ class CreateController extends AbstractActionController {
 		$form = new PembuatanForm($this->getServiceLocator());
 		$form->setValidationGroup(array('kontrak' => array()));
 		
+		/**
+		 * TODO Ambil data pengadaan yang terkait untuk membuat kontrak.
+		 */
 		$kontrak = new Kontrak();
-		$kontrak->setJenisKontrak(Kontrak::JENIS_SPK);
+		
+		$komentar1 = new Komentar();
+		$komentar1->setIsi("Ini Komentar Pertama");
+		$kontrak->getListKomentar()->add($komentar1);
+		
+		$komentar2 = new Komentar();
+		$komentar2->setIsi("Ini Komentar Kedua");
+		$kontrak->getListKomentar()->add($komentar2);
+		
+		$komentar3 = new Komentar();
+		$komentar3->setIsi("Ini Komentar Ketiga");
+		$kontrak->getListKomentar()->add($komentar3);
+		
 		$form->bind($kontrak);
 		
-		// Proses input data draft kontrak dari user.
 		if($this->request->isPost()) {
 			$form->setData($this->request->getPost());
-			
-			if($form->isFinal()) {
-				exit('Final');
-			}
-			if($form->isDraft()) {
-				exit('Draft');
-			}
-			
-			// Jika form yang disubmit valid, simpan draft kontrak.
 			if($form->isValid()) {
+				/* @var $data Kontrak */
+				$data = $form->getData();
 				$this->redirect()->toRoute('contract/todo');
 			}
 		}
