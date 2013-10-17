@@ -51,7 +51,7 @@ abstract class AbstractSplitEvaluator implements SplitEvaluatorInterface, Initia
 	 * (non-PHPdoc)
 	 * @see \Zend\Stdlib\InitializableInterface::init()
 	 */
-	abstract public function init();
+	public public function init();
 	
 	/**
 	 * Method ini yang perlu diimpelementasi dalam kelas konkrit split-evaluator.

@@ -41,7 +41,7 @@ class SplitEvaluatorAbstractFactory implements AbstractFactory {
 		
 		$evaluator = $this->evaluatorRegistry->get($requestedName);
 		if($evaluator instanceof  \Closure || is_callable($evaluator)) {
-			return new CallbackSplitEvaluator($evaluator);
+			return new CallbackSplitEvaluator($evaluator, $serviceLocator);
 		}
 		else {
 			return new $evaluator();

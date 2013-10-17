@@ -206,5 +206,14 @@ return array(
 			'Contract\Todo\ContractAmend' => 'Contract\Todo\ContractAmendTodoListProvider',
 			'Contract\Todo\WorkOrder' => 'Contract\Todo\WorkOrderTodoListProvider'
 		)
+	),
+	'workflow' => array(
+		'transition_handlers' => array(
+			
+		),
+		'split_evaluators' => array(
+			'create/JenisKontrakEvaluator' => '',
+			'create/PersetujuanPengelolaEvaluator' => ''
+		)
 	)
 );
