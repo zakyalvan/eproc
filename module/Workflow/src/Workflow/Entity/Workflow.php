@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Workflow {
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(name="WORKFLOW_ID", type="string")
+	 * @ORM\Column(name="WORKFLOW_ID", type="string", length=20)
 	 * @var string
 	 */
 	protected $id;

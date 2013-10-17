@@ -7,6 +7,7 @@ use Workflow\Entity\WorkflowAttribute;
 use Workflow\Entity\InstanceData;
 use Doctrine\ORM\Query\Expr\Join;
 use Workflow\Entity\Workflow;
+use Doctrine\ORM\UnitOfWork;
 
 /**
  * Custom repository untuk entity Instance
@@ -32,10 +33,10 @@ class InstanceRepository extends EntityRepository {
 		}
 		
 		$queryBuilder = $this->_em->createQueryBuilder();
-		$queryBuilder->select(array('instance'))
-			->from('Workflow\Entity\Instance', 'instance')
-			->innerJoin('instance.workflow', 'workflow', Join::WITH, $queryBuilder->expr()->eq('workflow.id', ':workflowId'))
-			->innerJoin('instance.datas', 'datas')
+		$queryBuilder->select(array('inst'))
+			->from('Workflow\Entity\Instance', 'inst')
+			->innerJoin('inst.workflow', 'workflow', Join::WITH, $queryBuilder->expr()->eq('workflow.id', ':workflowId'))
+			->innerJoin('inst.datas', 'datas')
 			->innerJoin('datas.attribute', 'workflowAttribute');
 		
 		foreach($datas as $name => $value) {
@@ -82,10 +83,10 @@ class InstanceRepository extends EntityRepository {
 		}
 		
 		$queryBuilder = $this->_em->createQueryBuilder();
-		$status = $queryBuilder->select('instance.status')
-			->from('Workflow\Entity\Instance', 'instance')
-			->innerJoin('instance.workflow', 'workflow', Join::WITH, $queryBuilder->expr()->eq('workflow.id', ':workflowId'))
-			->where($queryBuilder->expr()->eq('instance.id', ':instanceId'))
+		$status = $queryBuilder->select('inst.status')
+			->from('Workflow\Entity\Instance', 'inst')
+			->innerJoin('inst.workflow', 'workflow', Join::WITH, $queryBuilder->expr()->eq('workflow.id', ':workflowId'))
+			->where($queryBuilder->expr()->eq('inst.id', ':instanceId'))
 			->setParameter('workflowId', $workflowId)
 			->setParameter('instanceId', $instanceId)
 			->getQuery()
@@ -104,13 +105,15 @@ class InstanceRepository extends EntityRepository {
 	 * @return multitype:boolean number Ambigous <boolean> Ambigous <boolean, Ambigous <boolean>, number>
 	 */
 	public function getInstanceDatas(Instance $instance) {
+		$instance = $this->ensureManagedEntity($instance);
+		
 		$queryBuilder = $this->_em->createQueryBuilder();
 		$tempDatas = $queryBuilder->select(array('workflowAttribute.name', 'workflowAttribute.type', 'instanceData.value'))
 			->from('Workflow\Entity\InstanceData', 'instanceData')
-			->innerJoin('instanceData.instance', 'instance', Join::WITH, $queryBuilder->expr()->eq('instance', ':instance'))
-			->innerJoin('instanceData.workflowAttribute', 'workflowAttribute')
+			->innerJoin('instanceData.instance', 'inst', Join::WITH, $queryBuilder->expr()->eq('inst.id', ':instanceId'))
+			->innerJoin('instanceData.attribute', 'workflowAttribute')
 			->setParameter('instanceId', $instance->getId())
-			->setParameter('workflowId', $instance->getWorkflow()->getId())
+			//->setParameter('workflowId', $instance->getWorkflow()->getId())
 			->getQuery()
 			->getArrayResult();
 		
@@ -177,5 +180,21 @@ class InstanceRepository extends EntityRepository {
 			$this->_em->rollback();
 			throw new \RuntimeException('Simpan data instance data gagal. Silahkan lihat trace exception', 100, $e);
 		}
+	}
+	
+	protected function ensureManagedEntity($entity) {
+		if($entity == null) {
+			throw new \InvalidArgumentException('Parameter entity tidak boleh null', 100, null);
+		}
+	
+		$entityState = $this->getEntityManager()->getUnitOfWork()->getEntityState($entity);
+		if(!($entityState == UnitOfWork::STATE_MANAGED || $entityState == UnitOfWork::STATE_DETACHED)) {
+			throw new \InvalidArgumentException(sprintf('Parameter entity harus instance dari object entity dengan state manage atau detached'), 100, null);
+		}
+	
+		if($entityState == UnitOfWork::STATE_DETACHED) {
+			return $this->getEntityManager()->merge($entity);
+		}
+		return $entity;
 	}
 }

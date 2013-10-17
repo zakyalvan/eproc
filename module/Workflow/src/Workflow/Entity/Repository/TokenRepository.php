@@ -6,6 +6,7 @@ use Workflow\Entity\Instance;
 use Doctrine\ORM\Query\Expr\Join;
 use Workflow\Entity\Place;
 use Workflow\Entity\Token;
+use Doctrine\ORM\UnitOfWork;
 
 /**
  * Custom token repository.
@@ -14,16 +15,43 @@ use Workflow\Entity\Token;
  */
 class TokenRepository extends EntityRepository {
 	/**
+	 * 
+	 * @param Instance $instance
+	 * @param Place $place
+	 * @throws \InvalidArgumentException
+	 * @return integer
+	 */
+	public function countToken(Instance $instance, Place $place) {
+		$instance = $this->ensureManagedEntity($instance);
+		$place = $this->ensureManagedEntity($place);
+		
+		if($place->getWorkflow()->getId() !== $instance->getWorkflow()->getId()) {
+ 			throw new \InvalidArgumentException('Parameter tidak valid. Object place dan instance bukan dari definisi workflow yang sama', 100, null);
+ 		}
+		
+		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
+		return $queryBuilder->select($queryBuilder->expr()->count('t'))
+			->from('Workflow\Entity\Token', 't')
+			->innerJoin('t.instance', 'inst', Join::WITH, $queryBuilder->expr()->eq('inst.id', ':instanceId'))
+			->innerJoin('inst.workflow', 'instanceWorkflow', Join::WITH, $queryBuilder->expr()->eq('instanceWorkflow.id', ':instanceWorkflowId'))
+			->innerJoin('t.place', 'place', Join::WITH, $queryBuilder->expr()->eq('place.id', ':placeId'))
+			->innerJoin('place.workflow', 'placeWorkflow', Join::WITH, $queryBuilder->expr()->eq('placeWorkflow.id', ':placeWorkflowId'))
+			->setParameter('instanceId', $instance->getId())
+			->setParameter('instanceWorkflowId', $instance->getWorkflow()->getId())
+			->setParameter('placeId', $place->getId())
+			->setParameter('placeWorkflowId', $place->getWorkflow()->getId())
+			->getQuery()
+			->getSingleScalarResult();
+	}
+	
+	/**
 	 * Apakah ada free token untuk instance dan pada place yang diberikan.
 	 * 
 	 * @param unknown $instance
 	 * @param unknown $place
 	 */
 	public function hasFreeToken($instance, $place) {
-		if($this->countFreeToken($instance, $place) > 0) {
-			return true;
-		}
-		return false;
+		return $this->countFreeToken($instance, $place) > 0 ? true : false;
 	}
 	
 	/**
@@ -106,5 +134,21 @@ class TokenRepository extends EntityRepository {
 		if($freeToken) {
 			throw new \InvalidArgumentException('Tidak ada free token pada place yang instance yang diberikan', 100, null);
 		}
+	}
+	
+	protected function ensureManagedEntity($entity) {
+		if($entity == null) {
+			throw new \InvalidArgumentException('Parameter entity tidak boleh null', 100, null);
+		}
+	
+		$entityState = $this->getEntityManager()->getUnitOfWork()->getEntityState($entity);
+		if(!($entityState == UnitOfWork::STATE_MANAGED || $entityState == UnitOfWork::STATE_DETACHED)) {
+			throw new \InvalidArgumentException(sprintf('Parameter entity harus instance dari object entity dengan state manage atau detached'), 100, null);
+		}
+	
+		if($entityState == UnitOfWork::STATE_DETACHED) {
+			return $this->getEntityManager()->merge($entity);
+		}
+		return $entity;
 	}
 }

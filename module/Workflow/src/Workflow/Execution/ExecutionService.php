@@ -39,6 +39,17 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 	 * @see \Workflow\Manager\InstanceManagerInterface::canStartWorkflow()
 	 */
 	public function canStartWorkflow(Workflow $workflow, array $datas) {
+		/* @var $entityManager EntityManager */
+		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
+		
+		$workflowState = $entityManager->getUnitOfWork()->getEntityState($workflow);
+		if(!($workflowState == UnitOfWork::STATE_DETACHED || $workflowState == UnitOfWork::STATE_MANAGED)) {
+			throw new \InvalidArgumentException(sprintf('Parameter workflow harus merupakan object entity dalam state managed atau detached. State worflow yang diberikan %s', $workflowState), 100, null);
+		}
+		if($workflowState == UnitOfWork::STATE_DETACHED) {
+			$workflow = $entityManager->merge($workflow);
+		}
+		
 		
 	}
 	
@@ -47,6 +58,10 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 	 * @see \Workflow\Manager\InstanceManagerInterface::startWorkflow()
 	 */
 	public function startWorkflow(Workflow $workflow, array $datas) {
+		if(!$this->canStartWorkflow($workflow, $datas)) {
+			throw new \InvalidArgumentException('Tidak dapat memulai workflow, workflow dengan instance data yang pernah distart sebelumnya', 100, null);
+		}
+		
 		/* @var $entityManager EntityManager */
 		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
 		
@@ -93,6 +108,7 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 			$token->setStatus(Token::STATUS_FREE);
 			$token->setEnabledDate(new \DateTime(null, null));
 			$token = $entityManager->merge($token);
+			$entityManager->flush();
 			
 			// Route token to next place.
 			$this->routeTokenToNextPlace($token);
@@ -238,6 +254,8 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 			if(count($freeTokens) > 1) {
 				throw new \RuntimeException(sprintf('Sementara belum dapat menghandle dua token pada lebih dari satu input place'), 100, null);
 			}
+			
+			$entityManager->flush();
 			
 			// Sementara hanya bisa route dari satu free token.
 			$this->routeTokenToNextPlace($freeTokens[0]);

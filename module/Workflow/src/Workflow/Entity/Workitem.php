@@ -57,7 +57,7 @@ class Workitem {
 	 * Instance referensi dari workitem.
 	 * 
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Instance", fetch="LAZY")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", type="string", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="INSTANCE_ID", type="integer", referencedColumnName="INSTANCE_ID")})
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="INSTANCE_ID", referencedColumnName="INSTANCE_ID")})
 	 * 
 	 * @var Instance
 	 */
@@ -66,12 +66,14 @@ class Workitem {
 		return $this->instance;
 	}
 	public function setInstance(Instance $instance) {
+		$this->workflowId = $instance->getWorkflow()->getId();
+		$this->instanceId = $instance->getId();
 		$this->instance = $instance;
 	}
 	
 	/**
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Transition", fetch="LAZY")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", type="string", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="TRANSITION_ID", type="integer", referencedColumnName="TRANSITION_ID")})
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="TRANSITION_ID", referencedColumnName="TRANSITION_ID")})
 	 * 
 	 * @var Transition
 	 */
@@ -80,6 +82,7 @@ class Workitem {
 		return $this->transition;
 	}
 	public function setTransition(Transition $transition) {
+		$this->transitionId = $transition->getId();
 		$this->transition = $transition;
 	}
 	
@@ -141,7 +144,7 @@ class Workitem {
 	/**
 	 * Eksekutor workitem.
 	 * 
-	 * @Column(name="USER_ID", type="string", nullable=true)
+	 * @Orm\Column(name="USER_ID", type="string", nullable=true)
 	 * 
 	 * @var User
 	 */

@@ -6,6 +6,7 @@ use Workflow\Entity\Instance;
 use Workflow\Entity\Transition;
 use Workflow\Entity\Workitem;
 use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\UnitOfWork;
 
 /**
  * Custom repository untuk entity {@link Workitem}
@@ -14,6 +15,36 @@ use Doctrine\ORM\Query\Expr\Join;
  */
 class WorkitemRepository extends EntityRepository {
 	/**
+	 * Hitung semua workitem yang pernah dibuat pada transition dan instance yang diberikan.
+	 * 
+	 * @param Instance $instance
+	 * @param Transition $transition
+	 */
+	public function countWorkitem(Instance $instance, Transition $transition) {
+ 		$instance = $this->ensureManagedEntity($instance);
+ 		$transition = $this->ensureManagedEntity($transition);
+		
+ 		if($transition->getWorkflow()->getId() !== $instance->getWorkflow()->getId()) {
+ 			throw new \InvalidArgumentException('Parameter tidak valid. Object transition dan instance bukan dari definisi workflow yang sama', 100, null);
+ 		}
+
+		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
+		return $queryBuilder->select($queryBuilder->expr()->count('workitem'))
+			->from('Workflow\Entity\Workitem', 'workitem')
+			->innerJoin('workitem.transition', 'transition', Join::WITH, $queryBuilder->expr()->eq('transition.id', ':transitionId'))
+			->innerJoin('transition.workflow', 'transitionWorkflow', Join::WITH, $queryBuilder->expr()->eq('transitionWorkflow.id', ':transitionWorkflowId'))
+			->innerJoin('workitem.instance', 'inst', Join::WITH, $queryBuilder->expr()->eq('inst.id', ':instanceId'))
+			->innerJoin('inst.workflow', 'instanceWorkflow', Join::WITH, $queryBuilder->expr()->eq('instanceWorkflow.id', ':instanceWorkflowId'))
+			->setParameter('transitionId', $transition->getId())
+			->setParameter('transitionWorkflowId', $transition->getWorkflow()->getId())
+			->setParameter('instanceId', $instance->getId())
+			->setParameter('instanceWorkflowId', $instance->getWorkflow()->getId())
+			->getQuery()
+			->getSingleScalarResult();
+	}
+	
+	/**
+	 * Apakah ada enabled workitem pada instance dan transition yang diberikan.
 	 * 
 	 * @param Transition $transition
 	 * @param Instance $instance
@@ -45,8 +76,8 @@ class WorkitemRepository extends EntityRepository {
 			->from('Workflow\Entity\Workitem', 'workitem')
 			->innerJoin('workitem.transition', 'transition', Join::WITH, $queryBuilder->expr()->eq('transition.id', ':transitionId'))
 			->innerJoin('transition.workflow', 'transitionWorkflow', Join::WITH, $queryBuilder->expr()->eq('transitionWorkflow.id', ':transitionWorkflowId'))
-			->innerJoin('workitem.instance', 'instance', Join::WITH, $queryBuilder->expr()->eq('instance.id', ':instanceId'))
-			->innerJoin('instance.workflow', 'instanceWorkflow', Join::WITH, $queryBuilder->expr()->eq('instanceWorkflow.id', ':instanceWorkflowId'))
+			->innerJoin('workitem.instance', 'inst', Join::WITH, $queryBuilder->expr()->eq('inst.id', ':instanceId'))
+			->innerJoin('inst.workflow', 'instanceWorkflow', Join::WITH, $queryBuilder->expr()->eq('instanceWorkflow.id', ':instanceWorkflowId'))
 			->where($queryBuilder->expr()->eq('workitem.status', ':workitemStatus'))
 			->setParameter('transitionId', $transition->getId())
 			->setParameter('transitionWorkflowId', $transition->getWorkflow()->getId())
@@ -74,8 +105,8 @@ class WorkitemRepository extends EntityRepository {
 			->innerJoin('workitem.transition', 'transition', Join::WITH, $queryBuilder->expr()->eq('transition.id', ':transitionId'))
 			->innerJoin('transition.task', 'task')
 			->innerJoin('transition.workflow', 'transitionWorkflow', Join::WITH, $queryBuilder->expr()->eq('transitionWorkflow.id', ':transitionWorkflowId'))
-			->innerJoin('workitem.instance', 'instance', Join::WITH, $queryBuilder->expr()->eq('instance.id', ':isntanceId'))
-			->innerJoin('instance.workflow', 'instanceWorkflow', Join::WITH, $queryBuilder->expr()->eq('instanceWorkflow.id', ':instanceWorkflowId'))
+			->innerJoin('workitem.instance', 'inst', Join::WITH, $queryBuilder->expr()->eq('inst.id', ':instanceId'))
+			->innerJoin('inst.workflow', 'instanceWorkflow', Join::WITH, $queryBuilder->expr()->eq('instanceWorkflow.id', ':instanceWorkflowId'))
 			->where($queryBuilder->expr()->andX(
 				$queryBuilder->expr()->eq('workitem.id', ':workitemId')
 			))
@@ -99,7 +130,7 @@ class WorkitemRepository extends EntityRepository {
 	}
 	
 	protected function isWorkitemInStatus(Workitem $workitem, $status) {
-		return $this->_em->createQuery('SELECT EXISTS(workitem) FROM Workflow\Entity\Workitem workitem INNER JOIN workitem.transition transition WITH transition.id = :transitionId INNER JOIN workitem.instance instance WITH instance.id = :instanceId WHERE workitem.id = :workitemId AND workitem.status :workitemStatus')
+		return $this->_em->createQuery('SELECT EXISTS(workitem) FROM Workflow\Entity\Workitem workitem INNER JOIN workitem.transition transition WITH transition.id = :transitionId INNER JOIN workitem.instance inst WITH inst.id = :instanceId WHERE workitem.id = :workitemId AND workitem.status :workitemStatus')
 			->setParameter('instanceId', $workitem->getInstance()->getId())
 			->setParameter('transitionId', $workitem->getTransition()->getId())
 			->setParameter('workitemId', $workitem->getId())

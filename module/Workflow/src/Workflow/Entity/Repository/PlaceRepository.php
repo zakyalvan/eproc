@@ -240,4 +240,20 @@ class PlaceRepository extends EntityRepository {
 			->getQuery()
 			->getResult();
 	}
+	
+	protected function ensureManagedEntity($entity) {
+		if($entity == null) {
+			throw new \InvalidArgumentException('Parameter entity tidak boleh null', 100, null);
+		}
+	
+		$entityState = $this->getEntityManager()->getUnitOfWork()->getEntityState($entity);
+		if(!($entityState == UnitOfWork::STATE_MANAGED || $entityState == UnitOfWork::STATE_DETACHED)) {
+			throw new \InvalidArgumentException(sprintf('Parameter entity harus instance dari object entity dengan state manage atau detached'), 100, null);
+		}
+	
+		if($entityState == UnitOfWork::STATE_DETACHED) {
+			return $this->getEntityManager()->merge($entity);
+		}
+		return $entity;
+	}
 }

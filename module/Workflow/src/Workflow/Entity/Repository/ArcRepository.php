@@ -121,7 +121,6 @@ class ArcRepository extends EntityRepository {
 			->getQuery()
 			->getResult();
 	}
-	
 	public function countOutputArcsTo(Place $place) {
 		$place = $this->ensureManagedEntity($place);
 	
@@ -137,7 +136,6 @@ class ArcRepository extends EntityRepository {
 			->getQuery()
 			->getSingleScalarResult();
 	}
-	
 	public function getOutputArcsTo(Place $place) {
 		$place = $this->ensureManagedEntity($place);
 		
@@ -153,6 +151,32 @@ class ArcRepository extends EntityRepository {
 			->setParameter('arcDirection', Arc::ARC_DIRECTION_OUTPUT)
 			->getQuery()
 			->getResult();
+	}
+	
+	/**
+	 * Perlu diingat bahwa yang keluar dari sebuah transisi, label harus unique.
+	 * 
+	 * @param Transition $transition
+	 * @param string $label
+	 * @return Arc
+	 */
+	public function getOutputArcByLabelFrom(Transition $transition, $label) {
+		$transition = $this->ensureManagedEntity($transition);
+	
+		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
+		return $queryBuilder->select(array('arc', 'place', 'transition'))
+			->from('Workflow\Entity\Arc', 'arc')
+			->innerJoin('arc.place', 'place')
+			->innerJoin('arc.transition', 'transition', Join::WITH, $queryBuilder->expr()->eq('transition.id', ':transitionId'))
+			->innerJoin('transition.workflow', 'workflow', Join::WITH, $queryBuilder->expr()->eq('workflow.id', ':workflowId'))
+			->where($queryBuilder->expr()->eq('arc.direction', ':arcDirection'))
+			->where($queryBuilder->expr()->eq('arc.label', ':arcLabel'))
+			->setParameter('transitionId', $transition->getId())
+			->setParameter('workflowId', $transition->getWorkflow()->getId())
+			->setParameter('arcDirection', Arc::ARC_DIRECTION_OUTPUT)
+			->setParameter('arcLabel', $label)
+			->getQuery()
+			->getSingleResult();
 	}
 	
 	protected function ensureManagedEntity($entity) {
