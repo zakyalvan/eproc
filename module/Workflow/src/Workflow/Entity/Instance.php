@@ -19,6 +19,7 @@ class Instance {
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="INSTANCE_ID", type="integer")
+	 * @Orm\GeneratedValue(strategy="NONE")
 	 */
 	protected $id;
 	public function getId() {

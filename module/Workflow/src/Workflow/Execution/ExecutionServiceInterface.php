@@ -4,6 +4,7 @@ namespace Workflow\Execution;
 use Workflow\Entity\Instance;
 use Workflow\Entity\Place;
 use Workflow\Entity\Workflow;
+use Workflow\Entity\Workitem;
 
 /**
  * Kontrak untuk instance manager (Eksekusi workflow).

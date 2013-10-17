@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as Orm;
  * Workflow attribute ini akan menjadi instance data (setelah dieksekusi).
  * 
  * @Orm\Entity
- * @Orm\Table(name="EP_WF_WORKFLOW_ATTRIBUTE")
+ * @Orm\Table(name="EP_WF_WORKFLOW_ATTR")
  * 
  * @author zakyalvan
  */

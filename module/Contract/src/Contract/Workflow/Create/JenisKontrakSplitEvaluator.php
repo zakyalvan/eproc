@@ -2,6 +2,7 @@
 namespace Contract\Workflow\Create;
 
 use Workflow\Execution\Evaluator\AbstractSplitEvaluator;
+use Contract\Entity\Kontrak\Kontrak;
 
 /**
  * Split evaluator untuk kenis kontrak.
@@ -10,9 +11,14 @@ use Workflow\Execution\Evaluator\AbstractSplitEvaluator;
  */
 class JenisKontrakSplitEvaluator extends AbstractSplitEvaluator {
 	public function init() {
+		// Inisiasi possible output.
+		$this->possibleOutput[] = Kontrak::JENIS_PERJANJIAN;
+		$this->possibleOutput[] = Kontrak::JENIS_SPK;
 		
+		// Inisiasi required attribute
+		$this->requiredAttrubutes[] = 'JENIS_KONTRAK';
 	}
-	public function eveluate($datas = array()) {
-		
+	protected function doEvaluate() {
+		return $this->datas['JENIS_KONTRAK'];
 	}
 }

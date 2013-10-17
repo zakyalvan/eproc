@@ -22,12 +22,7 @@ class InstanceRepository extends EntityRepository {
 	 * @return Instance
 	 */
 	public function createNewInstance($workflow) {
-		$instance = new Instance();
-		$instance->setWorkflow($workflow);
-		$instance->setContext('Context');
-		$instance->setStatus(Instance::STATUS_OPERATED);
-		$instance->setStartDate(new \DateTime(null, null));
-		return $this->_em->merge($instance);
+		
 	}
 	
 	public function getActiveInstances($workflow, $datas = array()) {

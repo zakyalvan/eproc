@@ -18,9 +18,16 @@ interface SplitEvaluatorInterface {
 	public function getPossibleOutput();
 	
 	/**
+	 * Retrieve required attribute dari split evaluator ini.
+	 * 
+	 * @return array
+	 */
+	public function getRequiredAttributes();
+	
+	/**
 	 * Set instance data yang akan digunakan dalam evaluasi.
 	 * 
-	 * @param unknown $datas
+	 * @param array $datas
 	 */
 	public function setDatas(array $datas);
 	

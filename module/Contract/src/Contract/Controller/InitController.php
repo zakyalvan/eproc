@@ -73,10 +73,10 @@ class InitController extends AbstractActionController {
 			$datas = $this->request->getPost();
 			
 			$penunjukanPengelola = new PenunjukanPengelola();
-			$penunjukanPengelola->setUserPenunjuk($this->identity());
+			$penunjukanPengelola->setUserPenunjuk($this->identity()->getLoggedinUser());
 			$penunjukanPengelola->setTender($tender);
 			$penunjukanPengelola->setTanggalRekam(new \DateTime());
-			$penunjukanPengelola->setPetugasRekam($this->identity()->getKode());
+			$penunjukanPengelola->setPetugasRekam($this->identity()->getLoggedinUser()->getKode());
 			
 			$penunjukanForm->setObject($penunjukanPengelola);
 			$penunjukanForm->setData($datas);

@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as Orm;
 class InstanceData {
 	/**
 	 * @Orm\Id
-	 * @Orm\Column(name="WORKFLFOW_ID", type="string")
+	 * @Orm\Column(name="WORKFLOW_ID", type="string")
 	 * 
 	 * @var string
 	 */

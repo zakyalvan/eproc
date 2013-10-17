@@ -14,6 +14,30 @@ use Doctrine\ORM\Mapping as Orm;
 class TransitionTrail {
 	/**
 	 * @Orm\Id
+	 * @Orm\Column(name="WORKFLOW_ID", type="string")
+	 *
+	 * @var string
+	 */
+	private $workflowId;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="INSTANCE_ID", type="string")
+	 *
+	 * @var string
+	 */
+	private $instanceId;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="TRANSITION_ID", type="integer")
+	 *
+	 * @var integer
+	 */
+	private $transitionId;
+	
+	/**
+	 * @Orm\Id
 	 * @Orm\Column(name="TRAIL_ID", type="integer")
 	 * 
 	 * @var integer
@@ -27,8 +51,7 @@ class TransitionTrail {
 	}
 	
 	/**
-	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Instance", fetch="lazy", inversedBy="auditTrails")
+	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Instance", fetch="LAZY", inversedBy="auditTrails")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="TRANSITION_ID", referencedColumnName="TRANSITION_ID")})
 	 * 
 	 * @var Transition
@@ -42,8 +65,7 @@ class TransitionTrail {
 	}
 	
 	/**
-	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Instance", fetch="lazy")
+	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Instance", fetch="LAZY")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="INSTANCE_ID", referencedColumnName="INSTANCE_ID")})
 	 * 
 	 * @var Instance

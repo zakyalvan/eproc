@@ -38,7 +38,7 @@ class PlaceRepository extends EntityRepository {
 		}
 		
 		$queryBuilder = $this->_em->createQueryBuilder();
-		$queryBuilder->select('place')
+		return $queryBuilder->select('place')
 			->from('Workflow\Entity\Place', 'place')
 			->innerJoin('place.workflow', 'workflow', Join::WITH, $queryBuilder->expr()->eq('workflow.id', ':workflowId'))
 			->where($queryBuilder->expr()->eq('place.type', ':placeType'))
@@ -207,7 +207,7 @@ class PlaceRepository extends EntityRepository {
 	 * @throws \InvalidArgumentException
 	 * @return array
 	 */
-	public function getOutputPlaces($transition, $workflow) {
+	public function getOutputPlaces2($transition, $workflow) {
 		$transitionId = $transition;
 		$workflowId = $workflow;
 		

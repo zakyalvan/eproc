@@ -212,8 +212,8 @@ return array(
 			
 		),
 		'split_evaluators' => array(
-			'create/JenisKontrakEvaluator' => '',
-			'create/PersetujuanPengelolaEvaluator' => ''
+			'create\JenisKontrakEvaluator' => 'Contract\Workflow\Create\JenisKontrakSplitEvaluator',
+			'create\PersetujuanAtasanEvaluator' => 'Contract\Workflow\Create\PersetujuanAtasanUserSplitEvaluator'
 		)
 	)
 );

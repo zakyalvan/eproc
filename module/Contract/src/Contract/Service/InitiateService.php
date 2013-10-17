@@ -35,17 +35,17 @@ class InitiateService implements InitiateServiceInterface, ServiceLocatorAware {
 			
 			/* @var $definitionService DefinitionServiceInterface */
 			$definitionService = $this->serviceLocator->get('Workflow\Definition\DefinitionService');
-			$workflow = $definitionService->getWorkflow(1);
+			$workflow = $definitionService->getWorkflow('PEMBUATAN_KONTRAK');
+			
 			$instanceDatas = array(
 				'KODE_TENDER' => $penujukanPengelola->getTender()->getKode(),
-				'KODE_KANTOR' => $penujukanPengelola->getTender()->getKantor()->getKode(),
-				//'PENGELOLA_KONTRAK' => $penujukanPengelola->getUserPengelola()->getKode()
+				'KODE_KANTOR' => $penujukanPengelola->getTender()->getKantor()->getKode()
 			);
 			
 			/* @var $executionService ExecutionServiceInterface */
 			$executionService = $this->serviceLocator->get('Workflow\Execution\ExecutionService');
 			
-			//$executionService->startWorkflow($workflow, $instanceDatas);
+			$executionService->startWorkflow($workflow, $instanceDatas);
 			$entityManager->flush();
 			$entityManager->commit();
 		}

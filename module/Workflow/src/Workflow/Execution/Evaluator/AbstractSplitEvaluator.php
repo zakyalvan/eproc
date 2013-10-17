@@ -2,6 +2,7 @@
 namespace Workflow\Execution\Evaluator;
 
 use Zend\Stdlib\InitializableInterface;
+
 /**
  * Abstract kelas split evaluator.
  * 
@@ -9,7 +10,7 @@ use Zend\Stdlib\InitializableInterface;
  * @see {@link SplitEvaluatorInterface}
  */
 abstract class AbstractSplitEvaluator implements SplitEvaluatorInterface, InitializableInterface {
-	protected $requiredDatas = array();
+	protected $requiredAttrubutes = array();
 	protected $possibleOutput = array();
 	protected $datas = array();
 	
@@ -23,21 +24,29 @@ abstract class AbstractSplitEvaluator implements SplitEvaluatorInterface, Initia
 
 	/**
 	 * (non-PHPdoc)
+	 * @see \Workflow\Execution\Evaluator\SplitEvaluatorInterface::getRequiredAttributes()
+	 */
+	public function getRequiredAttributes() {
+		return $this->requiredAttrubutes;
+	}
+	
+	/**
+	 * (non-PHPdoc)
 	 * @see \Workflow\Execution\Evaluator\SplitEvaluatorInterface::setDatas()
 	 */
 	public function setDatas(array $datas) {
 		$className = get_class($this);
-		$requiredDataImplode = implode(", ", $this->requiredDatas);
-		$providedDataImplode = implode(", ", array_keys($datas));
+		$requiredAttributesImplode = implode(', ', $this->requiredAttrubutes);
+		$providedDatasImplode = implode(', ', array_keys($datas));
 		
 		// Evaluasi apakah data yang diberikan sesuai dengan kebutuhan evaluator.
-		if(count($datas) < count($this->requiredDatas)) {
-			throw new \InvalidArgumentException("Jumlah data yang diberikan untuk evaluator {$className} tidak sesuai dengan jumlah yang dibutuhkan. Required data key : '{$requiredDataImplode}' , provided data key '{$providedDataImplode}'", 999, null);
+		if(count($datas) < count($this->requiredAttrubutes)) {
+			throw new \InvalidArgumentException(sprintf('Jumlah data yang diberikan untuk evaluator %s tidak sesuai dengan jumlah yang dibutuhkan. Required data key : %s, provided data key %s', $className, $requiredAttributesImplode, $providedDatasImplode), 999, null);
 		}
 		
-		foreach ($this->requiredDatas as $requiredData) {
-			if(!array_key_exists($requiredData, $datas)) {
-				throw new \InvalidArgumentException("Content data yang diberikan tidak sesuai dengan kebutuhan evaluator {$className}. Required data key : '{$requiredDataImplode}' , provided data key '{$providedDataImplode}'", 1000, null);
+		foreach ($this->requiredAttrubutes as $requiredAttribute) {
+			if(!array_key_exists($requiredAttribute, $datas)) {
+				throw new \InvalidArgumentException(sprintf('Content data yang diberikan tidak sesuai dengan kebutuhan evaluator %s. Required data key : %s, provided data key %s', $className, $requiredAttributesImplode, $providedDatasImplode), 1000, null);
 			}
 		}
 		$this->datas = array_merge($this->datas, $datas);
@@ -51,7 +60,7 @@ abstract class AbstractSplitEvaluator implements SplitEvaluatorInterface, Initia
 	 * (non-PHPdoc)
 	 * @see \Zend\Stdlib\InitializableInterface::init()
 	 */
-	public public function init();
+	abstract public function init();
 	
 	/**
 	 * Method ini yang perlu diimpelementasi dalam kelas konkrit split-evaluator.
@@ -59,5 +68,27 @@ abstract class AbstractSplitEvaluator implements SplitEvaluatorInterface, Initia
 	 * (non-PHPdoc)
 	 * @see \Workflow\Execution\Evaluator\SplitEvaluatorInterface::eveluate()
 	 */
-	abstract public function eveluate($datas = array());
+	public function eveluate($datas = array()) {
+		$this->setDatas($datas);
+		$evaluateResult = $this->doEvaluate();
+		
+		$validResult = false;
+		foreach ($this->possibleOutput as $output) {
+			if($output == $evaluateResult) {
+				$validResult = true;
+			}
+		}
+		
+		if(!$validResult) {
+			throw new \InvalidArgumentException(sprintf('Nilai balikan evaluasi %s bukan merupakan salah satu dari possible outputs %s', $evaluateResult, implode(', ', $this->possibleOutput)), 100, null);
+		}
+		return $validResult;
+	}
+	
+	/**
+	 * Method yang harus dispesifikasi dalam kelas turunan.
+	 * 
+	 * @return string
+	 */
+	abstract protected function doEvaluate();
 }

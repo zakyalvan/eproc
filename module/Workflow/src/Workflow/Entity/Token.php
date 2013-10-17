@@ -67,7 +67,7 @@ class Token {
 	 * Di mana token ini berada.
 	 * 
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Place", fetch="LAZY")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", type="string", length="5", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="PLACE_ID", type="integer", referencedColumnName="PLACE_ID")})
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="PLACE_ID", referencedColumnName="PLACE_ID")})
 	 * 
 	 * @var Place
 	 */

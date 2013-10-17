@@ -15,6 +15,52 @@ use Doctrine\ORM\Query\Expr\Join;
 class WorkitemRepository extends EntityRepository {
 	/**
 	 * 
+	 * @param Transition $transition
+	 * @param Instance $instance
+	 * @throws \InvalidArgumentException
+	 * @return boolean
+	 */
+	public function hasEnabledWorkitem(Instance $instance, Transition $transition) {
+		return $this->countEnabledWorkitem($instance, $transition) > 0 ? true : false;
+	}
+	
+	/**
+	 * Count workitem yang masih pending atau berstatus enabled.
+	 * 
+	 * @param Instance $instance
+	 * @param Transition $transition
+	 * @throws \InvalidArgumentException
+	 * @return integer
+	 */
+	public function countEnabledWorkitem(Instance $instance, Transition $transition) {
+		$instance = $this->ensureManagedEntity($instance);
+		$transition = $this->ensureManagedEntity($transition);
+		
+		if($transition->getWorkflow()->getId() !== $instance->getWorkflow()->getId()) {
+			throw new \InvalidArgumentException('Parameter tidak valid. Object transition dan instance bukan dari definisi workflow yang sama', 100, null);
+		}
+		
+		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
+		$workitemCount = $queryBuilder->select($queryBuilder->expr()->count('workitem'))
+			->from('Workflow\Entity\Workitem', 'workitem')
+			->innerJoin('workitem.transition', 'transition', Join::WITH, $queryBuilder->expr()->eq('transition.id', ':transitionId'))
+			->innerJoin('transition.workflow', 'transitionWorkflow', Join::WITH, $queryBuilder->expr()->eq('transitionWorkflow.id', ':transitionWorkflowId'))
+			->innerJoin('workitem.instance', 'instance', Join::WITH, $queryBuilder->expr()->eq('instance.id', ':instanceId'))
+			->innerJoin('instance.workflow', 'instanceWorkflow', Join::WITH, $queryBuilder->expr()->eq('instanceWorkflow.id', ':instanceWorkflowId'))
+			->where($queryBuilder->expr()->eq('workitem.status', ':workitemStatus'))
+			->setParameter('transitionId', $transition->getId())
+			->setParameter('transitionWorkflowId', $transition->getWorkflow()->getId())
+			->setParameter('instanceId', $instance->getId())
+			->setParameter('instanceWorkflowId', $instance->getWorkflow()->getId())
+			->setParameter('workitemStatus', Workitem::STATUS_ENABLED)
+			->getQuery()
+			->getSingleScalarResult();
+		
+		return $workitemCount;
+	}
+	
+	/**
+	 * 
 	 * @param unknown $workitemId
 	 * @param unknown $workflowId
 	 * @param unknown $instanceId
@@ -61,29 +107,7 @@ class WorkitemRepository extends EntityRepository {
 			->getSingleScalarResult();
 	}
 	
-	/**
-	 * Count workitem yang masih pending atau berstatus enabled.
-	 * 
-	 * @param Instance $instance
-	 * @param Transition $transition
-	 */
-	public function countEnabledWorkitem(Instance $instance, Transition $transition) {
-		$validParams = $this->_em->createQuery('SELECT CASE WHEN instance.workflow.id = transition.workflow.id THEN 1 ELSE 0 FROM Workflow\Entity\Workitem workitem INNER JOIN workitem.transition transition WITH transition.id = :transitionId INNER JOIN transition.workflow INNER JOIN workitem.instance instance WITH instance.id = :instanceId INNER JOIN instance.workflow')
-			->setParameter('transitionId', $transition->getId())
-			->setParameter('instanceId', $instance->getId())
-			->getSingleScalarResult();
-		
-		if($validParams == 0) {
-			throw new \InvalidArgumentException('Parameter yang diberikan tidak valid, transition dan instance yang diberikan bukan dari satu workflow yang sama.', 100, null);
-		}
-		
-		return $this->_em->createQuery('SELECT COUNT(workitem) FROM Workflow\Entity\Workitem workitem INNER JOIN workitem.instance instance WITH instance.id = :instanceId INNER JOIN workitem.transition transition WITH transition.id = :transitionId WHERE workitem.status = :workitemStatus')
-			->setParameter('instanceId', $instance->getId())
-			->setParameter('workflowId', $instance->getWorkflow()->getId())
-			->setParameter('transitionId', $transition->getId())
-			->setParameter('workitemStatus', Workitem::STATUS_ENABLED)
-			->getSingleScalarResult();
-	}
+	
 	
 	/**
 	 * Apakah user yang diberikan adalah executor yang valid untuk workitem.
@@ -116,5 +140,21 @@ class WorkitemRepository extends EntityRepository {
 		$validExecutor = $queryBuilder->getQuery()->getSingleScalarResult();
 		
 		return $validExecutor > 0 ? true : false;
+	}
+	
+	protected function ensureManagedEntity($entity) {
+		if($entity == null) {
+			throw new \InvalidArgumentException('Parameter entity tidak boleh null', 100, null);
+		}
+	
+		$entityState = $this->getEntityManager()->getUnitOfWork()->getEntityState($entity);
+		if(!($entityState == UnitOfWork::STATE_MANAGED || $entityState == UnitOfWork::STATE_DETACHED)) {
+			throw new \InvalidArgumentException(sprintf('Parameter entity harus instance dari object entity dengan state manage atau detached'), 100, null);
+		}
+	
+		if($entityState == UnitOfWork::STATE_DETACHED) {
+			return $this->getEntityManager()->merge($entity);
+		}
+		return $entity;
 	}
 }

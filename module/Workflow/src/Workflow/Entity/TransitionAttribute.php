@@ -13,6 +13,30 @@ use Doctrine\ORM\Mapping as Orm;
  */
 class TransitionAttribute {
 	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="WORKFLOW_ID", type="string")
+	 * 
+	 * @var string
+	 */
+	private $workflowId;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="TRANSITION_ID", type="integer")
+	 *
+	 * @var integer
+	 */
+	private $transitionId;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="WORKFLOW_ATTR_NAME", type="string")
+	 *
+	 * @var string
+	 */
+	private $workflowAttributeName;
+	
+	/**
 	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Transition", fetch="LAZY")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="TRANSITION_ID", referencedColumnName="TRANSITION_ID")})
 	 * 

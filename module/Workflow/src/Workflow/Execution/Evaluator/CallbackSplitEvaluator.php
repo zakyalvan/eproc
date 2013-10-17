@@ -1,13 +1,15 @@
 <?php
 namespace Workflow\Execution\Evaluator;
 
-use Zend\Di\ServiceLocator;
+use Zend\ServiceManager\ServiceLocatorAwareInterface as ServiceLocatorAware;
+use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
+
 /**
  * Adapter jika split evaluator yang diberikan adalah callback function atay closure (anonymous function).
  * 
  * @author zakyalvan
  */
-class CallbackSplitEvaluator extends AbstractSplitEvaluator {
+class CallbackSplitEvaluator extends AbstractSplitEvaluator implements ServiceLocatorAware {
 	/**
 	 * @var function|\Closure
 	 */
@@ -18,9 +20,8 @@ class CallbackSplitEvaluator extends AbstractSplitEvaluator {
 	 */
 	private $serviceLocator;
 	
-	public function __construct($callback, ServiceLocator $serviceLocator) {
+	public function __construct($callback) {
 		$this->callback = $callback;
-		$this->serviceLocator = $serviceLocator;
 	}
 
 	/**
@@ -33,8 +34,21 @@ class CallbackSplitEvaluator extends AbstractSplitEvaluator {
 	 * (non-PHPdoc)
 	 * @see \Workflow\Execution\Evaluator\AbstractSplitEvaluator::eveluate()
 	 */
-	public function eveluate($datas = array()) {
-		$this->setDatas($datas);
+	protected function doEveluate() {
 		return $this->callback($this->datas, $this->serviceLocator);
+	}
+	/**
+	 * (non-PHPdoc)
+	 * @see \Zend\ServiceManager\ServiceLocatorAwareInterface::setServiceLocator()
+	 */
+	public function setServiceLocator(ServiceLocator $serviceLocator) {
+		$this->serviceLocator = $serviceLocator;
+	}
+	/**
+	 * (non-PHPdoc)
+	 * @see \Zend\ServiceManager\ServiceLocatorAwareInterface::getServiceLocator()
+	 */
+	public function getServiceLocator() {
+		return $this->serviceLocator;
 	}
 }

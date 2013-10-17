@@ -107,42 +107,4 @@ class TokenRepository extends EntityRepository {
 			throw new \InvalidArgumentException('Tidak ada free token pada place yang instance yang diberikan', 100, null);
 		}
 	}
-	
-	/**
-	 * Create free token untuk instance dan pada place yang diberikan.
-	 * 
-	 * @param unknown $instance
-	 * @param unknown $place
-	 * @return Token
-	 */
-	public function createFreeToken($instance, $place) {
-		$instanceObject = null;
-		if($instance instanceof Instance) {
-			$instanceObject = $instance;
-		}
-		else if(is_numeric($instance)) {
-			$instanceId = $instance;
-		}
-		else {
-			throw new \InvalidArgumentException('Parameter instance harus berupa instance dari kelas Workflow\Entity\Instance atau integer kode instance', 100, null);
-		}
-		
-		$placeObject = null;
-		if($place instanceof Place) {
-			$placeObject = $place;
-		}
-		else if(is_numeric($place)) {
-			
-		}
-		else {
-			throw new \InvalidArgumentException('Parameter place harus berupa instance dari kelas Workflow\Entity\Place atau integer kode place', 100, null);
-		}
-		
-		$token = new Token();
-		$token->setInstance($instanceObject);
-		$token->setPlace($placeObject);
-		$token->setStatus(Token::STATUS_FREE);
-		
-		return $this->_em->merge($token);
-	}
 }
