@@ -8,7 +8,7 @@ use Zend\Authentication\AuthenticationService;
 use Application\Security\SecurityContext;
 
 /**
- * Abstract plugin untuk intercept masalah security.
+ * Controller plugin untuk intercept masalah security.
  * Disini user akan dicheck apakah sudah login atau belum sebelum mengakses halaman yang seharusnya diakses oleh
  * user yang sudah login, apakah user diizinkan untuk mengakses berdasarkan rolenya.
  * 

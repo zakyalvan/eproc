@@ -112,7 +112,7 @@ class ProcessRouter implements ProcessRouterInterface, ServiceLocatorAware, Even
 				/* @var $tokenRepository TokenRepository */ 
 				$tokenRepository = $entityManager->getRepository('Workflow\Entity\Token');
 				
-				// Karena cuma ada satu arc yang masuk, tidak perlu iterasi untuk hitung jumlah token yang pernah dibuat.
+				// Karena cuma ada satu input arc yang masuk ke transition, tidak perlu iterasi untuk hitung jumlah token yang pernah dibuat.
 				$tokenCount = $tokenRepository->countToken($instance, $inputPlace);
 				
 				/* @var $workitemRepository WorkitemRepository */ 
@@ -173,8 +173,8 @@ class ProcessRouter implements ProcessRouterInterface, ServiceLocatorAware, Even
 			}
 			else {
 				throw new ProcessRouterException(
-					sprintf('
-						Jenis transition trigger %s tidak valid', 
+					sprintf(
+						'Jenis transition trigger %s tidak valid', 
 						$transitionTrigger
 					), 100, null);
 			}
@@ -195,43 +195,33 @@ class ProcessRouter implements ProcessRouterInterface, ServiceLocatorAware, Even
 				$outputArc = $outputArcs[0];
 				$outputPlace = $outputArc->getPlace();
 				
-				$entityManager->beginTransaction();
-				try {
-					// Create free token pada output place.
-					$outputToken = new Token();
-					$outputToken->setId($this->keyGenerator()->generateNextKey($outputToken, 'id'));
-					$outputToken->setInstance($instance);
-					$outputToken->setPlace($outputPlace);
-					$outputToken->setEnabledDate(new \DateTime(null, null));
-					$outputToken->setStatus(Token::STATUS_FREE);
-					$entityManager->persist($outputToken);
+				// Create free token pada output place.
+				$outputToken = new Token();
+				$outputToken->setId($this->keyGenerator()->generateNextKey($outputToken, 'id'));
+				$outputToken->setInstance($instance);
+				$outputToken->setPlace($outputPlace);
+				$outputToken->setEnabledDate(new \DateTime(null, null));
+				$outputToken->setStatus(Token::STATUS_FREE);
+				$entityManager->persist($outputToken);
 					
-					// Consume free token pada input token.
-					$inputToken->setStatus(Token::STATUS_CONSUMED);
-					$inputToken->setConsumedDate(new \DateTime(null, null));
-					$entityManager->persist($inputToken);
+				// Consume free token pada input token.
+				$inputToken->setStatus(Token::STATUS_CONSUMED);
+				$inputToken->setConsumedDate(new \DateTime(null, null));
+				$entityManager->persist($inputToken);
 					
-					// Jika token sudah berada pada end place, akhiri status instance.
-					if($outputPlace->getType() == Place::TYPE_END_PLACE) {
-						$instance->setStatus(Instance::STATUS_FINISHED);
-						$instance->setFinishDate(new \DateTime(null, null));
-						$instance = $entityManager->merge($instance);
-					}
-					
-					$entityManager->flush();
-					$entityManager->commit();
-					
-					$outputPlaces = array();
-					$outputPlaces[] = $outputPlace;
-					
-					$outputTokens = array();
-					$outputTokens[] = $outputToken;
-					return new RouteResult(true, null, -1, $inputPlace, $inputToken, $transition, $outputPlaces, $outputTokens);
+				// Jika token sudah berada pada end place, akhiri status instance.
+				if($outputPlace->getType() == Place::TYPE_END_PLACE) {
+					$instance->setStatus(Instance::STATUS_FINISHED);
+					$instance->setFinishDate(new \DateTime(null, null));
+					$instance = $entityManager->merge($instance);
 				}
-				catch (\Exception $e) {
-					$entityManager->rollback();
-					throw new ProcessRouterException('Route proses gagal, terjadi eksepsi, perhatikan stack trace eksepsi', 100, $e);
-				}
+					
+				$entityManager->flush();
+					
+				$outputPlaces = array($outputPlace);
+				$outputTokens = array($outputToken);
+				
+				return new RouteResult(true, null, -1, $inputPlace, $inputToken, $transition, $outputPlaces, $outputTokens);
 			}
 			else if($outputArcsCount > 1) {
 				// Ini berarti explicit-or-split. Buat token pada place sesuai dengan hasil split evaluator.
@@ -248,8 +238,34 @@ class ProcessRouter implements ProcessRouterInterface, ServiceLocatorAware, Even
 
 					$outputPlace = $outputArc->getPlace();
 					
-					$entityManager->beginTransaction();
-					try {
+					// Create token pada output place.
+					$outputToken = new Token();
+					$outputToken->setId($this->keyGenerator()->generateNextKey($outputToken, 'id'));
+					$outputToken->setInstance($instance);
+					$outputToken->setPlace($outputPlace);
+					$outputToken->setStatus(Token::STATUS_FREE);
+					$outputToken->setEnabledDate(new \DateTime(null, null));
+					$entityManager->persist($outputToken);
+						
+					// Consume free token pada input token sebelumnya.
+					$inputToken->setStatus(Token::STATUS_CONSUMED);
+					$inputToken->setConsumedDate(new \DateTime(null, null));
+					$entityManager->persist($inputToken);
+						
+					$entityManager->flush();
+						
+					$outputPlaces = array($outputPlace);						
+					$outputTokens = array($outputToken);
+					return new RouteResult(true, null, -1, $inputPlace, $inputToken, $transition, $outputPlaces, $outputTokens);
+				}
+				// Ini berarti and-split. Buat token baru pada seluruh output place.
+				else {
+					$outputPlaces = array();
+					$outputTokens = array();
+						
+					foreach ($outputArcs as $outputArc) {
+						$outputPlace = $outputArc->getPlace();
+							
 						// Create token pada output place.
 						$outputToken = new Token();
 						$outputToken->setId($this->keyGenerator()->generateNextKey($outputToken, 'id'));
@@ -258,64 +274,19 @@ class ProcessRouter implements ProcessRouterInterface, ServiceLocatorAware, Even
 						$outputToken->setStatus(Token::STATUS_FREE);
 						$outputToken->setEnabledDate(new \DateTime(null, null));
 						$entityManager->persist($outputToken);
-						
-						// Consume free token pada input token sebelumnya.
-						$inputToken->setStatus(Token::STATUS_CONSUMED);
-						$inputToken->setConsumedDate(new \DateTime(null, null));
-						$entityManager->persist($inputToken);
-						
-						$entityManager->flush();
-						$entityManager->commit();
-						
-						$outputPlaces = array(
-							$outputPlace
-						);						
-						$outputTokens = array(
-							$outputToken
-						);
-						return new RouteResult(true, null, -1, $inputPlace, $inputToken, $transition, $outputPlaces, $outputTokens);
-					}
-					catch (\Exception $e) {
-						$entityManager->rollback();
-						throw new ProcessRouterException('Proses routing gagal, eksepsi terjadi, silahkan perhatikan stack trace eksepsi', 100, $e);
-					}
-				}
-				// Ini berarti and-split. Buat token baru pada seluruh output place.
-				else {
-					try {
-						$outputPlaces = array();
-						$outputTokens = array();
-						
-						foreach ($outputArcs as $outputArc) {
-							$outputPlace = $outputArc->getPlace();
 							
-							// Create token pada output place.
-							$outputToken = new Token();
-							$outputToken->setId($this->keyGenerator()->generateNextKey($outputToken, 'id'));
-							$outputToken->setInstance($instance);
-							$outputToken->setPlace($outputPlace);
-							$outputToken->setStatus(Token::STATUS_FREE);
-							$outputToken->setEnabledDate(new \DateTime(null, null));
-							$entityManager->persist($outputToken);
-							
-							$outputPlaces[] = $outputPlaces;
-							$outputTokens[] = $outputToken;
-						}
-						
-						// Consume free token pada input token sebelumnya.
-						$inputToken->setStatus(Token::STATUS_CONSUMED);
-						$inputToken->setConsumedDate(new \DateTime(null, null));
-						$entityManager->persist($inputToken);
-						
-						$entityManager->flush();
-						$entityManager->commit();
-						
-						return new RouteResult(true, null, -1, $inputPlace, $inputToken, $transition, $outputPlaces, $outputTokens);
+						$outputPlaces[] = $outputPlace;
+						$outputTokens[] = $outputToken;
 					}
-					catch(\Exception $e) {
-						$entityManager->rollback();
-						throw new ProcessRouterException('Proses routing gagal, eksepsi terjadi, silahkan perhatikan stack trace eksepsi', 100, $e);
-					}
+						
+					// Consume free token pada input token sebelumnya.
+					$inputToken->setStatus(Token::STATUS_CONSUMED);
+					$inputToken->setConsumedDate(new \DateTime(null, null));
+					$entityManager->persist($inputToken);
+						
+					$entityManager->flush();
+						
+					return new RouteResult(true, null, -1, $inputPlace, $inputToken, $transition, $outputPlaces, $outputTokens);
 				}
 			}
 		}

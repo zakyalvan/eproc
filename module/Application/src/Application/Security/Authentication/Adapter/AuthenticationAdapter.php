@@ -20,7 +20,18 @@ class AuthenticationAdapter implements AdapterInterface {
 	 */
 	private $serviceLocator;
 	
+	/**
+	 * Username
+	 * 
+	 * @var string
+	 */
 	private $identityValue;
+	
+	/**
+	 * Password
+	 * 
+	 * @var string
+	 */
 	private $creadentialValue;
 	
 	private $useDevelopmentMode = false;

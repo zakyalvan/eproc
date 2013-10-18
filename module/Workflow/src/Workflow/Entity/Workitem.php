@@ -56,7 +56,7 @@ class Workitem {
 	/**
 	 * Instance referensi dari workitem.
 	 * 
-	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Instance", fetch="LAZY")
+	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Instance", fetch="LAZY", inversedBy="workitems")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="INSTANCE_ID", referencedColumnName="INSTANCE_ID")})
 	 * 
 	 * @var Instance
@@ -72,10 +72,10 @@ class Workitem {
 	}
 	
 	/**
-	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\Transition", fetch="LAZY")
+	 * @Orm\ManyToOne(targetEntity="Workflow\Entity\UserTransition", fetch="LAZY")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="WORKFLOW_ID", referencedColumnName="WORKFLOW_ID"), @Orm\JoinColumn(name="TRANSITION_ID", referencedColumnName="TRANSITION_ID")})
 	 * 
-	 * @var Transition
+	 * @var UserTransition
 	 */
 	protected $transition;
 	public function getTransition() {
@@ -146,13 +146,13 @@ class Workitem {
 	 * 
 	 * @Orm\Column(name="USER_ID", type="string", nullable=true)
 	 * 
-	 * @var User
+	 * @var string
 	 */
 	protected $executor;
 	public function getExecutor() {
 		return $this->executor;
 	}
-	public function setExecutor(User $executor) {
+	public function setUserExecutor($executor) {
 		$this->executor = $executor;
 	}
 }

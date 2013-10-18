@@ -43,12 +43,19 @@ return array(
         		)
 			),
 			'role' => array(
-				'type' => 'Zend\Mvc\Router\Http\Literal',
+				'type' => 'Zend\Mvc\Router\Http\Segment',
 				'options' => array(
-					'route' => '/role',
+					'route' => '/role[/:kantor][/:role]',
+					'constraints' => array(
+						'tender' => '[\\.a-zA-Z0-9_-]+',
+						'kantor' => '[a-zA-Z0-9]+'
+					),
 					'defaults' => array(
-						'controller' => 'Application\Controller\Auth',
-						'action' => 'role'
+						'__NAMESPACE__' => 'Application\Controller',
+						'controller' => 'auth',
+						'action' => 'role',
+						'kantor' => '',
+						'role' => ''
 					)
 				)
 			),

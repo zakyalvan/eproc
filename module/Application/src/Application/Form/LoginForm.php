@@ -43,7 +43,8 @@ class LoginForm extends Form implements InputFilterProviderInterface {
 			'name' => 'submit',
 			'type' => 'Zend\Form\Element\Submit',
 			'attributes' => array(
-				'value' => 'Login'
+				'value' => 'Login',
+				'class' => 'uibutton'
 			)
 		));
 	}

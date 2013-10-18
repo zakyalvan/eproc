@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Entity yang nyimpan user fungsi, dari sipt.
  * 
- * @Orm\Entity(readOnly=true)
+ * @Orm\Entity(readOnly=true, repositoryClass="Workflow\Entity\Repository\RoleRepository")
  * @Orm\Table(name="SC.SC_FUNGSI")
  * 
  * @author zakyalvan
@@ -99,5 +99,9 @@ class Role {
 	protected $listUserRole;
 	public function getListUserRole() {
 		return $this->listUserRole;
+	}
+	
+	public function __toString() {
+		return $this->nama;
 	}
 }

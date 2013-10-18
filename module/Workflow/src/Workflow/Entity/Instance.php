@@ -2,6 +2,7 @@
 namespace Workflow\Entity;
 
 use Doctrine\ORM\Mapping as Orm;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Table yang mewakili instance dari sebuah workflow (Workflow yang dieksekusi)
@@ -15,6 +16,12 @@ class Instance {
 	const STATUS_OPERATED = 'OP';
 	const STATUS_FINISHED = 'FN';
 	const STATUS_CANCELED = 'CN';
+	
+	public function __construct() {
+		$this->datas = new ArrayCollection();
+		$this->workitems = new ArrayCollection();
+		$this->transitionTrails = new ArrayCollection();
+	}
 	
 	/**
 	 * @Orm\Id
@@ -67,9 +74,9 @@ class Instance {
 	}
 	
 	/**
-	 * @Orm\OneToMany(targetEntity="Workflow\Entity\InstanceData", mappedBy="instance", fetch="LAZY")
+	 * @Orm\OneToMany(targetEntity="Workflow\Entity\InstanceData", fetch="LAZY", mappedBy="instance")
 	 * 
-	 * @var array
+	 * @var ArrayCollection
 	 */
 	protected $datas;
 	public function getDatas() {
@@ -80,9 +87,22 @@ class Instance {
 	}
 	
 	/**
+	 * @Orm\OneToMany(targetEntity="Workflow\Entity\Workitem", fetch="LAZY", mappedBy="instance")
+	 * 
+	 * @var ArrayCollection
+	 */
+	protected $workitems;
+	public function getWorkitems() {
+		return $this->workitems;
+	}
+	public function setWorkitems($workitems) {
+		$this->workitems = $workitems;
+	}
+	
+	/**
 	 * @Orm\OneToMany(targetEntity="Workflow\Entity\TransitionTrail", mappedBy="instance", fetch="LAZY")
 	 * 
-	 * @var TransitionTrail
+	 * @var ArrayCollection
 	 */
 	protected $transitionTrails;
 	public function getTransitionTrails() {

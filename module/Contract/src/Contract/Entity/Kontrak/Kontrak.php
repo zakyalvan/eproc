@@ -7,6 +7,7 @@ use Procurement\Entity\Tender\Tender;
 use Application\Entity\MataUang;
 use Application\Entity\Kantor;
 use Doctrine\Common\Collections\ArrayCollection;
+use Contract\Entity\Invoice\Dokumen;
 
 /**
  * Entity header dari sebuah kontrak.
@@ -46,6 +47,13 @@ class Kontrak {
 	
 	/**
 	 * @Orm\Id
+	 * @Orm\Column(name="KODE_KANTOR", type="string")
+	 * 
+	 * @var unknown
+	 */
+	private $kodeKantor;
+	
+	/**
 	 * @Orm\ManyToOne(targetEntity="Application\Entity\Kantor", fetch="LAZY")
 	 * @Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR")
 	 * 
@@ -132,7 +140,7 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_TTD", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_TTD", type="datetime", nullable=true)
 	 */
 	private $tanggalTandaTangan;
 	public function getTanggalTandaTangan() {
@@ -143,7 +151,7 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_MULAI", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_MULAI", type="datetime", nullable=true)
 	 */
 	private $tanggalMulai;
 	public function getTanggalMulai() {
@@ -154,7 +162,7 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_AKHIR", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_AKHIR", type="datetime", nullable=true)
 	 */
 	private $tanggalAkhir;
 	public function getTanggalAkhir() {
@@ -165,7 +173,7 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_BUAT", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_BUAT", type="datetime", nullable=true)
 	 */
 	private $tanggalBuat;
 	public function getTanggalBuat() {
@@ -359,7 +367,7 @@ class Kontrak {
 	}
 	
 	/**
-	 * @Orm\Column(name="UM_NILAI", type="bigint", nullable=true)
+	 * @Orm\Column(name="UM_NILAI", type="float", nullable=true)
 	 */
 	private $nilaiUangMuka;
 	public function getNilaiUangMuka() {
@@ -442,10 +450,19 @@ class Kontrak {
 	 */
 	private $listItem;
 	public function getListItem() {
+		if($this->listItem == null) {
+			return new ArrayCollection();
+		}
 		return $this->listItem;
 	}
 	public function setListItem(ArrayCollection $listItem) {
 		$this->listItem = $listItem;
+	}
+	public function addListItem($item) {
+		$this->getListItem()->add($item);
+	}
+	public function removeListItem($item) {
+		$this->getListItem()->remove($item);
 	}
 	
 	/**
@@ -455,10 +472,19 @@ class Kontrak {
 	 */
 	private $listMilestone;
 	public function getListMilestone() {
+		if($this->listMilestone == null) {
+			return new ArrayCollection();
+		}
 		return $this->listMilestone;
 	}
 	public function setListMilestone(ArrayCollection $listMilestone) {
 		$this->listMilestone = $listMilestone;
+	}
+	public function addListMilestone($milestone) {
+		$this->getListMilestone()->add($milestone);
+	}
+	public function removeListMilestone($milestone) {
+		$this->getListMilestone()->remove($milestone);
 	}
 	
 	/**
@@ -468,10 +494,19 @@ class Kontrak {
 	 */
 	private $listDokumen;
 	public function getListDokumen() {
+		if($this->listDokumen == null) {
+			return new ArrayCollection();
+		}
 		return $this->listDokumen;
 	}
 	public function setListDokumen(ArrayCollection $listDokumen) {
 		$this->listDokumen = $listDokumen;
+	}
+	public function addListDokumen($dokumen) {
+		$this->getListDokumen()->add($dokumen);
+	}
+	public function removeListDokumen($dokumen) {
+		$this->getListDokumen()->remove($dokumen);
 	}
 	
 	/**
@@ -484,10 +519,19 @@ class Kontrak {
 	 */
 	private $listKomentar;
 	public function getListKomentar() {
+		if($this->listKomentar == null) {
+			return new ArrayCollection();
+		}
 		return $this->listKomentar;
 	}
 	public function setListKomentar(ArrayCollection $listKomentar) {
 		$this->listKomentar = $listKomentar;
+	}
+	public function addListKomentar($komentar) {
+		$this->getListKomentar()->add($komentar);
+	}
+	public function removeListKomentar($komentar) {
+		$this->getListKomentar()->remove($komentar);
 	}
 	
 	/**

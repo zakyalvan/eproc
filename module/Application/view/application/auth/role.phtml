@@ -1,13 +1,32 @@
+<?php 
+use Application\Security\SecurityContext;
+use Application\Entity\Role;
+?>
 <div id="right">
 	<div class="section">
 		<!-- Start Contract Header -->
 		<div class="box">
 			<div class="title">
-				DAFTAR ROLE
+				PILIH ROLE
 				<span class="hide"></span>
 			</div>
 			<div class="content">
-				
+				<div class="uibutton-toolbar">
+				<?php
+					/* @var $securityContext SecurityContext */ 
+					$securityContext = $this->identity();
+						
+					/* @var $role Role */
+					foreach ($securityContext->getAvailableRoles() as $role) : 
+				?>
+					<a href="<?php echo $this->url('role', array('kantor' => $securityContext->getLoggedinUser()->getKantor()->getKode(), 'role' => $role->getKode())) ?>" class="uibutton" style="padding: 30px 30px; margin: 20px; ">
+						<span style="color: #FF6666"><?php echo $role->getNama()?></span><br />
+						<?php echo $securityContext->getLoggedinUser()->getKantor()->getNama() ?>
+					</a>
+				<?php 
+					endforeach;
+				?>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -50,8 +50,13 @@ class PenunjukanPengelolaKontrakForm extends Form implements InputFilterProvider
 				'label' => 'Komentar'
 			),
 			'attributes' => array(
-				
+				'class' => 'grow'
 			)
+		));
+		
+		$this->add(array(
+			'name' => 'security',
+			'type' => 'Zend\Form\Element\Csrf'
 		));
 		
 		$this->add(array(

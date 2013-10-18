@@ -54,7 +54,7 @@ class SecurityContext {
 	public function getActiveRole() {
 		return $this->activeRole;
 	}
-	public function setActiveRole($activeRole) {
+	public function setActiveRole(Role $activeRole) {
 		$this->activeRole = $activeRole;
 	}
 	public function hasActiveRole() {

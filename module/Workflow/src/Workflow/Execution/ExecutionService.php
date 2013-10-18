@@ -3,6 +3,8 @@ namespace Workflow\Execution;
 
 use Zend\ServiceManager\ServiceLocatorAwareInterface as ServiceLocatorAware;
 use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
+use Zend\EventManager\EventManagerAwareInterface as EventManagerAware;
+use Zend\EventManager\EventManagerInterface as EventManager;
 use Zend\Json\Json;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
@@ -22,17 +24,23 @@ use Workflow\Entity\Repository\InstanceRepository;
 use Workflow\Entity\Repository\PlaceRepository;
 use Workflow\Entity\Repository\TokenRepository;
 use Workflow\Entity\Repository\WorkflowRepository;
+use Workflow\Execution\Event\WorkflowStartEvent;
 
 /**
  * Implementasi default dari ExecutionServiceInterface
  * 
  * @author zakyalvan
  */
-class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware {
+class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware, EventManagerAware {
 	/**
 	 * @var ServiceLocator
 	 */
 	private $serviceLocator;
+	
+	/**
+	 * @var EventManager
+	 */
+	private $eventManager;
 	
 	/**
 	 * (non-PHPdoc)
@@ -58,10 +66,6 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 	 * @see \Workflow\Manager\InstanceManagerInterface::startWorkflow()
 	 */
 	public function startWorkflow(Workflow $workflow, array $datas) {
-		if(!$this->canStartWorkflow($workflow, $datas)) {
-			throw new \InvalidArgumentException('Tidak dapat memulai workflow, workflow dengan instance data yang pernah distart sebelumnya', 100, null);
-		}
-		
 		/* @var $entityManager EntityManager */
 		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
 		
@@ -72,6 +76,14 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 		if($workflowState == UnitOfWork::STATE_DETACHED) {
 			$workflow = $entityManager->merge($workflow);
 		}
+		
+		$startWorkflowEvent = new WorkflowStartEvent();
+		$startWorkflowEvent->setName(WorkflowStartEvent::WORKFLOW_PRE_START);
+		$startWorkflowEvent->setTarget($this);
+		$startWorkflowEvent->setWorkflow($workflow);
+		$startWorkflowEvent->setStartDatas($datas);
+		
+		$this->eventManager->trigger($startWorkflowEvent);
 		
 		/* @var $keyGenerator KeyGeneratatorInterface */ 
 		$keyGenerator = $this->serviceLocator->get('Application\Common\KeyGeneratator');
@@ -128,6 +140,14 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 	
 	/**
 	 * (non-PHPdoc)
+	 * @see \Workflow\Execution\ExecutionServiceInterface::hasActiveInstances()
+	 */
+	public function hasActiveInstances(Workflow $workflow, $datas = array()) {
+		return count($this->getActiveInstances($workflow)) > 0;
+	}
+	
+	/**
+	 * (non-PHPdoc)
 	 * @see \Workflow\Execution\ExecutionServiceInterface::getActiveInstances()
 	 */
 	public function getActiveInstances(Workflow $workflow, $datas = array()) {
@@ -144,7 +164,7 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 		
 		/* @var $instanceRepository InstanceRepository */
 		$instanceRepository = $entityManager->getRepository('Workflow\Entity\Instance');
-		$instanceRepository->getActiveInstances($workflow, $datas);
+		return $instanceRepository->getActiveInstances($workflow, $datas);
 	}
 	
 	/**
@@ -291,11 +311,11 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 					$nextTokens = $result->getNextTokens();
 					$tokenToRoute = $nextTokens[0];
 				}
-				else if($nextTokensCount < 1) {
-					throw new \RuntimeException("Jumlah proses next token setelah proses routing < 1, ini aneh.", 0, null);
-				}
 				else if($nextTokensCount > 1) {
 					throw new \RuntimeException("Belum bisa handle percabangan pada transisi (dua free token pada satu instance setelah proses routing)");
+				}
+				else if($nextTokensCount < 1) {
+					throw new \RuntimeException("Jumlah proses next token setelah proses routing < 1, ini aneh.", 0, null);
 				}
 			}
 			else {
@@ -342,5 +362,23 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 	 */
 	public function getServiceLocator() {
 		return $this->serviceLocator;
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see \Zend\EventManager\EventManagerAwareInterface::setEventManager()
+	 */
+	public function setEventManager(EventManager $eventManager) {
+		$eventManager->setIdentifiers(array(
+			get_called_class()
+		));
+		$this->eventManager = $eventManager;
+	}
+	/**
+	 * (non-PHPdoc)
+	 * @see \Zend\EventManager\EventsCapableInterface::getEventManager()
+	 */
+	public function getEventManager() {
+		return $this->eventManager;
 	}
 }

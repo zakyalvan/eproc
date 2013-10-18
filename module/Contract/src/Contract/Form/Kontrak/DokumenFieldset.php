@@ -5,7 +5,7 @@ use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface as InputFilterProvider;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineObjectHydrator;
 use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
-use Contract\Entity\Invoice\Dokumen;
+use Contract\Entity\Kontrak\Dokumen;
 
 /**
  * Fieldset dokumen kontrak.
@@ -35,11 +35,11 @@ class DokumenFieldset extends Fieldset implements InputFilterProvider {
 				'label' => 'Kategori',
 				'empty_option' => '-- Pilih Kategori Dokumen --',
 				'value_options' => array(
-					'1' => 'Kontrak Utama',
-					'2' => 'Lampiran A - Persyaratan Khusus',
-					'3' => 'Lampiran B - Lingkup Pekerjaan',
-					'4' => 'Lampiran C - Harga dan Pembayaran',
-					'5' => 'Lampiran D - Persyaratan Umum',
+					Dokumen::DOKUMEN_KONTRAK_UTAMA => 'Kontrak Utama',
+					Dokumen::DOKUMEN_LAMPIRAN_A_PERSYARATAN_KHUSUS => 'Lampiran A - Persyaratan Khusus',
+					Dokumen::DOKUMEN_LAMPIRAN_B_LINGKUP_PEKERJAAN => 'Lampiran B - Lingkup Pekerjaan',
+					Dokumen::DOKUMEN_LAMPIRAN_C_HARGA_PEMBAYARAN => 'Lampiran C - Harga dan Pembayaran',
+					Dokumen::DOKUMEN_LAMPIRAN_C_PERSYARATAN_UMUM => 'Lampiran D - Persyaratan Umum',
 				)
 			),
 			'attributes' => array(

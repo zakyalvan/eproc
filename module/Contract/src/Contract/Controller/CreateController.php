@@ -2,11 +2,10 @@
 namespace Contract\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
+use Contract\Service\ContractService;
 use Contract\Form\DelegateCreationForm;
 use Contract\Form\Kontrak\PembuatanForm;
 use Contract\Entity\Kontrak\Kontrak;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Query\Expr\Join;
 use Contract\Entity\Kontrak\Komentar;
 
 /**
@@ -57,23 +56,7 @@ class CreateController extends AbstractActionController {
 		$form = new PembuatanForm($this->getServiceLocator());
 		$form->setValidationGroup(array('kontrak' => array()));
 		
-		/**
-		 * TODO Ambil data pengadaan yang terkait untuk membuat kontrak.
-		 */
-		$kontrak = new Kontrak();
-		
-		$komentar1 = new Komentar();
-		$komentar1->setIsi("Ini Komentar Pertama");
-		$kontrak->getListKomentar()->add($komentar1);
-		
-		$komentar2 = new Komentar();
-		$komentar2->setIsi("Ini Komentar Kedua");
-		$kontrak->getListKomentar()->add($komentar2);
-		
-		$komentar3 = new Komentar();
-		$komentar3->setIsi("Ini Komentar Ketiga");
-		$kontrak->getListKomentar()->add($komentar3);
-		
+		$kontrak = $this->getContractService()->getContractForTender(array('kodeTender' => $kodeTender, 'kodeKantor' => $kodeKantor));
 		$form->bind($kontrak);
 		
 		if($this->request->isPost()) {
@@ -154,5 +137,12 @@ class CreateController extends AbstractActionController {
 		return array(
 			"pageTitle" => "Finalisasi Kontrak"
 		);
+	}
+	
+	/**
+	 * @return ContractService
+	 */
+	public function getContractService() {
+		return $this->getServiceLocator()->get('Contract\Service\ContractService');
 	}
 }

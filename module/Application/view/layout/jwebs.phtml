@@ -170,8 +170,15 @@
     			<td style="width: 43%;margin-top: 9px;">
     				<table>
     					<tr style="vertical-align: top;">
-    						<td width="80px;">Logged in as:</td>
-    						<td><?php //echo '<span style="color: #FF6666"> '.$this->session->userdata('NAMA_FUNGSI').'</span><br />'.$this->session->userdata('NAMA_REFERENCE_KANTOR'); ?></td>
+    					<?php if($this->identity()) :?>
+    						<?php if($this->identity()->hasActiveRole()) : ?>
+    						<td><span style="color: #FF6666"><?php echo $this->identity()->getActiveRole()->getNama()?></span> <?php echo $this->identity()->getLoggedinUser()->getKantor()->getNama()?></td>
+    						<?php else : ?>
+    						<td><span style="color: #FF6666"></span></td>
+    						<?php endif; ?>
+    					<?php else : ?>
+    						<td><span style="color: #FF6666">ANDA BELUM LOGIN</span></td>
+    					<?php endif; ?>
     					</tr>
     				</table>
     			</td>
@@ -181,7 +188,6 @@
     			<td style="background: green">
     				<?php if($this->identity()) : ?>
 						<ul class="topMenu">
-							<li><a href='<?php echo $this->basePath() ?>'>Dashboard</a></li>
 							<li><?php echo $this->identity()->getLoggedinUser()->getNama()?></li>
 							<li id="loginBox" class="last"><span class="loginBoxToggle">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;</li>
 						</ul>

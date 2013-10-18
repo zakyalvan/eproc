@@ -11,6 +11,9 @@ use Doctrine\ORM\Mapping as Orm;
  * @author zakyalvan
  */
 class UserTransition extends Transition {
+	const ASSIGNMENT_CONTROL_PUSH = 'PUSH';
+	const ASSIGNMENT_CONTROL_PULL = 'PULL';
+	
 	/**
 	 * Konteks dari user eksekutor yang dapat mengeksekusi transisi ini.
 	 * 
@@ -29,7 +32,7 @@ class UserTransition extends Transition {
 	/**
 	 * Ini role yang harus mengeksekusi transisi ini.
 	 * 
-	 * @Orm\Column(name="ROLE_ID", type="string", nullable=true)
+	 * @Orm\Column(name="USER_ROLE", type="string", nullable=true)
 	 *
 	 * @var string
 	 */
@@ -59,19 +62,32 @@ class UserTransition extends Transition {
 	}
 	
 	/**
-	 * Nama dari kelas split evaluator jika transisi ini merupakan tempat eksplisit or-split.
-	 * Dengan kata lain, jika atribut ini tidak diberikan dan jika ada split (arc ke output place lebih dari satu) 
-	 * maka split tersebut adalah and-split.
+	 * Assignment control, apakah item pekerjaan akan di push ke user atau di pull oleh user.
 	 * 
-	 * @Orm\Column(name="SPLIT_EVALUATOR", type="string", length=255, nullable=true)
+	 * @Orm\Column(name="ASSIGNMENT_CONTROL", type="string", length=4, nullable=true)
 	 * 
 	 * @var string
 	 */
-	protected $splitEvaluator;
-	public function getSplitEvaluator() {
-		return $this->splitEvaluator;
+	protected $assignmentControl;
+	public function getAssignmentControl() {
+		return $this->assignmentControl;
 	}
-	public function setSplitEvaluator($splitEvaluator) {
-		$this->splitEvaluator = $splitEvaluator;
+	public function setAssignmentControl($assignmentControl) {
+		$this->assignmentControl = $assignmentControl;
+	}
+	
+	/**
+	 * Penjelasan lanjutan dari field assignmentControl.
+	 * 
+	 * @Orm\Column(name="ASSIGNMENT_CRITERIA", type="string", length=100, nullable=true)
+	 * 
+	 * @var string
+	 */
+	protected $assignmentCriteria;
+	public function getAssignmentCriteria() {
+		return $this->assignmentCriteria;
+	}
+	public function setAssignmentCriteria($assignmentCriteria) {
+		$this->assignmentCriteria = $assignmentCriteria;
 	}
 }

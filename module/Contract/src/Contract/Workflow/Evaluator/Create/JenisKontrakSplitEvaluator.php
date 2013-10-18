@@ -1,5 +1,5 @@
 <?php
-namespace Contract\Workflow\Create;
+namespace Contract\Workflow\Evaluator\Create;
 
 use Workflow\Execution\Evaluator\AbstractSplitEvaluator;
 use Contract\Entity\Kontrak\Kontrak;

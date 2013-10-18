@@ -92,6 +92,19 @@ class Place {
 	}
 	
 	/**
+	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
+	 *
+	 * @var \DateTime
+	 */
+	protected $createdDate;
+	public function getCreatedDate() {
+		return $this->createdDate;
+	}
+	public function setCreatedDate(\DateTime $createdDate) {
+		$this->createdDate = $createdDate;
+	}
+	
+	/**
 	 * @Orm\Column(name="PETUGAS_REKAM", type="string", nullable=true)
 	 * 
 	 * @var string

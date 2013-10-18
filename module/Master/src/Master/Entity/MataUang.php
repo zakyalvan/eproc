@@ -98,4 +98,8 @@ class MataUang {
 	public function setPetugasUbah($petugasUbah) {
 		$this->petugasUbah = $petugasUbah;
 	}
+	
+	public function __toString() {
+		return $this->kode;
+	}
 }

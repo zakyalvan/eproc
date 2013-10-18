@@ -104,19 +104,19 @@ class JaminanPelaksanaanFieldset extends Fieldset implements InputFilterProvider
 	public function getInputFilterSpecification() {
 		return array(
 			'bankJaminan' => array(
-				'required' => true
+				'required' => false
 			),
 			'nomorJaminan' => array(
-				'required' => true
+				'required' => false
 			),
 			'tanggalMulaiJaminan' => array(
-				'required' => true
+				'required' => false
 			),
 			'tanggalAkhirJaminan' => array(
-				'required' => true
+				'required' => false
 			),
 			'nilaiJaminan' => array(
-				'required' => true
+				'required' => false
 			),
 			'lampiranJaminan' => array(
 				'required' => false

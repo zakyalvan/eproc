@@ -7,6 +7,8 @@ use Workflow\Entity\Transition;
 use Workflow\Entity\Workitem;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\UnitOfWork;
+use Workflow\Entity\Workflow;
+use Workflow\Entity\UserTransition;
 
 /**
  * Custom repository untuk entity {@link Workitem}
@@ -138,39 +140,225 @@ class WorkitemRepository extends EntityRepository {
 			->getSingleScalarResult();
 	}
 	
-	
+	/**
+	 * Apakah workitem yang diberikan dapat dieksekusi oleh user yang diberikan.
+	 * 
+	 * @param Workflow $workflow
+	 * @param Workitem $workitem
+	 * @param unknown $userContext
+	 * @param unknown $userRole
+	 * @param unknown $userCode
+	 * @return boolean
+	 */
+	public function isExecutableWorkitemForUser(Workflow $workflow, Workitem $workitem, $userContext, $userRole, $userCode) {
+		$workflow = $this->ensureManagedEntity($workflow);
+		$workitem = $this->ensureManagedEntity($workitem);
+		
+		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
+		$workitemCount = $queryBuilder->select($queryBuilder->expr()->count('workitem'))
+			->from('Workflow\Entity\Workitem', 'workitem')
+			->innerJoin('workitem.transition', 'transition')
+			->innerJoin('workitem.instance', 'inst', Join::WITH, $queryBuilder->expr()->andX(
+				$queryBuilder->expr()->eq('inst.id', ':instanceId'),
+				$queryBuilder->expr()->eq('inst.status', ':instanceStatus')
+			))
+			->innerJoin('inst.workflow', 'workflow', Join::WITH, $queryBuilder->expr()->eq('workflow.id', ':workflowId'))
+			->innerJoin('inst.datas', 'instanceDatas')
+			->where($queryBuilder->expr()->eq('workitem.id', ':workitemId'))
+			->where($queryBuilder->expr()->eq('workitem.status', ':workitemStatus'))
+			->where($queryBuilder->expr()->orX(
+				$queryBuilder->expr()->andX(
+					$queryBuilder->expr()->eq('transition.assignmentControl', ':pullAssignmentControl'),
+					$queryBuilder->expr()->eq('transition.userRole', ':pulledUserRole'),
+					$queryBuilder->expr()->eq('transition.userContext', ':pulledUserContext'),
+					$queryBuilder->expr()->orX(
+						$queryBuilder->expr()->isNull('workitem.executor'),
+						$queryBuilder->expr()->eq('workitem.executor', ':pulledUserExecutor')
+					)
+				),
+				$queryBuilder->expr()->andX(
+					$queryBuilder->expr()->eq('transition.assignmentControl', ':pushAssigmentControl'),
+					$queryBuilder->expr()->eq('transition.userRole', ':pushedUserRole'),
+					$queryBuilder->expr()->eq('transition.userContext', ':pushedUserContext'),
+					$queryBuilder->expr()->eq('workitem.executor', ':pushedUserExecutor')
+				)
+			))
+			->setParameter('instanceId', $workitem->getInstance()->getId())
+			->setParameter('instanceStatus', Instance::STATUS_OPERATED)
+			->setParameter('workflowId', $workflow->getId())
+			->setParameter('workitemId', $workitem->getId())
+			->setParameter('workitemStatus', Workitem::STATUS_ENABLED)
+			->setParameter('pullAssignmentControl', UserTransition::ASSIGNMENT_CONTROL_PULL)
+			->setParameter('pulledUserContext', $userContext)
+			->setParameter('pulledUserRole', $userRole)
+			->setParameter('pulledUserExecutor', $userCode)
+			->setParameter('pushAssigmentControl', UserTransition::ASSIGNMENT_CONTROL_PUSH)
+			->setParameter('pushedUserContext', $userContext)
+			->setParameter('pushedUserRole', $userRole)
+			->setParameter('pushedUserExecutor', $userCode)
+			->getQuery()
+			->getSingleScalarResult();
+		
+		return $workitemCount > 0;
+	}
 	
 	/**
-	 * Apakah user yang diberikan adalah executor yang valid untuk workitem.
+	 * Retrieve executable workitem untuk user yang spesifik.
 	 * 
-	 * @param Workitem $workitem
-	 * @param string $userId
+	 * @param Workflow $workflow
 	 * @param string $userContext
+	 * @param string $userRole
+	 * @param mixed $userCode
+	 * @return array
 	 */
-	public function isValidWorkitemExecutor(Workitem $workitem, $userContext, $userId, $userRole = null) {
-		$queryBuilder = $this->_em->createQueryBuilder();
-		$queryBuilder->select($queryBuilder->expr()->count('workitem'))
-			->from('Workflow\Entity\Workitem', 'workitem');
-			
-		if($userRole != null) {	
-			$queryBuilder->innerJoin('workitem.transition', 'transition', Join::WITH, $queryBuilder->expr()->andX(
-				$queryBuilder->expr()->eq('transition.userContext', ':userContext'),
-				$queryBuilder->expr()->eq('transition.userRole', ':userRole')
+	public function getWorkitemForUser(Workflow $workflow, $userContext, $userRole, $userCode) {
+		$workflow = $this->ensureManagedEntity($workflow);
+		
+		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
+		$workitems = $queryBuilder->select(array('workitem', 'transition', 'workflow', 'inst', 'workflow', 'instanceDatas'))
+			->from('Workflow\Entity\Workitem', 'workitem')
+			->innerJoin('workitem.transition', 'transition')
+			->innerJoin('workitem.instance', 'inst', Join::WITH, $queryBuilder->expr()->eq('inst.status', ':instanceStatus'))
+			->innerJoin('inst.workflow', 'workflow', Join::WITH, $queryBuilder->expr()->eq('workflow.id', ':workflowId'))
+			->innerJoin('inst.datas', 'instanceDatas')
+			->where($queryBuilder->expr()->eq('workitem.status', ':workitemStatus'))
+			->where($queryBuilder->expr()->orX(
+				$queryBuilder->expr()->andX(
+					$queryBuilder->expr()->eq('transition.assignmentControl', ':pullAssignmentControl'),
+					$queryBuilder->expr()->eq('transition.userRole', ':pulledUserRole'),
+					$queryBuilder->expr()->eq('transition.userContext', ':pulledUserContext'),
+					$queryBuilder->expr()->orX(
+						$queryBuilder->expr()->isNull('workitem.executor'),
+						$queryBuilder->expr()->eq('workitem.executor', ':pulledUserExecutor')
+					)
+				),
+				$queryBuilder->expr()->andX(
+					$queryBuilder->expr()->eq('transition.assignmentControl', ':pushAssigmentControl'),
+					$queryBuilder->expr()->eq('transition.userRole', ':pushedUserRole'),
+					$queryBuilder->expr()->eq('transition.userContext', ':pushedUserContext'),
+					$queryBuilder->expr()->eq('workitem.executor', ':pushedUserExecutor')
+				)
 			))
-				->setParameter('userContext', $userContext)
-				->setParameter('userRole', $userRole);
-		}
-		else {
-			$queryBuilder->innerJoin('workitem.transition', 'transition', Join::WITH, $queryBuilder->expr()->eq('transition.userContext', ':userContext'))
-				->setParameter('userContext', $userContext);
-		}
+			->setParameter('instanceStatus', Instance::STATUS_OPERATED)
+			->setParameter('workflowId', $workflow->getId())
+			->setParameter('workitemStatus', Workitem::STATUS_ENABLED)
+			->setParameter('pullAssignmentControl', UserTransition::ASSIGNMENT_CONTROL_PULL)
+			->setParameter('pulledUserContext', $userContext)
+			->setParameter('pulledUserRole', $userRole)
+			->setParameter('pulledUserExecutor', $userCode)
+			->setParameter('pushAssigmentControl', UserTransition::ASSIGNMENT_CONTROL_PUSH)
+			->setParameter('pushedUserContext', $userContext)
+			->setParameter('pushedUserRole', $userRole)
+			->setParameter('pushedUserExecutor', $userCode)
+			->getQuery()
+			->getResult();
+		return $workitems;
+	}
+	
+	/**
+	 * Hitung jumlah workitem untuk user yang spesifik dalam proses workflow yang spesifik.
+	 * 
+	 * @param Workflow $workflow
+	 * @param unknown $userContext
+	 * @param unknown $userRole
+	 * @param unknown $userCode
+	 * @return integer
+	 */
+	public function countWorkitemForUser(Workflow $workflow, $userContext, $userRole, $userCode) {
+		$workflow = $this->ensureManagedEntity($workflow);
 		
-		$queryBuilder->where($queryBuilder->expr()->eq('workitem.executor', ':executorId'))
-			->setParameter('executorId', $userId);
+		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
+		$workitemCount = $queryBuilder->select($queryBuilder->expr()->count('workitem'))
+			->from('Workflow\Entity\Workitem', 'workitem')
+			->innerJoin('workitem.transition', 'transition')
+			->innerJoin('workitem.instance', 'inst', Join::WITH, $queryBuilder->expr()->eq('inst.status', ':instanceStatus'))
+			->innerJoin('inst.workflow', 'workflow', Join::WITH, $queryBuilder->expr()->eq('workflow.id', ':workflowId'))
+			->innerJoin('inst.datas', 'instanceDatas')
+			->where($queryBuilder->expr()->eq('workitem.status', ':workitemStatus'))
+			->where($queryBuilder->expr()->orX(
+				$queryBuilder->expr()->andX(
+					$queryBuilder->expr()->eq('transition.assignmentControl', ':pullAssignmentControl'),
+					$queryBuilder->expr()->eq('transition.userRole', ':pulledUserRole'),
+					$queryBuilder->expr()->eq('transition.userContext', ':pulledUserContext'),
+					$queryBuilder->expr()->orX(
+						$queryBuilder->expr()->isNull('workitem.executor'),
+						$queryBuilder->expr()->eq('workitem.executor', ':pulledUserExecutor')
+					)
+				),
+				$queryBuilder->expr()->andX(
+					$queryBuilder->expr()->eq('transition.assignmentControl', ':pushAssigmentControl'),
+					$queryBuilder->expr()->eq('transition.userRole', ':pushedUserRole'),
+					$queryBuilder->expr()->eq('transition.userContext', ':pushedUserContext'),
+					$queryBuilder->expr()->eq('workitem.executor', ':pushedUserExecutor')
+				)
+			))
+			->setParameter('instanceStatus', Instance::STATUS_OPERATED)
+			->setParameter('workflowId', $workflow->getId())
+			->setParameter('workitemStatus', Workitem::STATUS_ENABLED)
+			->setParameter('pullAssignmentControl', UserTransition::ASSIGNMENT_CONTROL_PULL)
+			->setParameter('pulledUserContext', $userContext)
+			->setParameter('pulledUserRole', $userRole)
+			->setParameter('pulledUserExecutor', $userCode)
+			->setParameter('pushAssigmentControl', UserTransition::ASSIGNMENT_CONTROL_PUSH)
+			->setParameter('pushedUserContext', $userContext)
+			->setParameter('pushedUserRole', $userRole)
+			->setParameter('pushedUserExecutor', $userCode)
+			->getQuery()
+			->getSingleScalarResult();
 		
-		$validExecutor = $queryBuilder->getQuery()->getSingleScalarResult();
-		
-		return $validExecutor > 0 ? true : false;
+		return $workitemCount;
+	}
+	
+	/**
+	 * Count all workitem for user (Untuk seluruh instance dari proses yang terdaftar).
+	 * 
+	 * @param string $userContext
+	 * @param string $userRole
+	 * @param string $userCode
+	 * @return integer
+	 */
+	public function countAllWorkitemForUser($userContext, $userRole, $userCode) {
+		$workflow = $this->ensureManagedEntity($workflow);
+	
+		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
+		$workitemCount = $queryBuilder->select($queryBuilder->expr()->count('workitem'))
+			->from('Workflow\Entity\Workitem', 'workitem')
+			->innerJoin('workitem.transition', 'transition')
+			->innerJoin('workitem.instance', 'inst', Join::WITH, $queryBuilder->expr()->eq('inst.status', ':instanceStatus'))
+			->innerJoin('inst.workflow', 'workflow')
+			->innerJoin('inst.datas', 'instanceDatas')
+			->where($queryBuilder->expr()->eq('workitem.status', ':workitemStatus'))
+			->where($queryBuilder->expr()->orX(
+				$queryBuilder->expr()->andX(
+					$queryBuilder->expr()->eq('transition.assignmentControl', ':pullAssignmentControl'),
+					$queryBuilder->expr()->eq('transition.userRole', ':pulledUserRole'),
+					$queryBuilder->expr()->eq('transition.userContext', ':pulledUserContext'),
+					$queryBuilder->expr()->orX(
+						$queryBuilder->expr()->isNull('workitem.executor'),
+						$queryBuilder->expr()->eq('workitem.executor', ':pulledUserExecutor')
+					)
+				),
+				$queryBuilder->expr()->andX(
+					$queryBuilder->expr()->eq('transition.assignmentControl', ':pushAssigmentControl'),
+					$queryBuilder->expr()->eq('transition.userRole', ':pushedUserRole'),
+					$queryBuilder->expr()->eq('transition.userContext', ':pushedUserContext'),
+					$queryBuilder->expr()->eq('workitem.executor', ':pushedUserExecutor')
+				)
+			))
+			->setParameter('instanceStatus', Instance::STATUS_OPERATED)
+			->setParameter('workitemStatus', Workitem::STATUS_ENABLED)
+			->setParameter('pullAssignmentControl', UserTransition::ASSIGNMENT_CONTROL_PULL)
+			->setParameter('pulledUserContext', $userContext)
+			->setParameter('pulledUserRole', $userRole)
+			->setParameter('pulledUserExecutor', $userCode)
+			->setParameter('pushAssigmentControl', UserTransition::ASSIGNMENT_CONTROL_PUSH)
+			->setParameter('pushedUserContext', $userContext)
+			->setParameter('pushedUserRole', $userRole)
+			->setParameter('pushedUserExecutor', $userCode)
+			->getQuery()
+			->getSingleScalarResult();
+	
+		return $workitemCount;
 	}
 	
 	protected function ensureManagedEntity($entity) {

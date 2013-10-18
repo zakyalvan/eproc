@@ -97,13 +97,12 @@ class KontrakFieldset extends Fieldset implements InputFilterProvider {
 		));
 		
 		$this->add(array(
-			'name' => 'deskripsiPekerjaan',
+			'name' => 'lingkupPekerjaan',
 			'type' => 'Zend\Form\Element\Textarea',
 			'options' => array(
 				'label' => 'Dekskripsi Pekerjaan'
 			),
 			'attributes' => array(
-				'id' => 'dekripsiPekerjaan',
 				'class' => 'grow'
 			)
 		));
@@ -121,13 +120,13 @@ class KontrakFieldset extends Fieldset implements InputFilterProvider {
 		$dokumenFieldsetCollection->setTargetElement($dokumenFieldset);
 		$this->add($dokumenFieldsetCollection);
 		
-		$milestoneFieldsetCollection = new FormElementCollection(MilestoneFieldset::DEFAULT_COLLECTION_NAME);
-		$milestoneFieldsetCollection->setAllowAdd(true);
-		$milestoneFieldsetCollection->setAllowRemove(true);
-		$milestoneFieldsetCollection->setShouldCreateTemplate(true);
-		$milestoneFieldset = new MilestoneFieldset($serviceLocator);
-		$milestoneFieldsetCollection->setTargetElement($milestoneFieldset);
-		$this->add($milestoneFieldsetCollection);
+// 		$milestoneFieldsetCollection = new FormElementCollection(MilestoneFieldset::DEFAULT_COLLECTION_NAME);
+// 		$milestoneFieldsetCollection->setAllowAdd(true);
+// 		$milestoneFieldsetCollection->setAllowRemove(true);
+// 		$milestoneFieldsetCollection->setShouldCreateTemplate(true);
+// 		$milestoneFieldset = new MilestoneFieldset($serviceLocator);
+// 		$milestoneFieldsetCollection->setTargetElement($milestoneFieldset);
+// 		$this->add($milestoneFieldsetCollection);
 		
 		$komentarFieldsetCollection = new FormElementCollection(KomentarFieldset::DEFAULT_COLLECTION_NAME);
 		$komentarFieldsetCollection->setAllowAdd(true);
@@ -144,21 +143,21 @@ class KontrakFieldset extends Fieldset implements InputFilterProvider {
 	public function getInputFilterSpecification() {
 		return array(
 			'nomorKontrak' => array(
-				'required' => true
+				'required' => false
 			),
 			'jenisKontrak' => array(
-				'required' => true
+				'required' => false
 			),
 			'tanggalMulaiKontrak' => array(
-				'required' => true
+				'required' => false
 			),
 			'tanggalAkhirKontrak' => array(
-				'required' => true
+				'required' => false
 			),
 			'judulPekerjaan' => array(
-				'required' => true
+				'required' => false
 			),
-			'deskripsiPekerjaan' => array(
+			'lingkupPekerjaan' => array(
 				'required' => false
 			)
 		);

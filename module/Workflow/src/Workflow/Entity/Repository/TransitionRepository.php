@@ -47,7 +47,7 @@ class TransitionRepository extends EntityRepository {
 	}
 	
 	/**
-	 * 
+	 * Retrieve trigger type dari sebuah transition.
 	 * 
 	 * @param Transition $transition
 	 * @return string

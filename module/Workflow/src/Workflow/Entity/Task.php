@@ -56,13 +56,67 @@ class Task {
 	}
 	
 	/**
-	 * @Orm\Column(name="TASK_URL", type="string", nullable=false)
+	 * Untuk penggunaan zf2 mvc, address ini adalah nama route ke halaman dimana task harus dieksekusi.
+	 * 
+	 * @Orm\Column(name="TASK_ADDRESS", type="string", nullable=false)
 	 */
-	private $url;
-	public function getUrl() {
-		return $this->url;
+	private $address;
+	public function getAddress() {
+		return $this->address;
 	}
-	public function setUrl($url) {
-		$this->url = $url;
+	public function setUrl($address) {
+		$this->address = $address;
+	}
+	
+	/**
+	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
+	 *
+	 * @var \DateTime
+	 */
+	protected $createdDate;
+	public function getCreatedDate() {
+		return $this->createdDate;
+	}
+	public function setCreatedDate(\DateTime $createdDate) {
+		$this->createdDate = $createdDate;
+	}
+	
+	/**
+	 * @Orm\Column(name="PETUGAS_REKAM", type="string", nullable=true)
+	 *
+	 * @var string
+	 */
+	protected $createdBy;
+	public function getCreatedBy() {
+		return $this->createdBy;
+	}
+	public function setCreatedBy($createdBy) {
+		$this->createdBy = $createdBy;
+	}
+	
+	/**
+	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
+	 *
+	 * @var \DateTime
+	 */
+	protected $updatedDate;
+	public function getUpdatedDate() {
+		return $this->updatedDate;
+	}
+	public function setUpdatedDate(\DateTime $updateDate) {
+		$this->updatedDate = $updateDate;
+	}
+	
+	/**
+	 * @Orm\Column(name="PETUGAS_UBAH", type="string", nullable=true)
+	 *
+	 * @var string
+	 */
+	protected $updatedBy;
+	public function getUpdatedBy() {
+		return $this->updatedBy;
+	}
+	public function setUpdatedBy($updatedBy) {
+		$this->updatedBy = $updatedBy;
 	}
 }

@@ -14,23 +14,12 @@ use Doctrine\ORM\UnitOfWork;
  * 
  * @author zakyalvan
  */
-class InstanceRepository extends EntityRepository {
-	/**
-	 * Create new instance.
-	 * 
-	 * @param mixed $workflow
-	 * @param integer $id
-	 * @return Instance
-	 */
-	public function createNewInstance($workflow) {
-		
-	}
-	
+class InstanceRepository extends EntityRepository {	
 	public function getActiveInstances($workflow, $datas = array()) {
 		$workflowId = $workflow;
 		if($workflow instanceof Workflow) {
-			$workflow = $this->ensureManagedEntity($workflow);
 			$workflowId = $workflow->getId();
+			$workflow = $this->ensureManagedEntity($workflow);
 		}
 		
 		$queryBuilder = $this->_em->createQueryBuilder();
@@ -40,11 +29,17 @@ class InstanceRepository extends EntityRepository {
 			->innerJoin('inst.datas', 'datas')
 			->innerJoin('datas.attribute', 'workflowAttribute');
 		
+		$index = 1;
 		foreach($datas as $name => $value) {
 			$queryBuilder->andWhere($queryBuilder->expr()->andX(
-				$queryBuilder->expr()->eq('workflowAttribute.name', $name),
-				$queryBuilder->expr()->eq('datas.value', $value)
+				$queryBuilder->expr()->eq('workflowAttribute.name', sprintf(':name_%d', $index)),
+				$queryBuilder->expr()->eq('datas.value', sprintf(':value_%d', $index))
 			));
+			
+			$queryBuilder->setParameter(sprintf('name_%d', $index), $name);
+			$queryBuilder->setParameter(sprintf('value_%d', $index), $value);
+			
+			$index += 1;
 		}
 		
 		return $queryBuilder
@@ -72,7 +67,7 @@ class InstanceRepository extends EntityRepository {
 			
 			if($instance->getWorkflow() != null) {
 				if($instance->getWorkflow()->getId() != null && $instance->getWorkflow()->getId() != $workflowId) {
-					throw new \InvalidArgumentException('', 100, null);
+					throw new \InvalidArgumentException('Instance bukan eksekusi proses workflow yang diberikan', 100, null);
 				}
 			}
 		}

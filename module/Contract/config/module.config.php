@@ -77,6 +77,21 @@ return array(
 								'action' => 'assign'
 							)
 						)
+					),
+					'create' => array(
+						'type' => 'Zend\Mvc\Router\Http\Segment',
+						'options' => array(
+							'route' => '/create/:action/:kantor/:tender',
+							'constraints' => array(
+								'tender' => '[\\.a-zA-Z0-9_-]+',
+								'kantor' => '[a-zA-Z0-9]+'
+							),
+							'defaults' => array(
+								'__NAMESPACE__' => 'Contract\Controller',
+								'controller' => 'create',
+								'action' => 'index'
+							)
+						)
 					)
 				)
 			)
@@ -212,8 +227,8 @@ return array(
 			
 		),
 		'split_evaluators' => array(
-			'create\JenisKontrakEvaluator' => 'Contract\Workflow\Create\JenisKontrakSplitEvaluator',
-			'create\PersetujuanAtasanEvaluator' => 'Contract\Workflow\Create\PersetujuanAtasanUserSplitEvaluator'
+			'create\JenisKontrakEvaluator' => 'Contract\Workflow\Evaluator\Create\JenisKontrakSplitEvaluator',
+			'create\PersetujuanAtasanEvaluator' => 'Contract\Workflow\Evaluator\Create\PersetujuanAtasanUserSplitEvaluator'
 		)
 	)
 );

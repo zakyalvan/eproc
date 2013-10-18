@@ -37,7 +37,7 @@
 						<td class="head" style="width: 200px;">Pengguna Barang / Jasa</td>
 						<td>
 							<div>
-								<?php echo $tender->getUserPemohon() ? $tender->getUserPemohon()->getNama() : '' ?>
+								<?php echo $tender->getUserPemohon() ? $tender->getUserPemohon()->getNama() : $tender->getNamaPemohon() ?>
 							</div>
 						</td>
 					</tr>
@@ -161,6 +161,7 @@
 		<!-- Start Button Container -->
 		<div class="box">
 			<div class="uibutton-toolbar">
+				<?php echo $this->formElement($form->get('security'))?>
 				<?php echo $this->formElement($form->get('submit'))?>
 				<a href="<?php echo $this->url('contract/todo')?>" class="uibutton">Kembali</a>
 			</div>

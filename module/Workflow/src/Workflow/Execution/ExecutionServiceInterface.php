@@ -31,10 +31,20 @@ interface ExecutionServiceInterface {
 	public function startWorkflow(Workflow $workflow, array $datas);
 	
 	/**
+	 * 
+	 * @param Workflow $workflow
+	 * @param unknown $datas
+	 * 
+	 * @return boolean
+	 */
+	public function hasActiveInstances(Workflow $workflow, $datas = array());
+	
+	/**
 	 * Retrieve active instance (instance yang sedang berjalan) dengan berdasarkan workflow dan data yang diberikan.
 	 * 
 	 * @param Workflow $workflow
 	 * @param unknown $datas
+	 * @return array
 	 */
 	public function getActiveInstances(Workflow $workflow, $datas = array());
 	

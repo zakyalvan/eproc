@@ -18,6 +18,8 @@ class AuthenticationStorage implements Storage {
 	
 	const STORAGE_KEY = 'login_info';
 	
+	private $cachedSecurityContext;
+	
 	/**
 	 * @var ServiceLocator
 	 */
@@ -45,6 +47,10 @@ class AuthenticationStorage implements Storage {
 			return null;
 		}
 		
+		if($this->cachedSecurityContext != null) {
+			return $this->cachedSecurityContext;
+		}
+		
 		$securityContextArray = $this->sessionContainer->{$this->storageKey};
 		
 		/* @var $entityManager EntityManager */ 
@@ -53,14 +59,26 @@ class AuthenticationStorage implements Storage {
 		$queryBuilder = $entityManager->createQueryBuilder();
 		
 		/* @var $securityContext SecurityContext */
-		$user = $queryBuilder->select('user')
+		$user = $queryBuilder->select(array('user', 'kantor', 'listUserRole'))
 			->from('Application\Entity\User', 'user')
-			->where($queryBuilder->expr()->eq('user.kode', ':kodeLoggedinUser'))
-			->setParameter('kodeLoggedinUser', $securityContextArray['loggedinUser'])
+			->innerJoin('user.kantor', 'kantor')
+			->innerJoin('user.listUserRole', 'listUserRole')
+			->innerJoin('listUserRole.role', 'role')
+			->where($queryBuilder->expr()->eq('user.kode', ':kodeUser'))
+			->setParameter('kodeUser', $securityContextArray['loggedinUser'])
 			->getQuery()
 			->getSingleResult();
 		
-		//$securityContext->getLoggedinTime()->
+		if($securityContextArray['activeRole'] != null) {
+			$roleQueryBuilder = $entityManager->createQueryBuilder();
+			$activeRole = $roleQueryBuilder->select('role')
+				->from('Application\Entity\Role', 'role')
+				->where($queryBuilder->expr()->eq('role.kode', ':kodeRole'))
+				->setParameter('kodeRole', $securityContextArray['activeRole'])
+				->getQuery()
+				->getSingleResult();
+			return new SecurityContext($user, $activeRole);
+		}
 		
 		return new SecurityContext($user);
 	}
@@ -69,6 +87,8 @@ class AuthenticationStorage implements Storage {
 		if(!$contents instanceof SecurityContext) {
 			throw new \InvalidArgumentException(sprintf('Parameter dalam penulisan ke auth storage harus berupa object security context'), 100, null);
 		}
+		
+		$this->cachedSecurityContext = null;
 		
 		$securityContextArray['loggedinUser']  = $contents->getLoggedinUser()->getKode();
 		$securityContextArray['activeRole'] = $contents->hasActiveRole() ? $contents->getActiveRole()->getKode() : null;
@@ -79,5 +99,6 @@ class AuthenticationStorage implements Storage {
 	
 	public function clear() {
 		unset($this->sessionContainer->{$this->storageKey});
+		$this->cachedSecurityContext = null;
 	}
 }

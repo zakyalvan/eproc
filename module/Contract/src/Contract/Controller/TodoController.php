@@ -33,12 +33,12 @@ class TodoController extends AbstractActionController {
 		/* @var $initTodoListProvider ContractInitTodoListProvider */
 		$initTodoListProvider = $this->getServiceLocator()->get(self::CONTRACT_INIT_TODO_LIST_PROVIDER);
 		$initTodoListProvider->setContextDatas(array(
-				ContractInitTodoListProvider::KODE_FUNGSI_CONTEXT_KEY => '410',
-				ContractInitTodoListProvider::KODE_KANTOR_CONTEXT_KEY => '44A'
+			ContractInitTodoListProvider::KODE_FUNGSI_CONTEXT_KEY => '410',
+			ContractInitTodoListProvider::KODE_KANTOR_CONTEXT_KEY => '44A'
 		));
 		
 		return array(
-			'initTodoList' => $initTodoListProvider->getListData($pageNumber, $itemCountPerPage)
+			'initTodoList' => $initTodoListProvider->getListData(1, 10000)
 		);
 	}
 	

@@ -29,6 +29,29 @@ class ProgressMilestone {
 	
 	/**
 	 * @Orm\Id
+	 * @Orm\Column(name="KODE_JANGKA", type="integer")
+	 * 
+	 * @var integer
+	 */
+	private $kodeMilestone;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_KONTRAK", type="string")
+	 *
+	 * @var string
+	 */
+	private $kodeKontrak;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_KANTOR", type="string")
+	 *
+	 * @var string
+	 */
+	private $kodeKantor;
+	
+	/**
 	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Kontrak\Milestone", fetch="LAZY", inversedBy="listProgress")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", referencedColumnName="KODE_KONTRAK"), @Orm\JoinColumn(name="KODE_JANGKA", referencedColumnName="KODE_JANGKA")})
 	 * 

@@ -121,4 +121,8 @@ class User {
 	public function getListUserRole() {
 		return $this->listUserRole;
 	}
+	
+	public function __toString() {
+		return $this->nama;
+	}
 }

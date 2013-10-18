@@ -34,6 +34,12 @@ class Transition {
 	const TRIGGER_BY_AUTO = "AUTO";
 	const TRIGGER_BY_TIME = "TIME";
 	
+	public function __construct() {
+		$this->attributes = new ArrayCollection();
+		$this->arcs = new ArrayCollection();
+		$this->auditTrails = new ArrayCollection();
+	}
+	
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="TRANSITION_ID", type="integer", nullable=false)

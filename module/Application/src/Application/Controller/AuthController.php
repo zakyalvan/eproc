@@ -6,6 +6,7 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Http\Request;
 use Application\Form\LoginForm;
 use Zend\View\Helper\ViewModel;
+use Application\Security\SecurityContext;
 
 /**
  * Kelas kontroller yang handle urusan login dari serta logout dari user.
@@ -49,7 +50,7 @@ class AuthController extends AbstractActionController {
 				
 				if($result->isValid()) {
 					// Berhasil, redirect ke home.
-					$this->redirect()->toRoute('home');
+					$this->redirect()->toRoute('role');
 				}
 				else {
 					// Tampilin error di sini.
@@ -80,7 +81,33 @@ class AuthController extends AbstractActionController {
 	 * Handle pemilihan role user.
 	 */
 	public function roleAction() {
+		if(!$this->identity()) {
+			$this->redirect()->toRoute('login');
+		}
 		
+		$kodeKantor = $this->params()->fromRoute('kantor');
+		$kodeRole = $this->params()->fromRoute('role');
+		
+		if($kodeKantor && $kodeRole) {
+			/* @var $securityContext SecurityContext */ 
+			$securityContext = $this->getAuthenticationService()->getIdentity();
+			
+			$validKodeKantor = ($securityContext->getLoggedinUser()->getKantor()->getKode() === $kodeKantor);
+			$validKodeRole = false;
+			$activeRole = null;
+			foreach ($securityContext->getAvailableRoles() as $role) {
+				if($role->getKode() === $kodeRole) {
+					$validKodeRole = true;
+					$activeRole = $role;
+				}
+			}
+			
+			if($validKodeKantor && $validKodeRole) {
+				$securityContext->setActiveRole($activeRole);
+				$this->getAuthenticationService()->getStorage()->write($securityContext);
+				$this->redirect()->toRoute('home');
+			}
+		}
 	}
 	
 	/**

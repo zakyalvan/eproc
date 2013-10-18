@@ -54,7 +54,7 @@ class KontrakRepository extends EntityRepository {
 			->getOneOrNullResult();
 		
 		if($kontrak != null && $extractRelations) {
-			return $this->extractRelations($kontrak);
+			$kontrak = $this->extractRelations($kontrak);
 		}
 		return $kontrak;
 	}
@@ -98,14 +98,15 @@ class KontrakRepository extends EntityRepository {
 		$kontrak = $this->ensureManagedEntity($kontrak);
 		
 		$queryBuilder = $this->_em->createQueryBuilder();
-		$queryBuilder->select(array('kontrak', 'kantor', 'mataUang', 'listItem', 'listMilestone', 'listDokumen', 'listKomentar'))
-			->from($this->_class->getName(), 'kontrak')
-			->innerJoin('konrak.kantor', 'kantor', Join::WITH, $queryBuilder->expr()->eq('kantor.kode', ':kodeKantor'))
-			->innerJoin('kontrak.mataUang', 'mataUang')
-			->innerJoin('kontrak.listItem', 'listItem')
-			->innerJoin('kontrak.listMilestone', 'listMilestone')
-			->innerJoin('kontrak.listDokumen', 'listDokumen')
-			->innerJoin('kontrak.listKomentar', 'listKomentar')
+		return $queryBuilder->select(array('kontrak', 'kantor', 'vendor', 'mataUang', 'listItem', 'listMilestone', 'listDokumen', 'listKomentar'))
+			->from($this->getClassMetadata()->getName(), 'kontrak')
+			->innerJoin('kontrak.kantor', 'kantor', Join::WITH, $queryBuilder->expr()->eq('kantor.kode', ':kodeKantor'))
+			->leftJoin('kontrak.vendor', 'vendor')
+			->leftJoin('kontrak.mataUang', 'mataUang')
+			->leftJoin('kontrak.listItem', 'listItem')
+			->leftJoin('kontrak.listMilestone', 'listMilestone')
+			->leftJoin('kontrak.listDokumen', 'listDokumen')
+			->leftJoin('kontrak.listKomentar', 'listKomentar')
 			->where($queryBuilder->expr()->eq('kontrak.kode', ':kodeKontrak'))
 			->setParameter('kodeKontrak', $kontrak->getKode())
 			->setParameter('kodeKantor', $kontrak->getKantor()->getKode())
@@ -119,7 +120,7 @@ class KontrakRepository extends EntityRepository {
 		}
 		
 		$entityState = $this->getEntityManager()->getUnitOfWork()->getEntityState($entity);
-		if($entityState != UnitOfWork::STATE_MANAGED || $entityState != UnitOfWork::STATE_DETACHED) {
+		if(!($entityState == UnitOfWork::STATE_MANAGED || $entityState == UnitOfWork::STATE_DETACHED)) {
 			throw new \InvalidArgumentException('Parameter entity harus dalam state managed atau detached', 100, null);
 		}
 		

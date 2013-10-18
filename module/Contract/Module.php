@@ -5,6 +5,10 @@ use Zend\ModuleManager\Feature\ConfigProviderInterface as ConfigProvider;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface as AutoloaderProvider;
 use Zend\ModuleManager\Feature\InitProviderInterface as InitProvider;
 use Zend\ModuleManager\ModuleManagerInterface as ModuleManager;
+use Zend\ModuleManager\Feature\BootstrapListenerInterface as BootstrapListener;
+use Zend\Mvc\MvcEvent;
+use Contract\Workflow\Listener\WorkflowStartListener;
+use Contract\Workflow\Listener\InterceptWorkflowStartListener;
 
 /**
  * Contract Module
@@ -12,6 +16,11 @@ use Zend\ModuleManager\ModuleManagerInterface as ModuleManager;
  * @author zakyalvan
  */
 class Module implements InitProvider, AutoloaderProvider, ConfigProvider {
+	public function onBootstrap(MvcEvent $event) {
+		$eventManager = $event->getApplication()->getEventManager();
+		$eventManager->attach(new InterceptWorkflowStartListener());
+	}
+	
 	/**
 	 * (non-PHPdoc)
 	 * @see \Zend\ModuleManager\Feature\InitProviderInterface::init()

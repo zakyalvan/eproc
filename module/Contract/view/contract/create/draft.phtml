@@ -9,6 +9,8 @@
 	use Zend\Form\Element\Checkbox;
 	use Zend\Form\Element\Collection;
 	use Contract\Entity\Kontrak\Komentar;
+use Contract\Entity\Kontrak\Item;
+use Zend\Form\Element;
 	
 	$this->headTitle($this->pageTitle);
 	
@@ -64,7 +66,7 @@ $(function(){
 						<td class="head" style="width: 200px;">Nomor Pengadaan</td>
 						<td>
 							<div>
-								
+								<?php echo $kontrak->getTender()->getKode()?>
 							</div>
 						</td>
 					</tr>
@@ -72,7 +74,7 @@ $(function(){
 						<td class="head" style="width: 200px;">Pengguna Barang / Jasa</td>
 						<td>
 							<div>
-								
+								<?php echo $kontrak->getTender()->getNamaPemohon() ?>
 							</div>
 						</td>
 					</tr>
@@ -80,7 +82,7 @@ $(function(){
 						<td class="head" style="width: 200px;">Vendor</td>
 						<td>
 							<div>
-								
+								<?php echo $kontrak->getVendor()->getNama() ?>
 							</div>
 						</td>
 					</tr>
@@ -88,7 +90,7 @@ $(function(){
 						<td class="head" style="width: 200px;">Tipe Kontrak</td>
 						<td>
 							<div>
-								
+								<?php echo $kontrak->getTipeKontrak() ?>
 							</div>
 						</td>
 					</tr>
@@ -114,7 +116,12 @@ $(function(){
 						<td>
 							<div>
 								<!-- Datepicker tanggal mulai kontrak -->
-								<?php echo $this->formInput($form->get(KontrakFieldset::DEFAULT_NAME)->get('tanggalMulaiKontrak'))?>
+								<?php
+									/* @var $tanggalMulaiText Element */
+									$tanggalMulaiText = $form->get(KontrakFieldset::DEFAULT_NAME)->get('tanggalMulaiKontrak');
+									$tanggalMulaiText->setValue($kontrak->getTanggalMulai()->format('d/m/Y'));
+									echo $this->formInput($tanggalMulaiText);
+								?>
 							</div>
 						</td>
 					</tr>
@@ -123,7 +130,12 @@ $(function(){
 						<td>
 							<div>
 								<!-- Datepicker tanggal berakhir kontrak -->
-								<?php echo $this->formInput($form->get(KontrakFieldset::DEFAULT_NAME)->get('tanggalAkhirKontrak'))?>
+								<?php
+									/* @var $tanggalAkhirText Element */
+									$tanggalAkhirText = $form->get(KontrakFieldset::DEFAULT_NAME)->get('tanggalMulaiKontrak');
+									$tanggalAkhirText->setValue($kontrak->getTanggalAkhir()->format('d/m/Y'));
+									echo $this->formInput($tanggalAkhirText);
+								?>
 							</div>
 						</td>
 					</tr>
@@ -139,7 +151,7 @@ $(function(){
 						<td class="head" style="width: 200px;">Nilai Kontrak</td>
 						<td>
 							<div>
-								
+								<?php echo $kontrak->getMataUang() . ' ' . number_format($kontrak->getNilaiKontrak()) ?>
 							</div>
 						</td>
 					</tr>
@@ -153,11 +165,11 @@ $(function(){
 						</td>
 					</tr>
 					<tr>
-						<td class="head" style="width: 200px;"><?php echo $form->get(KontrakFieldset::DEFAULT_NAME)->get('deskripsiPekerjaan')->getOption('label')?></td>
+						<td class="head" style="width: 200px;"><?php echo $form->get(KontrakFieldset::DEFAULT_NAME)->get('lingkupPekerjaan')->getOption('label')?></td>
 						<td>
 							<div>
-								<!-- Textarea deksripsi pekerjaan -->
-								<?php echo $this->formTextarea($form->get(KontrakFieldset::DEFAULT_NAME)->get('deskripsiPekerjaan'))?>
+								<!-- Textarea lingkup pekerjaan -->
+								<?php echo $this->formTextarea($form->get(KontrakFieldset::DEFAULT_NAME)->get('lingkupPekerjaan'))?>
 							</div>
 						</td>
 					</tr>
@@ -184,14 +196,23 @@ $(function(){
 						</tr>
 					</thead>
 					<tbody>
+						<?php
+							$indexItem = 1; 
+							/* @var $item Item */
+							foreach ($kontrak->getListItem() as $item)
+						?>
 						<tr>
+							<td style="text-align: center;"><?php echo $indexItem ?></td>
 							<td></td>
 							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
+							<td style="text-align: right;"><?php echo number_format($item->getHarga())?></td>
+							<td style="text-align: center;"><?php echo $item->getUnit()?></td>
+							<td style="text-align: right;"><?php echo $item->getJumlah() ?></td>
 						</tr>
+						<?php 
+							$indexItem++;
+							
+						?>
 					</tbody>
 				</table>
 			</div>

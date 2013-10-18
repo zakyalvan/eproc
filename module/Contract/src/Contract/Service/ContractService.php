@@ -210,10 +210,26 @@ class ContractService implements ContractServiceInterface, ServiceLocatorAware {
 		return $kontrakIdentity;
 	}
 	
+	/**
+	 * Retrieve object key generator dari service locator.
+	 * 
+	 * @return KeyGeneratatorInterface
+	 */
+	protected function keyGenerator() {
+		return $this->serviceLocator->get('Application\Common\KeyGeneratator');
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see \Zend\ServiceManager\ServiceLocatorAwareInterface::setServiceLocator()
+	 */
 	public function setServiceLocator(ServiceLocator $serviceLocator) {
 		$this->serviceLocator = $serviceLocator;
 	}
-	
+	/**
+	 * (non-PHPdoc)
+	 * @see \Zend\ServiceManager\ServiceLocatorAwareInterface::getServiceLocator()
+	 */
 	public function getServiceLocator() {
 		return $this->serviceLocator;
 	}
