@@ -111,7 +111,7 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 			$entityManager->flush();
 			
 			// Route token to next place.
-			$this->routeTokenToNextPlace($token);
+			$this->routeTokenToNextPlaces($token);
 			
 			// Flush perubahan dan commit transaksi.
 			$entityManager->flush();
@@ -258,7 +258,7 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 			$entityManager->flush();
 			
 			// Sementara hanya bisa route dari satu free token.
-			$this->routeTokenToNextPlace($freeTokens[0]);
+			$this->routeTokenToNextPlaces($freeTokens[0]);
 			
 			$entityManager->flush();
 			$entityManager->commit();
@@ -274,7 +274,7 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 	 *
 	 * @param Token $token
 	 */
-	protected function routeTokenToNextPlace(Token $token) {
+	protected function routeTokenToNextPlaces(Token $token) {
 		/* @var $processRouter ProcessRouter */
 		$processRouter = $this->serviceLocator->get('Workflow\Execution\Router\ProcessRouter');
 	

@@ -29,6 +29,7 @@ class InstanceRepository extends EntityRepository {
 	public function getActiveInstances($workflow, $datas = array()) {
 		$workflowId = $workflow;
 		if($workflow instanceof Workflow) {
+			$workflow = $this->ensureManagedEntity($workflow);
 			$workflowId = $workflow->getId();
 		}
 		
@@ -45,8 +46,6 @@ class InstanceRepository extends EntityRepository {
 				$queryBuilder->expr()->eq('datas.value', $value)
 			));
 		}
-		
-		//
 		
 		return $queryBuilder
 			->setParameter('workflowId', $workflowId)

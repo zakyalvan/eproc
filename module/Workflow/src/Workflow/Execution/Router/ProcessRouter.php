@@ -8,21 +8,21 @@ use Zend\EventManager\EventManagerInterface as EventManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
 use Application\Common\KeyGeneratorInterface;
+use Workflow\Execution\Evaluator\SplitEvaluatorInterface;
 use Workflow\Execution\Router\Exception\ProcessRouterException;
+use Workflow\Execution\Router\Event\WorkitemEvent;
 use Workflow\Execution\Handler\TransitionHandler;
 use Workflow\Entity\Place;
 use Workflow\Entity\Token;
 use Workflow\Entity\Transition;
 use Workflow\Entity\Arc;
 use Workflow\Entity\Instance;
+use Workflow\Entity\Workitem;
 use Workflow\Entity\Repository\TransitionRepository;
-use Workflow\Execution\Evaluator\SplitEvaluatorInterface;
 use Workflow\Entity\Repository\ArcRepository;
 use Workflow\Entity\Repository\WorkitemRepository;
 use Workflow\Entity\Repository\InstanceRepository;
 use Workflow\Entity\Repository\TokenRepository;
-use Workflow\Entity\Workitem;
-use Workflow\Execution\Router\Event\WorkitemEvent;
 
 /**
  * Implementasi default dari {@link ProcessRouterInterface}
@@ -84,7 +84,7 @@ class ProcessRouter implements ProcessRouterInterface, ServiceLocatorAware, Even
 		$inputArcs = $arcRepository->getInputArcsFrom($inputPlace);
 		$inputArcsCount = $arcRepository->countInputArcsFrom($inputPlace);
 		
-		// Ini tidak valid karena hanya and place yang tidak punya input-arc.
+		// Ini tidak valid karena hanya end place yang tidak punya input-arc (arc dri place ke transition).
 		if($inputArcsCount == 0) {
 			throw new ProcessRouterException(
 				sprintf(
@@ -358,7 +358,6 @@ class ProcessRouter implements ProcessRouterInterface, ServiceLocatorAware, Even
 	 */
 	public function setEventManager(EventManager $eventManager) {
 		$eventManager->setIdentifiers(array(
-			'Workflow\Execution\ProcessRoute',
 			get_called_class()
 		));
 		$this->eventManager = $eventManager;
