@@ -15,6 +15,7 @@ use Procurement\Entity\Tender\Repository\TenderRepository;
 use Vendor\Entity\Vendor;
 use Procurement\Entity\Tender\Tender;
 use Workflow\Entity\Repository\PlaceRepository;
+use Workflow\Entity\Repository\TaskRepository;
 
 /**
  * Todo list provider untuk proses manajemen kontrak.
@@ -77,6 +78,10 @@ class ContractCreateTodoListProvider extends AbstractDumbTodoListProvider {
 			$vendor = $tenderRepository->getTenderWinner($tender);
 			
 			$transition = $workitem->getTransition();
+			$task = $transition->getTask();
+			
+			/* @var $taskRepository TaskRepository */ 
+			$taskRepository = $entityManager->getRepository('Workflow\Entity\Task');
 			
 			$todoItem = new ContractCreateTodoItem(
 				$tender->getKode(), 
@@ -85,7 +90,9 @@ class ContractCreateTodoListProvider extends AbstractDumbTodoListProvider {
 				$vendor->getKode(), 
 				$vendor->getNama(), 
 				$transition->getName(),
-				$workitem->getEnabledDate()
+				$workitem->getEnabledDate(),
+				$task->getAddress(),
+				$taskRepository->getTaskParameters($task)
 			);
 			$todoItemArray[] = $todoItem;
 		}

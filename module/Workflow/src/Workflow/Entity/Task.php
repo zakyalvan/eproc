@@ -5,7 +5,7 @@ use Doctrine\ORM\Mapping as Orm;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * @Orm\Entity
+ * @Orm\Entity(repositoryClass="Workflow\Entity\Repository\TaskRepository")
  * @Orm\Table(name="EP_WF_TASK")
  * 
  * @author zakyalvan

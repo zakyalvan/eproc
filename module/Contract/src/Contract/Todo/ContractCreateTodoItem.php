@@ -9,8 +9,10 @@ use Application\Todo\AbstractTodoItem;
  * @author zakyalvan
  */
 class ContractCreateTodoItem extends AbstractTodoItem {
-	public function __construct($kodeTender, $kodeKantor, $judulPekerjaan, $kodeVendor, $namaVendor, $statusProses, $createdDate) {
-		parent::__construct('', '', array(), '', $createdDate);
+	public function __construct($kodeTender, $kodeKantor, $judulPekerjaan, $kodeVendor, $namaVendor, $statusProses, $createdDate, $actionRoute, $actionRouteParameters) {
+		parent::__construct('CreateContrak', $actionRoute, $actionRouteParameters, '', $createdDate);
+		
+		print 
 		
 		$this->setKodeTender($kodeTender);
 		$this->setKodeKantor($kodeKantor);
@@ -19,11 +21,14 @@ class ContractCreateTodoItem extends AbstractTodoItem {
 		$this->setKodeVendor($kodeVendor);
 		$this->setStatusProses($statusProses);
 		
-		$this->setActionRoute('contract/create');
-		$this->setActionRouteParams(array(
-			'tender' => $this->kodeTender,
-			'kantor' => $this->kodeKantor
-		));
+		$actionRouteParams = array_merge(
+			$this->actionRouteParams, 
+			array(
+				'tender' => $this->kodeTender,
+				'kantor' => $this->kodeKantor
+			)
+		);
+		$this->setActionRouteParams($actionRouteParams);
 	}
 	
 	private $kodeTender;
