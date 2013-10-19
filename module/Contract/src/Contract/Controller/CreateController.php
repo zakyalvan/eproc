@@ -56,14 +56,13 @@ class CreateController extends AbstractActionController {
 		$form = new PembuatanForm($this->getServiceLocator());
 		$form->setValidationGroup(array('kontrak' => array()));
 		
-		$kontrak = $this->getContractService()->getContractForTender(array('kodeTender' => $kodeTender, 'kodeKantor' => $kodeKantor));
+		$kontrak = $this->contractService()->getContractForTender(array('kodeTender' => $kodeTender, 'kodeKantor' => $kodeKantor));
 		$form->bind($kontrak);
 		
 		if($this->request->isPost()) {
 			$form->setData($this->request->getPost());
 			if($form->isValid()) {
-				/* @var $data Kontrak */
-				$data = $form->getData();
+				$this->contractService()->saveDraft($form->getData(), true);
 				$this->redirect()->toRoute('contract/todo');
 			}
 		}
@@ -142,7 +141,7 @@ class CreateController extends AbstractActionController {
 	/**
 	 * @return ContractService
 	 */
-	public function getContractService() {
+	public function contractService() {
 		return $this->getServiceLocator()->get('Contract\Service\ContractService');
 	}
 }

@@ -3,6 +3,7 @@ namespace Contract\Entity\Invoice;
 
 use Doctrine\ORM\Mapping as Orm;
 use Vendor\Entity\Vendor;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Entity header dari invoice invoice
@@ -15,7 +16,23 @@ use Vendor\Entity\Vendor;
 class Invoice {
 	/**
 	 * @Orm\Id
-	 * @Orm\Column(name="KODE_INVOICE", type="string", length="50")
+	 * @Orm\Column(name="KODE_KONTRAK", type="string")
+	 * 
+	 * @var string
+	 */
+	private $kodeKontrak;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_KANTOR", type="string")
+	 * 
+	 * @var string
+	 */
+	private $kodeKantor;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_INVOICE", type="string", length=50)
 	 * 
 	 * @var string
 	 */
@@ -28,9 +45,8 @@ class Invoice {
 	}
 	
 	/**
-	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Kontrak\Kontrak")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", type="string", length="5", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", type="string", length="50", referencedColumnName="KODE_KONTRAK")})
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", referencedColumnName="KODE_KONTRAK")})
 	 *
 	 * @var Kontrak
 	 */
@@ -43,9 +59,9 @@ class Invoice {
 	}
 	
 	/**
-	 * @Id
-	 * @ManyToOne(targetEntity="Vendor\Entity\Vendor", fetch="lazy")
-	 * @JoinColumn(name="KODE_VENDOR", type="integer", referencedColumnName="KODE_VENDOR")
+	 * @Orm\Id
+	 * @Orm\ManyToOne(targetEntity="Vendor\Entity\Vendor", fetch="LAZY")
+	 * @Orm\JoinColumn(name="KODE_VENDOR", type="integer", referencedColumnName="KODE_VENDOR")
 	 *
 	 * @var Vendor
 	 */
@@ -58,9 +74,9 @@ class Invoice {
 	}
 	
 	/**
-	 * @Column(name="TGL_INVOICE", type="date", nullable=true)
+	 * @Column(name="TGL_INVOICE", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalInvoice;
 	public function getTanggalInvoice() {
@@ -71,7 +87,7 @@ class Invoice {
 	}
 	
 	/**
-	 * @Column(name="NAMA_VENDOR", type="string", length="250", nullable=true)
+	 * @Column(name="NAMA_VENDOR", type="string", length=250, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -84,7 +100,7 @@ class Invoice {
 	}
 	
 	/**
-	 * @Column(name="AKUN_BANK", type="string", length="200", nullable=true)
+	 * @Column(name="AKUN_BANK", type="string", length=200, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -97,9 +113,9 @@ class Invoice {
 	}
 	
 	/**
-	 * @Column(name="TGL_BUAT", type="date", nullable=true)
+	 * @Column(name="TGL_BUAT", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalPembuatan;
 	public function getTanggalPembuatan() {
@@ -110,7 +126,7 @@ class Invoice {
 	}
 	
 	/**
-	 * @Column(name="STATUS", type="string", length="2", nullable=true)
+	 * @Column(name="STATUS", type="string", length=2, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -136,22 +152,97 @@ class Invoice {
 	}
 	
 	/**
-	 * @Column(name="TGL_DISETUJUI", type="date", nullable=true)
+	 * @Column(name="TGL_DISETUJUI", type="datetime", nullable=true)
 	 * 
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $tanggalDisetujui;
 	public function getTanggalDisetujui() {
 		return $this->tanggalDisetujui;
 	}
-	public function setTanggalDisetujui($tanggalDisetujui) {
+	public function setTanggalDisetujui(\DateTime $tanggalDisetujui) {
 		$this->tanggalDisetujui = $tanggalDisetujui;
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_REKAM", type="date", nullable=true)
+	 * @Orm\OneToMany(targetEntity="Contract\Entity\Invoice\Dokumen", fetch="LAZY", mappedBy="invoice")
+	 * 
+	 * @var ArrayCollection
+	 */
+	private $listDokumen;
+	public function getListDokumen() {
+		return $this->listDokumen;
+	}
+	public function setListDokumen(ArrayCollection $listDokumen) {
+		$this->listDokumen = $listDokumen;
+	}
+	public function addListDokumen(ArrayCollection $listDokumen) {
+		foreach ($listDokumen as $dokumen) {
+			$this->listDokumen->add($dokumen);
+		}
+	}
+	public function removeListDokumen(ArrayCollection $listDokumen) {
+		foreach ($listDokumen as $dokumen) {
+			if($this->listDokumen->contains($dokumen)) {
+				$this->listDokumen->remove($this->listDokumen->indexOf($dokumen));
+			}
+		}
+	}
+	
+	/**
+	 * @Orm\OneToMany(targetEntity="Contract\Entity\Invoice\Item", fetch="LAZY", mappedBy="invoice")
+	 * 
+	 * @var ArrayCollection
+	 */
+	private $listItem;
+	public function getListItem() {
+		return $this->listItem;
+	}
+	public function setListItem(ArrayCollection $listItem) {
+		$this->listItem = $listItem;
+	}
+	public function addListItem(ArrayCollection $listItem) {
+		foreach ($listItem as $item) {
+			$this->listItem->add($item);
+		}
+	}
+	public function removeListItem(ArrayCollection $listItem) {
+		foreach ($listItem as $item) {
+			if($this->listItem->contains($item)) {
+				$this->listItem->remove($this->listItem->indexOf($item));
+			}
+		}	
+	}
+	
+	/**
+	 * @Orm\OneToMany(targetEntity="Contract\Entity\Invoice\Komentar", fetch="LAZY", mappedBy="invoice")
+	 * 
+	 * @var ArrayCollection
+	 */
+	private $listKomentar;
+	public function getListKomentar() {
+		return $this->listKomentar;
+	}
+	public function setListKomentar(ArrayCollection $listKomentar) {
+		$this->listKomentar = $listKomentar;
+	}
+	public function addListKomentar(ArrayCollection $listKomentar) {
+		foreach ($listKomentar as $komentar) {
+			$this->listKomentar->add($komentar);
+		}
+	}
+	public function removeListKomentar(ArrayCollection $listKomentar) {
+		foreach ($listKomentar as $komentar) {
+			if($this->listKomentar->contains($komentar)) {
+				$this->listKomentar->remove($this->listKomentar->indexOf($komentar));
+			}
+		}
+	}
+	
+	/**
+	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalRekam;
 	public function getTanggalRekam() {
@@ -175,15 +266,15 @@ class Invoice {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_UBAH", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalUbah;
 	public function getTanggalUbah() {
 		return $this->tanggalUbah;
 	}
-	public function setTanggalUbah($tanggalUbah) {
+	public function setTanggalUbah(\DateTime $tanggalUbah) {
 		$this->tanggalUbah = $tanggalUbah;
 	}
 	
@@ -196,7 +287,7 @@ class Invoice {
 	public function getPetugasUbah() {
 		return $this->petugasUbah;
 	}
-	public function setPetugasUbah($petugasUbah) {
+	public function setPetugasUbah(\DateTime $petugasUbah) {
 		$this->petugasUbah = $petugasUbah;
 	}
 }

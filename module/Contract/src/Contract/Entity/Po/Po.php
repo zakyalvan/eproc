@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping as Orm;
 use Vendor\Entity\Vendor;
 use Contract\Entity\Kontrak\Kontrak;
 use Application\Entity\MataUang;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Entity header dari PO
@@ -15,9 +16,15 @@ use Application\Entity\MataUang;
  * @author zakyalvan
  */
 class Po {
+	public function __construct() {
+		$this->listItem = new ArrayCollection();
+		$this->listProgress = new ArrayCollection();
+		$this->listKomentar = new ArrayCollection();
+	}
+	
 	/**
 	 * @Orm\Id
-	 * @Orm\Column(name="KODE_PO", type="string", length="50")
+	 * @Orm\Column(name="KODE_PO", type="string", length=50)
 	 * @Orm\GeneratedValue(strategy="NONE")
 	 * 
 	 * @var string
@@ -32,8 +39,8 @@ class Po {
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Kontrak\Kontrak", fetch="lazy")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", type="string", length="5", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", type="string", length="50", referencedColumnName="KODE_KONTRAK")})
+	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Kontrak\Kontrak", fetch="LAZY")
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", referencedColumnName="KODE_KONTRAK")})
 	 * 
 	 * @var Kontrak
 	 */
@@ -46,7 +53,7 @@ class Po {
 	}
 	
 	/**
-	 * @Orm\Column(name="NAMA_PEMBUAT", type="string", length="250", nullable=true)
+	 * @Orm\Column(name="NAMA_PEMBUAT", type="string", length=250, nullable=true)
 	 * 
 	 * @var string
 	 */
@@ -59,7 +66,7 @@ class Po {
 	}
 	
 	/**
-	 * @Orm\Column(name="NAMA_LENGKAP_PEMBUAT", type="string", length="250", nullable=true)
+	 * @Orm\Column(name="NAMA_LENGKAP_PEMBUAT", type="string", length=250, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -72,7 +79,7 @@ class Po {
 	}
 	
 	/**
-	 * @Orm\Column(name="POSISI_PEMBUAT", type="string", length="50", nullable=true)
+	 * @Orm\Column(name="POSISI_PEMBUAT", type="string", length=50, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -85,8 +92,8 @@ class Po {
 	}
 	
 	/**
-	 * @Orm\ManyToOne(targetEntity="Vendor\Entity\Vendor", fetch="lazy")
-	 * @JoinColumn(name="KODE_VENDOR", type="integer", referencedColumnName="KODE_VENDOR")
+	 * @Orm\ManyToOne(targetEntity="Vendor\Entity\Vendor", fetch="LAZY")
+	 * @JoinColumn(name="KODE_VENDOR", referencedColumnName="KODE_VENDOR")
 	 * 
 	 * @var Vendor
 	 */
@@ -99,7 +106,7 @@ class Po {
 	}
 	
 	/**
-	 * @Orm\Column(name="NAMA_VENDOR", type="string", length="255", nullable=true)
+	 * @Orm\Column(name="NAMA_VENDOR", type="string", length=255, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -113,7 +120,7 @@ class Po {
 	
 	/**
 	 * @Orm\ManyToOne(targetEntity="Master\Entity\MataUang")
-	 * @Orm\JoinColumn(name="MATA_UANG", type="string", length="3", nullable=true, referencedColumnName="MATA_UANG")
+	 * @Orm\JoinColumn(name="MATA_UANG", nullable=true, referencedColumnName="MATA_UANG")
 	 *
 	 * @var MataUang
 	 */
@@ -126,46 +133,46 @@ class Po {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_MULAI", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_MULAI", type="datetime", nullable=true)
 	 * 
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalMulai;
 	public function getTanggalMulai() {
 		return $this->tanggalMulai;
 	}
-	public function setTanggalMulai($tanggalMulai) {
+	public function setTanggalMulai(\DateTime $tanggalMulai) {
 		$this->tanggalMulai = $tanggalMulai;
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_AKHIR", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_AKHIR", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalAkhir;
 	public function getTanggalAkhir() {
 		return $this->tanggalAkhir;
 	}
-	public function setTanggalAkhir($tanggalAkhir) {
+	public function setTanggalAkhir(\DateTime $tanggalAkhir) {
 		$this->tanggalAkhir = $tanggalAkhir;
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_BUAT", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_BUAT", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalPembuatan;
 	public function getTanggalPembuatan() {
 		return $this->tanggalPembuatan;
 	}
-	public function setTanggalPembuatan($tanggalPembuatan) {
+	public function setTanggalPembuatan(\DateTime $tanggalPembuatan) {
 		$this->tanggalPembuatan = $tanggalPembuatan;
 	}
 	
 	/**
-	 * @Orm\Column(name="CATATAN_PO", type="string", length="1024", nullable=true)
+	 * @Orm\Column(name="CATATAN_PO", type="string", length=1024, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -178,20 +185,20 @@ class Po {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_PERSETUJUAN", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_PERSETUJUAN", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalPersetujuan;
 	public function getTanggalPersetujuan() {
 		return $this->tanggalPersetujuan;
 	}
-	public function setTanggalPersetujuan($tanggalPersetujuan) {
+	public function setTanggalPersetujuan(\DateTime $tanggalPersetujuan) {
 		$this->tanggalPersetujuan = $tanggalPersetujuan;
 	}
 	
 	/**
-	 * @Orm\Column(name="STATUS", type="string", length="2", nullable=true)
+	 * @Orm\Column(name="STATUS", type="string", length=2, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -231,7 +238,7 @@ class Po {
 	
 	
 	/**
-	 * @Orm\Column(name="NO_BASTP", type="string", length="50", nullable=true)
+	 * @Orm\Column(name="NO_BASTP", type="string", length=50, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -244,9 +251,9 @@ class Po {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_BASTP", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_BASTP", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalBastp;
 	public function getTanggalBastp() {
@@ -257,7 +264,7 @@ class Po {
 	}
 	
 	/**
-	 * @Orm\Column(name="JUDUL_BASTP", type="string", length="1024", nullable=true)
+	 * @Orm\Column(name="JUDUL_BASTP", type="string", length=1024, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -270,7 +277,7 @@ class Po {
 	} 
 	
 	/**
-	 * @Orm\Column(name="LAMPIRAN_BASTP", type="string", length="250", nullable=true)
+	 * @Orm\Column(name="LAMPIRAN_BASTP", type="string", length=250, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -283,20 +290,20 @@ class Po {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_BUAT_BASTP", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_BUAT_BASTP", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalPembuatanBastp;
 	public function getTanggalPembuatanBastp() {
 		return $this->tanggalPembuatanBastp;
 	}
-	public function setTanggalPembuatanBastp($tanggalPembuatanBastp) {
+	public function setTanggalPembuatanBastp(\DateTime $tanggalPembuatanBastp) {
 		$this->tanggalPembuatanBastp = $tanggalPembuatanBastp;
 	}
 	
 	/**
-	 * @Orm\Column(name="STATUS_BASTP", type="string", length="2", nullable=true)
+	 * @Orm\Column(name="STATUS_BASTP", type="string", length=2, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -309,20 +316,20 @@ class Po {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_PERSETUJUAN_BASTP", type="date", nullable="true")
+	 * @Orm\Column(name="TGL_PERSETUJUAN_BASTP", type="datetime", nullable=true)
 	 * 
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalPersetujuanBastp;
 	public function getTanggalPersetujuanBastp() {
 		return $this->tanggalPersetujuanBastp;
 	}
-	public function setTanggalPersetujuabBastp($tanggalPersetujuanBastp) {
+	public function setTanggalPersetujuabBastp(\DateTime $tanggalPersetujuanBastp) {
 		$this->tanggalPersetujuanBastp = $tanggalPersetujuanBastp;
 	}
 	
 	/**
-	 * @Orm\Column(name="KETERANGAN_BASTP", type="string", length="4000", nullable=true)
+	 * @Orm\Column(name="KETERANGAN_BASTP", type="string", length=4000, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -335,15 +342,86 @@ class Po {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_REKAM", type="date", nullable=true)
+	 * @Orm\OneToMany(targetEntity="Contract\Entity\Po\Item", fetch="LAZY", mappedBy="po")
+	 * 
+	 * @var ArrayCollection
+	 */
+	private $listItem;
+	public function getListItem() {
+		return $this->listItem;
+	}
+	public function setListItem(ArrayCollection $listItem) {
+		$this->listItem = $listItem;
+	}
+	public function addListItem(ArrayCollection $listItem) {
+		foreach ($listItem as $item) {
+			$this->listItem->add($item);
+		}
+	}
+	public function removeListItem(ArrayCollection $listItem) {
+		foreach ($listItem as $item) {
+			$this->listItem->removeElement($item);
+		}
+	}
+	
+	/**
+	 * @Orm\OneToMany(targetEntity="Contract\Entity\Po\Progress", fetch="LAZY", mappedBy="po")
+	 * 
+	 * @var ArrayCollection
+	 */
+	private $listProgress;
+	public function getListProgress() {
+		return $listProgress;
+	}
+	public function setListProgress(ArrayCollection $listProgress) {
+		$this->listProgress = $listProgress;
+	}
+	public function addListPerkembangan(ArrayCollection $listProgress) {
+		foreach ($listProgress as $progress) {
+			$this->listProgress->add($progress);
+		}
+	}
+	public function removeListPerkembangan(ArrayCollection $listProgress) {
+		foreach ($listProgress as $progress) {
+			if($this->listProgress->contains($progress)) {
+				$this->listProgress->remove($this->listProgress->indexOf($progress));
+			}
+		}
+	}
+	
+	/**
+	 * @Orm\OneToMany(targetEntity="Contract\Entity\Po\Komentar", fetch="LAZY", inversedBy="po")
+	 * 
+	 * @var ArrayCollection
+	 */
+	private $listKomentar;
+	public function getListKomentar() {
+		return $this->listKomentar;
+	}
+	public function setListKomentar(ArrayCollection $listKomentar) {
+		$this->listKomentar = $listKomentar;
+	}
+	public function addListKomentar(ArrayCollection $listKomentar) {
+		foreach ($listKomentar as $komentar) {
+			$this->listKomentar->add($komentar);
+		}
+	}
+	public function removeListKomentar(ArrayCollection $listKomentar) {
+		foreach ($listKomentar as $komentar) {
+			$this->listKomentar->removeElement($komentar);
+		}
+	}
+	
+	/**
+	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalRekam;
 	public function getTanggalRekam() {
 		return $this->tanggalRekam;
 	}
-	public function setTanggalRekam($tanggalRekam) {
+	public function setTanggalRekam(\DateTime $tanggalRekam) {
 		$this->tanggalRekam = $tanggalRekam;
 	}
 	
@@ -361,9 +439,9 @@ class Po {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_UBAH", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalUbah;
 	public function getTanggalUbah() {

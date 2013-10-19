@@ -72,8 +72,20 @@ class Milestone {
 	public function getListProgress() {
 		return $this->listProgress;
 	}
-	public function setListProgress($listProgress) {
+	public function setListProgress(ArrayCollection $listProgress) {
 		$this->listProgress = $listProgress;
+	}
+	public function addListProgress(ArrayCollection $listProgress) {
+		foreach ($listProgress as $progress) {
+			$this->listProgress->add($progress);
+		}
+	}
+	public function removeListProgress(ArrayCollection $listProgress) {
+		foreach ($listProgress as $progress) {
+			if($this->listProgress->contains($progress)) {
+				$this->listProgress->remove($this->listProgress->indexOf($progress));
+			}
+		}
 	}
 	
 	/**

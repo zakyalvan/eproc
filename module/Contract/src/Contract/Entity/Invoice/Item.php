@@ -56,9 +56,9 @@ class Item  {
 	}
 	
 	/**
-	 * @Orm\Column(name="NILAI_BASTP", type="double", nullable=true)
+	 * @Orm\Column(name="NILAI_BASTP", type="float", nullable=true)
 	 *
-	 * @var double
+	 * @var float
 	 */
 	private $nilaiBastp;
 	public function getNilaiBastp() {
@@ -83,9 +83,9 @@ class Item  {
 	}
 	
 	/**
-	 * @Orm\Column(name="PENALTI_BASTP", type="double", nullable=true)
+	 * @Orm\Column(name="PENALTI_BASTP", type="float", nullable=true)
 	 *
-	 * @var double
+	 * @var float
 	 */
 	private $penaltiBastp;
 	public function getPenaltiBastp() {
@@ -96,9 +96,9 @@ class Item  {
 	}
 	
 	/**
-	 * @Orm\Column(name="PPH23_BASTP", type="double", nullable=true)
+	 * @Orm\Column(name="PPH23_BASTP", type="float", nullable=true)
 	 *
-	 * @var double
+	 * @var float
 	 */
 	private $pph23Bastp;
 	public function getPph23Bastp() {
@@ -109,9 +109,9 @@ class Item  {
 	}
 	
 	/**
-	 * @Orm\Column(name="PPN_BASTP", type="double", nullable=true)
+	 * @Orm\Column(name="PPN_BASTP", type="float", nullable=true)
 	 *
-	 * @var double
+	 * @var float
 	 */
 	private $ppnBastp;
 	public function getPpnBastp() {
@@ -122,9 +122,9 @@ class Item  {
 	}
 	
 	/**
-	 * @Orm\Column(name="DP_BASTP", type="double", nullable=true)
+	 * @Orm\Column(name="DP_BASTP", type="float", nullable=true)
 	 *
-	 * @var double
+	 * @var float
 	 */
 	private $uangMukaBastp;
 	public function getUangMukaBastp() {
@@ -135,9 +135,9 @@ class Item  {
 	}
 	
 	/**
-	 * @Orm\Column(name="SUBTOTAL_BASTP", type="double",nullable=true)
+	 * @Orm\Column(name="SUBTOTAL_BASTP", type="float", nullable=true)
 	 *
-	 * @var double
+	 * @var float
 	 */
 	private $subTotalBastp;
 	public function getSubTotalBastp() {
@@ -148,7 +148,7 @@ class Item  {
 	}
 	
 	/**
-	 * @Orm\Column(name="KETERANGAN_BASTP", type="string", length="4000", nullable=true)
+	 * @Orm\Column(name="KETERANGAN_BASTP", type="string", length=4000, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -174,15 +174,15 @@ class Item  {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_REKAM", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalRekam;
 	public function getTanggalRekam() {
 		return $this->tanggalRekam;
 	}
-	public function setTanggalRekam($tanggalRekam) {
+	public function setTanggalRekam(\DateTime $tanggalRekam) {
 		$this->tanggalRekam = $tanggalRekam;
 	}
 	
@@ -200,15 +200,15 @@ class Item  {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_UBAH", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalUbah;
 	public function getTanggalUbah() {
 		return $this->tanggalUbah;
 	}
-	public function setTanggalUbah($tanggalUbah) {
+	public function setTanggalUbah(\DateTime $tanggalUbah) {
 		$this->tanggalUbah = $tanggalUbah;
 	}
 	

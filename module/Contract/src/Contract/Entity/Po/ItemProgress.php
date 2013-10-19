@@ -9,7 +9,43 @@ use Doctrine\ORM\Mapping as Orm;
  *
  * @author zakyalvan
  */
-class ItemPerkembangan {
+class ItemProgress {
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_KANTOR", type="string")
+	 * @Orm\GeneratedValue(strategy="NONE")
+	 *
+	 * @var string
+	 */
+	private $kodeKantor;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_KONTRAK", type="string")
+	 * @Orm\GeneratedValue(strategy="NONE")
+	 *
+	 * @var string
+	 */
+	private $kodeKontrak;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_PO", type="string")
+	 * @Orm\GeneratedValue(strategy="NONE")
+	 *
+	 * @var string
+	 */
+	private $kodePo;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_PERKEMBANGAN", type="string")
+	 * @Orm\GeneratedValue(strategy="NONE")
+	 *
+	 * @var string
+	 */
+	private $kodeProgress;
+	
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="KODE_ITEM_PERKEMBANGAN", type="integer")
@@ -26,24 +62,23 @@ class ItemPerkembangan {
 	}
 	
 	/**
-	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Po\Perkembangan", fetch="lazy")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", type="string", length="5", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", type="string", length="50", referencedColumnName="KODE_KONTRAK"), @Orm\JoinColumn(name="KODE_PO", type="string", length="50", referencedColumnName="KODE_PO"), @Orm\JoinColumn(name="KODE_PERKEMBANGAN", type="integer", referencedColumnName="KODE_PERKEMBANGAN")})
+	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Po\Progress", fetch="LAZY", inversedBy="listItemProgress")
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", referencedColumnName="KODE_KONTRAK"), @Orm\JoinColumn(name="KODE_PO", referencedColumnName="KODE_PO"), @Orm\JoinColumn(name="KODE_PERKEMBANGAN", referencedColumnName="KODE_PERKEMBANGAN")})
 	 * 
-	 * @var Perkembangan
+	 * @var Progress
 	 */
-	private $perkembangan;
-	public function getPerkembangan() {
-		return $this->perkembangan;
+	private $progress;
+	public function getProgress() {
+		return $this->progress;
 	}
-	public function setPerkembangan(Perkembangan $perkembangan) {
-		$this->perkembangan = $perkembangan;
+	public function setProgress(Progress $progress) {
+		$this->progress = $progress;
 	}
 	
 	/**
 	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Po\Item", fetch="lazy")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", type="string", length="5", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", type="string", length="50", referencedColumnName="KODE_KONTRAK"), @Orm\JoinColumn(name="KODE_PO", type="string", length="50", referencedColumnName="KODE_PO"), @Orm\JoinColumn(name="KODE_PO_ITEM", type="integer", referencedColumnName="KODE_PO_ITEM")})
+	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Po\Item", fetch="LAZY")
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", referencedColumnName="KODE_KONTRAK"), @Orm\JoinColumn(name="KODE_PO", referencedColumnName="KODE_PO"), @Orm\JoinColumn(name="KODE_PO_ITEM", referencedColumnName="KODE_PO_ITEM")})
 	 * 
 	 * @var Item
 	 */
@@ -82,15 +117,15 @@ class ItemPerkembangan {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_REKAM", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalRekam;
 	public function getTanggalRekam() {
 		return $this->tanggalRekam;
 	}
-	public function setTanggalRekam($tanggalRekam) {
+	public function setTanggalRekam(\DateTime $tanggalRekam) {
 		$this->tanggalRekam = $tanggalRekam;
 	}
 	
@@ -108,9 +143,9 @@ class ItemPerkembangan {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_UBAH", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalUbah;
 	public function getTanggalUbah() {

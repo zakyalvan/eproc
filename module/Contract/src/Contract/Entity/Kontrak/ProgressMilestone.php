@@ -11,26 +11,9 @@ use Doctrine\ORM\Mapping as Orm;
  */
 class ProgressMilestone {
 	/**
-	 * Kode jangka perkembangan
-	 * 
-	 * @Orm\Id
-	 * @Orm\Column(name="KODE_PERKEMBANGAN", type="integer")
-	 * @Orm\GeneratedValue(strategy="NONE")
-	 * 
-	 * @var integer
-	 */
-	private $kode;
-	public function getKode() {
-		return $this->kode;
-	}
-	public function setKode($kode) {
-		$this->kode = $kode;
-	}
-	
-	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="KODE_JANGKA", type="integer")
-	 * 
+	 *
 	 * @var integer
 	 */
 	private $kodeMilestone;
@@ -51,6 +34,23 @@ class ProgressMilestone {
 	 */
 	private $kodeKantor;
 	
+	/**
+	 * Kode jangka perkembangan
+	 * 
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_PERKEMBANGAN", type="integer")
+	 * @Orm\GeneratedValue(strategy="NONE")
+	 * 
+	 * @var integer
+	 */
+	private $kode;
+	public function getKode() {
+		return $this->kode;
+	}
+	public function setKode($kode) {
+		$this->kode = $kode;
+	}
+		
 	/**
 	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Kontrak\Milestone", fetch="LAZY", inversedBy="listProgress")
 	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", referencedColumnName="KODE_KONTRAK"), @Orm\JoinColumn(name="KODE_JANGKA", referencedColumnName="KODE_JANGKA")})
@@ -126,7 +126,7 @@ class ProgressMilestone {
 	public function getTanggalRekam() {
 		return $this->tanggalRekam;
 	}
-	public function setTanggalRekam($tanggalRekam) {
+	public function setTanggalRekam(\DateTime $tanggalRekam) {
 		$this->tanggalRekam = $tanggalRekam;
 	}
 	
@@ -152,7 +152,7 @@ class ProgressMilestone {
 	public function getTanggalUbah() {
 		return $this->tanggalUbah;
 	}
-	public function setTanggalUbah($tanggalUbah) {
+	public function setTanggalUbah(\DateTime $tanggalUbah) {
 		$this->tanggalUbah = $tanggalUbah;
 	}
 	

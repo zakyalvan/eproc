@@ -2,12 +2,11 @@
 namespace Contract\Entity\Kontrak;
 
 use Doctrine\ORM\Mapping as Orm;
-use Vendor\Entity\Vendor;
-use Procurement\Entity\Tender\Tender;
+use Doctrine\Common\Collections\ArrayCollection;
 use Application\Entity\MataUang;
 use Application\Entity\Kantor;
-use Doctrine\Common\Collections\ArrayCollection;
-use Contract\Entity\Invoice\Dokumen;
+use Vendor\Entity\Vendor;
+use Procurement\Entity\Tender\Tender;
 
 /**
  * Entity header dari sebuah kontrak.
@@ -461,8 +460,12 @@ class Kontrak {
 	public function addListItem($item) {
 		$this->getListItem()->add($item);
 	}
-	public function removeListItem($item) {
-		$this->getListItem()->remove($item);
+	public function removeListItem($listItem) {
+		foreach ($listItem as $item) {
+			if($this->listItem->contains($item)) {
+				$this->getListItem()->remove($this->listItem->indexOf($item));
+			}
+		}
 	}
 	
 	/**
@@ -480,11 +483,17 @@ class Kontrak {
 	public function setListMilestone(ArrayCollection $listMilestone) {
 		$this->listMilestone = $listMilestone;
 	}
-	public function addListMilestone($milestone) {
-		$this->getListMilestone()->add($milestone);
+	public function addListMilestone(ArrayCollection $listMilestone) {
+		foreach ($listMilestone as $milestone) {
+			$this->getListMilestone()->add($milestone);
+		}
 	}
-	public function removeListMilestone($milestone) {
-		$this->getListMilestone()->remove($milestone);
+	public function removeListMilestone(ArrayCollection $listMilestone) {
+		foreach ($listMilestone as $milestone) {
+			if($this->getListMilestone()->contains($milestone)) {
+				$this->getListMilestone()->remove($this->getListMilestone()->indexOf($milestone));
+			}
+		}
 	}
 	
 	/**
@@ -502,11 +511,17 @@ class Kontrak {
 	public function setListDokumen(ArrayCollection $listDokumen) {
 		$this->listDokumen = $listDokumen;
 	}
-	public function addListDokumen($dokumen) {
-		$this->getListDokumen()->add($dokumen);
+	public function addListDokumen(ArrayCollection $listDokumen) {
+		foreach ($listDokumen as $dokumen) {
+			$this->getListDokumen()->add($dokumen);
+		}
 	}
-	public function removeListDokumen($dokumen) {
-		$this->getListDokumen()->remove($dokumen);
+	public function removeListDokumen(ArrayCollection $listDokumen) {
+		foreach ($listDokumen as $dokumen) {
+			if($this->getListDokumen()->contains($dokumen)) {
+				$this->getListDokumen()->remove($this->getListDokumen()->indexOf($dokumen));
+			}
+		}
 	}
 	
 	/**
@@ -527,11 +542,17 @@ class Kontrak {
 	public function setListKomentar(ArrayCollection $listKomentar) {
 		$this->listKomentar = $listKomentar;
 	}
-	public function addListKomentar($komentar) {
-		$this->getListKomentar()->add($komentar);
+	public function addListKomentar(ArrayCollection $listKomentar) {
+		foreach ($listKomentar as $komentar) {
+			$this->getListKomentar()->add($komentar);
+		}
 	}
-	public function removeListKomentar($komentar) {
-		$this->getListKomentar()->remove($komentar);
+	public function removeListKomentar(ArrayCollection $listKomentar) {
+		foreach ($listKomentar as $komentar) {
+			if($this->listKomentar->contains($komentar)) {
+				$this->getListKomentar()->remove($this->listKomentar->indexOf($komentar));
+			}
+		}
 	}
 	
 	/**

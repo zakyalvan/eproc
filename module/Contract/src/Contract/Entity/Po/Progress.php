@@ -2,6 +2,7 @@
 namespace Contract\Entity\Po;
 
 use Doctrine\ORM\Mapping as Orm;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @Orm\Entity
@@ -9,7 +10,34 @@ use Doctrine\ORM\Mapping as Orm;
  * 
  * @author zakyalvan
  */
-class Perkembangan {
+class Progress {
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_KANTOR", type="string")
+	 * @Orm\GeneratedValue(strategy="NONE")
+	 * 
+	 * @var string
+	 */
+	private $kodeKantor;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_KONTRAK", type="string")
+	 * @Orm\GeneratedValue(strategy="NONE")
+	 * 
+	 * @var string
+	 */
+	private $kodeKontrak;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_PO", type="string")
+	 * @Orm\GeneratedValue(strategy="NONE")
+	 * 
+	 * @var string
+	 */
+	private $kodePo;
+	
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="KODE_PERKEMBANGAN", type="integer")
@@ -26,9 +54,8 @@ class Perkembangan {
 	}
 	
 	/**
-	 * @Orm\Id
-	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Kontrak\Kontrak", fetch="lazy")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", type="string", length="5", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", type="string", length="50", referencedColumnName="KODE_KONTRAK"), @Orm\JoinColumn(name="KODE_PO", type="string", length="50", referencedColumnName="KODE_PO")})
+	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Po\Po", fetch="LAZY", inversedBy="listPerkembangan")
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", referencedColumnName="KODE_KONTRAK"), @Orm\JoinColumn(name="KODE_PO", referencedColumnName="KODE_PO")})
 	 * 
 	 * @var Po
 	 */
@@ -41,9 +68,9 @@ class Perkembangan {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_PERKEMBANGAN", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_PERKEMBANGAN", type="datetime", nullable=true)
 	 * 
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalPerkembangan;
 	public function getTanggalPerkembangan() {
@@ -54,9 +81,9 @@ class Perkembangan {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_BUAT", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_BUAT", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalPembuatan;
 	public function getTanggalPembuatan() {
@@ -67,7 +94,7 @@ class Perkembangan {
 	}
 	
 	/**
-	 * @Orm\Column(name="PEMBUAT", type="string", length="50", nullable=true)
+	 * @Orm\Column(name="PEMBUAT", type="string", length=50, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -80,7 +107,7 @@ class Perkembangan {
 	}
 	
 	/**
-	 * @Orm\Column(name="NAMA_PEMBUAT", type="string", length="250", nullable=true)
+	 * @Orm\Column(name="NAMA_PEMBUAT", type="string", length=250, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -93,7 +120,7 @@ class Perkembangan {
 	}
 	
 	/**
-	 * @Orm\Column(name="STATUS", type="string", length="2", nullable=true)
+	 * @Orm\Column(name="STATUS", type="string", length=2, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -132,7 +159,7 @@ class Perkembangan {
 	}
 	
 	/**
-	 * @Orm\Column(name="KETERANGAN", type="string", length="4000", nullable=true)
+	 * @Orm\Column(name="KETERANGAN", type="string", length=4000, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -145,9 +172,32 @@ class Perkembangan {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_REKAM", type="date", nullable=true)
+	 * @Orm\OneToMany(targetEntity="Contract\Entity\Po\ItemProgress", fetch="LAZY", mappedBy="progress")
+	 * 
+	 * @var ArrayCollection
+	 */
+	private $listItemProgress;
+	public function getListItemPerkembangan() {
+		return $this->listItemPerkembangan;
+	}
+	public function setListItemPerkembangan(ArrayCollection $listItemPerkembangan) {
+		$this->listItemPerkembangan = $listItemPerkembangan;
+	}
+	public function addListItemPerkembangan(ArrayCollection $listItemPerkembangan) {
+		foreach ($listItemPerkembangan as $itemPerkembangan) {
+			$this->listItemPerkembangan->add($itemPerkembangan);
+		}
+	}
+	public function removeListItemPerkembangan(ArrayCollection $listItemPerkembangan) {
+		foreach ($listItemPerkembangan as $itemPerkembangan) {
+			$this->listItemPerkembangan->removeElement($itemPerkembangan);
+		}
+	}
+	
+	/**
+	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalRekam;
 	public function getTanggalRekam() {
@@ -171,9 +221,9 @@ class Perkembangan {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_UBAH", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_UBAH", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalUbah;
 	public function getTanggalUbah() {

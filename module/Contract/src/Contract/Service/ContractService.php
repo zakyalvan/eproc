@@ -14,6 +14,17 @@ use Contract\Entity\Kontrak\Repository\KontrakRepository;
 use Procurement\Entity\Tender\Repository\TenderRepository;
 use Procurement\Entity\Tender\Item as TenderItem;
 use Contract\Entity\Kontrak\Item as KontrakItem;
+use Contract\Entity\Kontrak\Dokumen;
+use Application\Common\KeyGeneratorInterface;
+use Doctrine\ORM\UnitOfWork;
+use Contract\Entity\Kontrak\Item;
+use Contract\Entity\Kontrak\Milestone;
+use Zend\Authentication\AuthenticationService;
+use Application\Security\SecurityContext;
+use Contract\Entity\Kontrak\Komentar;
+use Workflow\Execution\ExecutionService;
+use Workflow\Execution\ExecutionServiceInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Implementasi default dari {@link ContractServiceInterface}
@@ -152,9 +163,41 @@ class ContractService implements ContractServiceInterface, ServiceLocatorAware {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see \Contract\Service\ContractServiceInterface::saveContractDraft()
+	 * @see \Contract\Service\ContractServiceInterface::saveDraft()
 	 */
-	public function saveContractDraft(Kontrak $kontrak) {
+	public function saveDraft(Kontrak $kontrak, $final) {
+		$this->entityManager()->beginTransaction();
+		try {
+			$this->persistKontrak($kontrak);
+			$this->entityManager()->commit();
+		}
+		catch(\Exception $e) {
+			$this->entityManager()->rollback();
+			throw new \RuntimeException('Terjadi exception dalam proses penyimpanan draft kontrak. Perhatikan eksespi penyimpanan.', 100, $e);
+		}
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see \Contract\Service\ContractServiceInterface::setApproval()
+	 */
+	public function setApproval(Kontrak $kontrak, $approval) {
+		
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see \Contract\Service\ContractServiceInterface::createBkh()
+	 */
+	public function createBkh(Kontrak $kontrak, $final) {
+		
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see \Contract\Service\ContractServiceInterface::finalizeDraft()
+	 */
+	public function finalizeDraft(Kontrak $kontrak, $final) {
 		
 	}
 	
@@ -174,6 +217,79 @@ class ContractService implements ContractServiceInterface, ServiceLocatorAware {
 		));
 		$valid = $validator->isValid($kontrakIdentity);
 		return $valid;
+	}
+	
+	/**
+	 * Simpan data object kontrak tentu saja dengan dependenciesnya.
+	 * 
+	 * @param Kontrak $kontrak
+	 */
+	protected function persistKontrak(Kontrak $kontrak) {
+		$entityManager = $this->entityManager();
+		
+		/* @var $milestone Milestone */
+// 		foreach ($kontrak->getListMilestone() as $milestone) {
+// 			$milestoneState = $entityManager->getUnitOfWork()->getEntityState($milestone);
+// 			if($milestoneState == UnitOfWork::STATE_NEW) {
+// 				$milestone->setKode($this->keyGenerator()->generateNextKey($milestone, 'kode'));
+// 				$milestone->setKontrak($kontrak);
+// 				$milestone->setTanggalRekam(new \DateTime(null, null));
+					
+// 				if($this->identity()) {
+// 					$milestone->setPetugasRekam($this->identity()->getLoggedinUser()->getKode());
+// 				}
+// 				$entityManager->persist($milestone);
+// 			}
+// 			else if($milestoneState == UnitOfWork::STATE_MANAGED || $milestoneState == UnitOfWork::STATE_DETACHED){
+// 				$milestoneChangeset = $entityManager->getUnitOfWork()->getEntityChangeSet($milestone);
+// 				if($milestoneChangeset) {
+// 					$entityManager->merge($milestone);
+// 				}
+// 			}
+				
+// 		}
+			
+// 		/* @var $dokumen Dokumen */
+// 		foreach ($kontrak->getListDokumen() as $dokumen) {
+// 			$dokumenState = $entityManager->getUnitOfWork()->getEntityState($dokumen);
+// 			if($dokumenState = UnitOfWork::STATE_NEW) {
+// 				$dokumen->setKode($this->keyGenerator()->generateNextKey($dokumen, 'kode'));
+// 				$dokumen->setKontrak($kontrak);
+// 				$dokumen->setTanggalRekam(new \DateTime(null, null));
+// 				$entityManager->persist($dokumen);
+// 			}
+// 			else if($dokumenState == UnitOfWork::STATE_MANAGED || UnitOfWork::STATE_DETACHED) {
+// 				$dokumenChangeset = $entityManager->getUnitOfWork()->getEntityChangeSet($dokumen);
+// 				if($dokumenChangeset) {
+// 					$dokumen->setTanggalUbah(new \DateTime(null, null));
+// 					$entityManager->merge($dokumen);
+// 				}
+// 			}
+// 		}
+			
+// 		/* @var $item Item */ 
+// 		foreach ($kontrak->getListItem() as $item) {
+// 			$itemState = $entityManager->getUnitOfWork()->getEntityState($item);
+// 			if($itemState == UnitOfWork::STATE_NEW) {
+// 				$item->setKontrak($kontrak);
+// 				$item->setTanggalRekam(new \DateTime(null, null));
+// 				$entityManager->persist($item);
+// 			}
+// 		}
+			
+// 		/* @var $komentar Komentar */ 
+// 		foreach ($kontrak->getListKomentar() as $komentar) {
+// 			// Hanya komentar baru yang disimpan.
+// 			if($entityManager->getUnitOfWork()->getEntityState($komentar) == UnitOfWork::STATE_NEW) {
+// 				$komentar->setKode($this->keyGenerator()->generateNextKey($komentar, 'kode'));
+// 				$komentar->setKontrak($kontrak);
+// 				$komentar->setTanggalRekam(new \DateTime(null, null));
+// 				$entityManager->persist($komentar);
+// 			}
+// 		}
+
+		$entityManager->persist($kontrak);
+		$entityManager->flush();
 	}
 	
 	/**
@@ -211,12 +327,42 @@ class ContractService implements ContractServiceInterface, ServiceLocatorAware {
 	}
 	
 	/**
+	 * Retrieve object entity manager dari service locator.
+	 * 
+	 * @var EntityManager
+	 */
+	protected function entityManager() {
+		return $this->serviceLocator->get('Doctrine\ORM\EntityManager');
+	}
+	
+	/**
 	 * Retrieve object key generator dari service locator.
 	 * 
-	 * @return KeyGeneratatorInterface
+	 * @return KeyGeneratorInterface
 	 */
 	protected function keyGenerator() {
 		return $this->serviceLocator->get('Application\Common\KeyGeneratator');
+	}
+	
+	/**
+	 * Untuk kasus internal, maka object dalam identity adalah instance dari kelas {@link SecurityContext}
+	 * 
+	 * @return SecurityContext
+	 */
+	protected function identity() {
+		/* @var $authService AuthenticationService */ 
+		$authService = $this->serviceLocator->get('Zend\Authentication\AuthenticationService');
+		if($authService->hasIdentity()) {
+			return $authService->getIdentity();
+		}
+		return null;
+	}
+	
+	/**
+	 * @return ExecutionServiceInterface
+	 */
+	protected function executionService() {
+		return $this->serviceLocator->get('Workflow\Execution\ExecutionService');
 	}
 	
 	/**

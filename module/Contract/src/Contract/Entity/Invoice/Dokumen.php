@@ -15,6 +15,38 @@ use Vendor\Entity\Vendor;
 class Dokumen {
 	/**
 	 * @Orm\Id
+	 * @Orm\Column(name="KODE_KONTRAK", type="string")
+	 *
+	 * @var string
+	 */
+	private $kodeKontrak;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_KANTOR", type="string")
+	 *
+	 * @var string
+	 */
+	private $kodeKantor;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_INVOICE", type="string", length=50)
+	 *
+	 * @var string
+	 */
+	private $kodeInvoice;
+	
+	/**
+	 * @Orm\Id
+	 * @Orm\Column(name="KODE_VENDOR", type="integer",)
+	 *
+	 * @var string
+	 */
+	private $kodeVendor;
+	
+	/**
+	 * @Orm\Id
 	 * @Orm\Column(name="KODE_DOKUMEN", type="integer", length="64")
 	 *
 	 * @var integer
@@ -28,9 +60,8 @@ class Dokumen {
 	}
 	
 	/**
-	 * @Orm\Id
 	 * @Orm\ManyToOne(targetEntity="Contract\Entity\Invoice\Invoice")
-	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", type="string", length="5", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", type="string", length="50", referencedColumnName="KODE_KONTRAK"), @Orm\JoinColumn(name="KODE_INVOICE", type="string", length="50", referencedColumnName="KODE_INVOICE"), @Orm\JoinColumn(name="KODE_VENDOR", type="integer", referencedColumnName="KODE_VENDOR")})
+	 * @Orm\JoinColumns({@Orm\JoinColumn(name="KODE_KANTOR", referencedColumnName="KODE_KANTOR"), @Orm\JoinColumn(name="KODE_KONTRAK", referencedColumnName="KODE_KONTRAK"), @Orm\JoinColumn(name="KODE_INVOICE", referencedColumnName="KODE_INVOICE"), @Orm\JoinColumn(name="KODE_VENDOR", referencedColumnName="KODE_VENDOR")})
 	 *
 	 * @var Invoice
 	 */
@@ -82,7 +113,7 @@ class Dokumen {
 	}
 	
 	/**
-	 * @Orm\Column(name="STATUS", type="string", length="1", nullable=true)
+	 * @Orm\Column(name="STATUS", type="string", length=1, nullable=true)
 	 *
 	 * @var string
 	 */
@@ -95,9 +126,9 @@ class Dokumen {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_REKAM", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_REKAM", type="datetime", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalRekam;
 	public function getTanggalRekam() {
@@ -123,7 +154,7 @@ class Dokumen {
 	/**
 	 * @Orm\Column(name="TGL_UBAH", type="date", nullable=true)
 	 *
-	 * @var date
+	 * @var \DateTime
 	 */
 	private $tanggalUbah;
 	public function getTanggalUbah() {

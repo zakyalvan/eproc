@@ -92,6 +92,12 @@ return array(
 								'action' => 'index'
 							)
 						)
+					),
+					'satuan' => array(
+						'type' => 'Zend\Mvc\Router\Http\Segment',
+						'options' => array(
+							'route' => '/satuan/:action/:kantor/:kontrak'
+						)
 					)
 				)
 			)
