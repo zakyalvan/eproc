@@ -116,27 +116,26 @@ class InstanceRepository extends EntityRepository {
 			if($tempData['type'] == null)  {
 				$tempData['type'] = WorkflowAttribute::TYPE_STRING;
 			}
-			
+
 			/**
 			 * TODO Parsing data sesuai dengan typenya.
 			 */
 			if($tempData['type'] == WorkflowAttribute::TYPE_BOOLEAN) {
-				$datas[$tempData['name']] = (bool) $datas[$tempData['value']];
+				$datas[$tempData['name']] = (bool) $tempData['value'];
 			}
 			else if($tempData['type'] == WorkflowAttribute::TYPE_STRING) {
-				$datas[$tempData['name']] = $datas[$tempData['value']];
+				$datas[$tempData['name']] = $tempData['value'];
 			}
 			if($tempData['type'] == WorkflowAttribute::TYPE_INTEGER) {
-				$datas[$tempData['name']] = (int) $datas[$tempData['value']];
+				$datas[$tempData['name']] = (int) $tempData['value'];
 			}
 			if($tempData['type'] == WorkflowAttribute::TYPE_DOUBLE) {
-				$datas[$tempData['name']] = (float) $datas[$tempData['value']];
+				$datas[$tempData['name']] = (float) $tempData['value'];
 			}
 			if($tempData['type'] == WorkflowAttribute::TYPE_DATE) {
-				$datas[$tempData['name']] = $datas[$tempData['value']];
+				$datas[$tempData['name']] = $tempData['value'];
 			}
 		}
-		
 		return $datas;
 	}
 	

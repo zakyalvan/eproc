@@ -116,6 +116,8 @@ class Instance {
 	 * Attribute tanggal start dari eksekusi instance workflow.
 	 * 
 	 * @Orm\Column(name="START_DATE", type="datetime", nullable=false)
+	 * 
+	 * @var \DateTime
 	 */
 	protected $startDate;
 	public function getStartDate() {
@@ -130,7 +132,7 @@ class Instance {
 	 * 
 	 * @Orm\Column(name="FINISH_DATE", type="datetime", nullable=true)
 	 * 
-	 * @var date
+	 * @var \DateTime
 	 */
 	protected $finishDate;
 	public function getFinishDate() {
@@ -143,7 +145,7 @@ class Instance {
 	/**
 	 * @Orm\Column(name="CANCEL_DATE", type="datetime", nullable=true)
 	 * 
-	 * @var date
+	 * @var \DateTime
 	 */
 	protected $cancelDate;
 	public function getCancelDate() {

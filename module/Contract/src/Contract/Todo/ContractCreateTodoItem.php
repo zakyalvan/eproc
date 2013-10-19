@@ -9,17 +9,68 @@ use Application\Todo\AbstractTodoItem;
  * @author zakyalvan
  */
 class ContractCreateTodoItem extends AbstractTodoItem {
-	public function __construct($kodeKontrak, $deskripsiPekerjaan, $kodeVendor, $namaVendor, $statusProses, $context, $actionUrl, $createdDate) {
-		parent::__construct($context, $actionUrl, $createdDate);
+	public function __construct($kodeTender, $kodeKantor, $judulPekerjaan, $kodeVendor, $namaVendor, $statusProses, $createdDate) {
+		parent::__construct('', '', array(), '', $createdDate);
 		
-		$this->kodeKontrak = $kodeKontrak;
-		$this->deskripsiPekerjaan = $deskripsiPekerjaan;
-		$this->kodeVendor = $kodeVendor;
-		$this->namaVendor = $namaVendor;
-		$this->statusProses = $statusProses;
+		$this->setKodeTender($kodeTender);
+		$this->setKodeKantor($kodeKantor);
+		$this->setJudulPekerjaan($judulPekerjaan);
+		$this->setNamaVendor($namaVendor);
+		$this->setKodeVendor($kodeVendor);
+		$this->setStatusProses($statusProses);
+		
+		$this->setActionRoute('contract/create');
+		$this->setActionRouteParams(array(
+			'tender' => $this->kodeTender,
+			'kantor' => $this->kodeKantor
+		));
 	}
 	
-	public function formatActionUrl() {
-		return '#';
+	private $kodeTender;
+	public function getKodeTender() {
+		return $this->kodeTender;
+	}
+	protected function setKodeTender($kodeTender) {
+		$this->kodeTender = $kodeTender;
+	}
+	
+	private $kodeKantor;
+	public function getKodeKantor() {
+		return $this->kodeKantor;
+	}
+	protected function setKodeKantor($kodeKantor) {
+		$this->kodeKantor = $kodeKantor;
+	}
+	
+	private $judulPekerjaan;
+	public function getJudulPekerjaan() {
+		return $this->judulPekerjaan;
+	}
+	protected function setJudulPekerjaan($judulPekerjaan) {
+		$this->judulPekerjaan = $judulPekerjaan;
+	}
+	
+	private $kodeVendor;
+	public function getKodeVendor() {
+		return $this->kodeVendor;
+	}
+	protected function setKodeVendor($kodeVendor) {
+		$this->kodeVendor = $kodeVendor;
+	}
+	
+	private $namaVendor;
+	public function getNamaVendor() {
+		return $this->namaVendor;
+	}
+	protected function setNamaVendor($namaVendor) {
+		$this->namaVendor = $namaVendor;
+	}
+	
+	private $statusProses;
+	public function getStatusProses() {
+		return $this->statusProses;
+	}
+	protected function setStatusProses($statusProses) {
+		$this->statusProses = $statusProses;
 	}
 }

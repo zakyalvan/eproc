@@ -5,6 +5,10 @@ use Doctrine\ORM\EntityRepository;
 use Procurement\Entity\Tender\Tender;
 use Doctrine\ORM\Query\Expr\Join;
 use Application\Entity\Kantor;
+use Doctrine\ORM\UnitOfWork;
+use Vendor\Entity\Vendor;
+use Procurement\Entity\Tender\VendorStatus;
+use Procurement\Entity\Status;
 
 /**
  * Custom repository untuk tender.
@@ -53,13 +57,70 @@ class TenderRepository extends EntityRepository {
 		return $queryBuilder->select(array('tender', 'kantor', 'listItem'))
 			->from($this->getClassMetadata()->getName(), 'tender')
 			->innerJoin('tender.kantor', 'kantor', Join::WITH, $queryBuilder->expr()->eq('kantor.kode', ':kodeKantor'))
-			->innerJoin('tender.listItem', 'listItem')
-			->innerJoin('tender.listTenderVendor', 'listTenderVendor')
+			->leftJoin('tender.listItem', 'listItem')
+			->leftJoin('tender.listTenderVendor', 'listTenderVendor')
 			->where($queryBuilder->expr()->eq('tender.kode', ':kodeTender'))
 			->setParameter('kodeKantor', $tender->getKantor()->getKode())
 			->setParameter('kodeTender', $tender->getKode())
 			->getQuery()
 			->getSingleResult();
+	}
+	
+	/**
+	 * 
+	 * @param Tender $tender
+	 * @return boolean
+	 */
+	public function hasTenderWinner(Tender $tender) {
+		$tender = $this->ensureManagedEntity($tender);
+		
+		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
+		$completedWithWinnerVendor = $queryBuilder->select($queryBuilder->expr()->count('tender.kode'))
+			->from('Procurement\Entity\Tender\Tender', 'tender')
+			->innerJoin('tender.kantor', 'kantor', Join::WITH, $queryBuilder->expr()->eq('kantor.kode', ':kodeKantor'))
+			->innerJoin('tender.listTenderVendor', 'tenderVendor')
+			->innerJoin('tenderVendor.vendorStatus', 'tenderVendorStatus', Join::WITH, $queryBuilder->expr()->andX(
+				$queryBuilder->expr()->eq('tenderVendorStatus.status', ':kodeStatus'),
+				$queryBuilder->expr()->eq('tenderVendorStatus.pemenang', ':pemenang')
+			))
+			->where($queryBuilder->expr()->eq('tender.kode', ':kodeTender'))
+			->setParameter('kodeKantor', $tender->getKantor()->getKode())
+			->setParameter('pemenang', VendorStatus::FLAG_PEMENANG)
+			->setParameter('kodeStatus', Status::KODE_PENUNJUKAN_PEMENANG)
+			->setParameter('kodeTender', $tender->getKode())
+			->getQuery()
+			->getSingleScalarResult();
+		
+		return $completedWithWinnerVendor > 0;
+	}
+	
+	/**
+	 * Retrieve pemenang tender.
+	 * 
+	 * @param Tender $tender
+	 * @return Vendor
+	 */
+	public function getTenderWinner(Tender $tender) {
+		$tender = $this->ensureManagedEntity($tender);
+		
+		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
+		return $queryBuilder->select('vendor')
+			->from('Vendor\Entity\Vendor', 'vendor')
+			->innerJoin('Procurement\Entity\Tender\TenderVendor', 'tenderVendor', Join::WITH, $queryBuilder->expr()->eq('tenderVendor.vendor', 'vendor'))
+			->innerJoin('tenderVendor.tender', 'tender', Join::WITH, $queryBuilder->expr()->andX(
+				$queryBuilder->expr()->eq('tender.kode', ':kodeTender'),
+				$queryBuilder->expr()->eq('tender.kantor', ':kodeKantor')
+			))
+			->innerJoin('tenderVendor.vendorStatus', 'tenderVendorStatus', Join::WITH, $queryBuilder->expr()->andX(
+				$queryBuilder->expr()->eq('tenderVendorStatus.pemenang', ':pemenang'),
+				$queryBuilder->expr()->eq('tenderVendorStatus.status', ':kodeStatus')
+			))
+			->setParameter('kodeTender', $tender->getKode())
+			->setParameter('kodeKantor', $tender->getKantor()->getKode())
+			->setParameter('pemenang', VendorStatus::FLAG_PEMENANG)
+			->setParameter('kodeStatus', Status::KODE_PENUNJUKAN_PEMENANG)
+			->getQuery()
+			->getOneOrNullResult();
 	}
 	
 	protected function ensureManagedEntity($entity) {
@@ -68,7 +129,7 @@ class TenderRepository extends EntityRepository {
 		}
 		
 		$entityState = $this->getEntityManager()->getUnitOfWork()->getEntityState($entity);
-		if($entityState != UnitOfWork::STATE_MANAGED || $entityState != UnitOfWork::STATE_DETACHED) {
+		if(!($entityState == UnitOfWork::STATE_MANAGED || $entityState == UnitOfWork::STATE_DETACHED)) {
 			throw new \InvalidArgumentException('Parameter entity harus dalam state managed atau detached', 100, null);
 		}
 	

@@ -1,26 +1,17 @@
 <?php
 namespace Application\Common;
 
-use Zend\ServiceManager\ServiceLocatorAwareInterface as ServiceLocatorAware;
-use Zend\ServiceManager\ServiceLocatorInterface as ServiceLocator;
-use Zend\Form\Form;
-use Zend\Stdlib\InitializableInterface as Initializable;
-use Zend\Paginator\Paginator;
+use Application\Todo\TodoListProviderInterface;
+use Zend\Stdlib\InitializableInterface;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
-use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
-use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Query;
+use Zend\Paginator\Paginator;
+use Zend\Paginator\Adapter\ArrayAdapter;
 
-/**
- * Implementasi dasar untuk list provider. Spesifik zend dan menggunakan doctrine.
- * Kelas turunan dari kelas ini seharusnya dibikin instance-nya dalam service-manager.
- * 
- * @author zakyalvan
- */
-abstract class AbstractListProvider implements SearchableListProviderInterface, ServiceLocatorAware, Initializable {
+abstract class AbstractDumbTodoListProvider implements TodoListProviderInterface, InitializableInterface, ServiceLocatorAwareInterface {
 	/**
-	 * @var ServiceLocator
+	 * @var ServiceLocatorInterface
 	 */
 	protected $serviceLocator;
 	
@@ -43,13 +34,6 @@ abstract class AbstractListProvider implements SearchableListProviderInterface, 
 	 * @var Form
 	 */
 	protected $searchForm;
-	
-	/**
-	 * Ini parameter khusus untuk doctrine paginator.
-	 * 
-	 * @var bool
-	 */
-	protected $fetchJoinCollection = false;
 	
 	/**
 	 * Initialize list data provider.
@@ -98,16 +82,7 @@ abstract class AbstractListProvider implements SearchableListProviderInterface, 
 		/* @var $entityManager EntityManager */
 		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
 		
-		$queryBuilder = $entityManager->createQueryBuilder();
-		
-		$query = $this->buildQuery($queryBuilder, $this->contexDatas, $criterias);
-		if($query != null && !($query instanceof Query || $query instanceof QueryBuilder)) {
-			throw new \BadMethodCallException('Return dari method buildQuery bukan instance dari Doctrine\Orm\Query atau Doctrine\Orm\QueryBuilder', 100, null);
-		}
-		
-		$doctrinePaginator = new DoctrinePaginator($query, $this->fetchJoinCollection);
-		$paginatorAdapter = new PaginatorAdapter($doctrinePaginator);
-		
+		$paginatorAdapter = new ArrayAdapter($this->buildArrayOfObject($entityManager));
 		$paginator = new Paginator($paginatorAdapter);
 		$paginator->setCurrentPageNumber($pageNumber);
 		$paginator->setItemCountPerPage($itemCountPerPage);
@@ -116,15 +91,10 @@ abstract class AbstractListProvider implements SearchableListProviderInterface, 
 	}
 	
 	/**
-	 * Build query untuk list-provider.
-	 * 
-	 * @param QueryBuilder $queryBuilder
-	 * @param array $contextDatas
-	 * @param array $criterias
-	 * 
-	 * @return Query|QueryBuilder
+	 * @param EntityManager $entityManager
+	 * @return array
 	 */
-	abstract protected function buildQuery(QueryBuilder $queryBuilder, $contextDatas = array(), $criterias = array());
+	abstract protected function buildArrayOfObject(EntityManager $entityManager);
 	
 	/**
 	 * Validate contect datas yang diberikan. Apakah sesuai dengan konteks data yang diberikan atau tidak.
@@ -149,7 +119,7 @@ abstract class AbstractListProvider implements SearchableListProviderInterface, 
 	 * (non-PHPdoc)
 	 * @see \Zend\ServiceManager\ServiceLocatorAwareInterface::setServiceLocator()
 	 */
-	public function setServiceLocator(ServiceLocator $serviceLocator) {
+	public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
 		$this->serviceLocator = $serviceLocator;
 	}
 	

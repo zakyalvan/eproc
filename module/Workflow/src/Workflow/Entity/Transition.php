@@ -73,7 +73,7 @@ class Transition {
 	 */
 	protected $name;
 	public function getName() {
-		return $name;
+		return $this->name;
 	}
 	public function setName($name) {
 		$this->name = $name;

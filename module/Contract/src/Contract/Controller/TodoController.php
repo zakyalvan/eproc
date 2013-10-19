@@ -4,6 +4,7 @@ namespace Contract\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Contract\Todo\ContractInitTodoListProvider;
+use Contract\Todo\ContractCreateTodoListProvider;
 
 /**
  * Kelas index dari module Contract.
@@ -37,8 +38,20 @@ class TodoController extends AbstractActionController {
 			ContractInitTodoListProvider::KODE_KANTOR_CONTEXT_KEY => '44A'
 		));
 		
+		/* @var $createTodoListProvider ContractCreateTodoListProvider */ 
+		$createTodoListProvider = $this->getServiceLocator()->get(self::CONTRACT_CREATE_TODO_LIST_PROVIDER);
+		$createTodoListProvider->setContextDatas(array(
+			ContractCreateTodoListProvider::KODE_KANTOR_CONTEXT_KEY => '44A',
+			ContractCreateTodoListProvider::KODE_ROLE_CONTEXT_KEY => '410',
+			ContractCreateTodoListProvider::KODE_USER_CONTEXT_KEY => '33'
+		));
+		
+		/**
+		 * @TODO Pagination ini masih abal-abal, masih dilkukan disisi browser. Fix it!
+		 */
 		return array(
-			'initTodoList' => $initTodoListProvider->getListData(1, 10000)
+			'initTodoList' => $initTodoListProvider->getListData(1, 10000),
+			'createTodoList' => $createTodoListProvider->getListData(1, 10000)
 		);
 	}
 	

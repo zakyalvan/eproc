@@ -2,6 +2,7 @@
 namespace Workflow\Entity;
 
 use Doctrine\ORM\Mapping as Orm;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @Orm\Entity
@@ -10,6 +11,10 @@ use Doctrine\ORM\Mapping as Orm;
  * @author zakyalvan
  */
 class Task {
+	public function __construct() {
+		$this->parameters = new ArrayCollection();
+	}
+	
 	/**
 	 * @Orm\Id
 	 * @Orm\Column(name="TASK_ID", type="integer")
@@ -64,8 +69,24 @@ class Task {
 	public function getAddress() {
 		return $this->address;
 	}
-	public function setUrl($address) {
+	public function setAddress($address) {
 		$this->address = $address;
+	}
+	
+	/**
+	 * @Orm\OneToMany(targetEntity="Workflow\Entity\TaskParameter", fetch="LAZY", mappedBy="task")
+	 * 
+	 * @var ArrayCollection
+	 */
+	private $parameters;
+	public function getParameters() {
+		if($this->parameters == null) {
+			return new ArrayCollection();
+		}
+		return $this->parameters;
+	}
+	public function setParameters($parameters) {
+		$this->parameters = $parameters;
 	}
 	
 	/**

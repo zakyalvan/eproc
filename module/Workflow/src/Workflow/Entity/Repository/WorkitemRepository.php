@@ -166,7 +166,7 @@ class WorkitemRepository extends EntityRepository {
 			->innerJoin('inst.datas', 'instanceDatas')
 			->where($queryBuilder->expr()->eq('workitem.id', ':workitemId'))
 			->where($queryBuilder->expr()->eq('workitem.status', ':workitemStatus'))
-			->where($queryBuilder->expr()->orX(
+			->andWhere($queryBuilder->expr()->orX(
 				$queryBuilder->expr()->andX(
 					$queryBuilder->expr()->eq('transition.assignmentControl', ':pullAssignmentControl'),
 					$queryBuilder->expr()->eq('transition.userRole', ':pulledUserRole'),
@@ -211,7 +211,7 @@ class WorkitemRepository extends EntityRepository {
 	 * @param mixed $userCode
 	 * @return array
 	 */
-	public function getWorkitemForUser(Workflow $workflow, $userContext, $userRole, $userCode) {
+	public function getEnabledWorkitemsForUser(Workflow $workflow, $userContext, $userRole, $userCode) {
 		$workflow = $this->ensureManagedEntity($workflow);
 		
 		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
@@ -222,34 +222,35 @@ class WorkitemRepository extends EntityRepository {
 			->innerJoin('inst.workflow', 'workflow', Join::WITH, $queryBuilder->expr()->eq('workflow.id', ':workflowId'))
 			->innerJoin('inst.datas', 'instanceDatas')
 			->where($queryBuilder->expr()->eq('workitem.status', ':workitemStatus'))
-			->where($queryBuilder->expr()->orX(
+ 			->andWhere($queryBuilder->expr()->orX(
 				$queryBuilder->expr()->andX(
-					$queryBuilder->expr()->eq('transition.assignmentControl', ':pullAssignmentControl'),
-					$queryBuilder->expr()->eq('transition.userRole', ':pulledUserRole'),
+					$queryBuilder->expr()->eq('transition.assignmentControl', ':pulledAssignmentControl'),
 					$queryBuilder->expr()->eq('transition.userContext', ':pulledUserContext'),
+					$queryBuilder->expr()->eq('transition.userRole', ':pulledUserRole'),
 					$queryBuilder->expr()->orX(
 						$queryBuilder->expr()->isNull('workitem.executor'),
 						$queryBuilder->expr()->eq('workitem.executor', ':pulledUserExecutor')
 					)
 				),
-				$queryBuilder->expr()->andX(
-					$queryBuilder->expr()->eq('transition.assignmentControl', ':pushAssigmentControl'),
-					$queryBuilder->expr()->eq('transition.userRole', ':pushedUserRole'),
-					$queryBuilder->expr()->eq('transition.userContext', ':pushedUserContext'),
-					$queryBuilder->expr()->eq('workitem.executor', ':pushedUserExecutor')
-				)
-			))
+ 				$queryBuilder->expr()->andX(
+ 					$queryBuilder->expr()->eq('transition.assignmentControl', ':pushedAssignmentControl'),
+ 					$queryBuilder->expr()->eq('transition.userContext', ':pushedUserContext'),
+ 					$queryBuilder->expr()->eq('transition.userRole', ':pushedUserRole'),
+ 					$queryBuilder->expr()->eq('workitem.executor', ':pushedUserExecutor')
+ 				)
+ 			))
 			->setParameter('instanceStatus', Instance::STATUS_OPERATED)
 			->setParameter('workflowId', $workflow->getId())
-			->setParameter('workitemStatus', Workitem::STATUS_ENABLED)
-			->setParameter('pullAssignmentControl', UserTransition::ASSIGNMENT_CONTROL_PULL)
+ 			->setParameter('workitemStatus', Workitem::STATUS_ENABLED)
+			->setParameter('pulledAssignmentControl', UserTransition::ASSIGNMENT_CONTROL_PULL)
 			->setParameter('pulledUserContext', $userContext)
 			->setParameter('pulledUserRole', $userRole)
 			->setParameter('pulledUserExecutor', $userCode)
-			->setParameter('pushAssigmentControl', UserTransition::ASSIGNMENT_CONTROL_PUSH)
+			->setParameter('pushedAssignmentControl', UserTransition::ASSIGNMENT_CONTROL_PUSH)
 			->setParameter('pushedUserContext', $userContext)
 			->setParameter('pushedUserRole', $userRole)
-			->setParameter('pushedUserExecutor', $userCode)
+ 			->setParameter('pushedUserExecutor', $userCode)
+ 			->orderBy('workitem.enabledDate', 'DESC')
 			->getQuery()
 			->getResult();
 		return $workitems;
@@ -264,7 +265,7 @@ class WorkitemRepository extends EntityRepository {
 	 * @param unknown $userCode
 	 * @return integer
 	 */
-	public function countWorkitemForUser(Workflow $workflow, $userContext, $userRole, $userCode) {
+	public function countEnabledWorkitemsForUser(Workflow $workflow, $userContext, $userRole, $userCode) {
 		$workflow = $this->ensureManagedEntity($workflow);
 		
 		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
@@ -275,7 +276,7 @@ class WorkitemRepository extends EntityRepository {
 			->innerJoin('inst.workflow', 'workflow', Join::WITH, $queryBuilder->expr()->eq('workflow.id', ':workflowId'))
 			->innerJoin('inst.datas', 'instanceDatas')
 			->where($queryBuilder->expr()->eq('workitem.status', ':workitemStatus'))
-			->where($queryBuilder->expr()->orX(
+			->andWhere($queryBuilder->expr()->orX(
 				$queryBuilder->expr()->andX(
 					$queryBuilder->expr()->eq('transition.assignmentControl', ':pullAssignmentControl'),
 					$queryBuilder->expr()->eq('transition.userRole', ':pulledUserRole'),
@@ -317,7 +318,7 @@ class WorkitemRepository extends EntityRepository {
 	 * @param string $userCode
 	 * @return integer
 	 */
-	public function countAllWorkitemForUser($userContext, $userRole, $userCode) {
+	public function countAllEnabledWorkitemsForUser($userContext, $userRole, $userCode) {
 		$workflow = $this->ensureManagedEntity($workflow);
 	
 		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
@@ -328,7 +329,7 @@ class WorkitemRepository extends EntityRepository {
 			->innerJoin('inst.workflow', 'workflow')
 			->innerJoin('inst.datas', 'instanceDatas')
 			->where($queryBuilder->expr()->eq('workitem.status', ':workitemStatus'))
-			->where($queryBuilder->expr()->orX(
+			->andWhere($queryBuilder->expr()->orX(
 				$queryBuilder->expr()->andX(
 					$queryBuilder->expr()->eq('transition.assignmentControl', ':pullAssignmentControl'),
 					$queryBuilder->expr()->eq('transition.userRole', ':pulledUserRole'),

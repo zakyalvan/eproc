@@ -99,6 +99,8 @@ class Workitem {
 	
 	/**
 	 * @Orm\Column(name="ENABLED_DATE", type="datetime", nullable=false)
+	 * 
+	 * @var \DateTime
 	 */
 	protected $enabledDate;
 	public function getEnabledDate() {
@@ -110,6 +112,8 @@ class Workitem {
 	
 	/**
 	 * @Orm\Column(name="CANCELED_DATE", type="datetime", nullable=true)
+	 * 
+	 * @var \DateTime
 	 */
 	protected $cancledDate;
 	public function getCanceledDate() {
@@ -121,6 +125,8 @@ class Workitem {
 	
 	/**
 	 * @Orm\Column(name="FINISHED_DATE", type="datetime", nullable=true)
+	 * 
+	 * @var \DateTime
 	 */
 	protected $finishedDate;
 	public function getFinishedDate() {

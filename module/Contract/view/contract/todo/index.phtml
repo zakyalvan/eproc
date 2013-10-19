@@ -1,3 +1,6 @@
+<?php 
+use Contract\Todo\ContractCreateTodoItem;
+?>
 <div id="right">
 	<div class="section">
 		<!-- Start Initiation Todo -->
@@ -31,7 +34,7 @@
 							<td><?php echo $initTodoItem->getJudulPekerjaan()?></td>
 							<td><?php echo $initTodoItem->getLingkupPekerjaan()?></td>
 							<td><?php echo $initTodoItem->getNamaVendor() ?></td>
-							<td style="text-align: center;"><?php echo ($tanggalPenetapan = $initTodoItem->getTanggalPenetapan()) != null ? $tanggalPenetapan->format('d M Y') : ''?></td>
+							<td style="text-align: center;"><?php echo ($tanggalPenetapan = $initTodoItem->getTanggalPenetapan()) != null ? $tanggalPenetapan->format('d/m/Y') : ''?></td>
 							<td style="text-align: center;"><a href="<?php echo $this->url($initTodoItem->getActionRoute(), $initTodoItem->getActionRouteParams())?>" class="uibutton" />Proses</a></td>
 						</tr>
 					<?php 
@@ -59,34 +62,29 @@
 							<th>Deskripsi Pekerjaan</th>
 							<th style="width: 200px;">Vendor</th>
 							<th style="width: 200px;">Status</th>
+							<th style="width: 125px;">Tgl Mulai</th>
 							<th style="width: 75px;">Aksi</th>
 						</tr>
 					</thead>
 					<tbody>
+					<?php 
+						$index = 1;
+						/* @var $createTodoItem ContractCreateTodoItem */ 
+						foreach ($createTodoList as $createTodoItem) :
+					?>
 						<tr>
-							<td style="text-align: center;"></td>
-							<td style="text-align: center;"></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td style="text-align: center;"><a class="uibutton" />Proses</a></td>
+							<td style="text-align: center;"><?php echo $index ?></td>
+							<td style="text-align: center;"><?php echo $createTodoItem->getKodeTender()?></td>
+							<td><?php echo $createTodoItem->getJudulPekerjaan()?></td>
+							<td><?php echo $createTodoItem->getNamaVendor()?></td>
+							<td style="text-align: left;"><?php echo strtoupper($createTodoItem->getStatusProses())?></td>
+							<td style="text-align: center;"><?php echo $createTodoItem->getCreatedDate()->format('d/m/Y H:i:s')?></td>
+							<td style="text-align: center;"><a href="<?php echo $this->url($createTodoItem->getActionRoute(), $createTodoItem->getActionRouteParams())?>" class="uibutton" />Proses</a></td>
 						</tr>
-						<tr>
-							<td style="text-align: center;"></td>
-							<td style="text-align: center;"></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td style="text-align: center;"><a class="uibutton" />Proses</a></td>
-						</tr>
-						<tr>
-							<td style="text-align: center;"></td>
-							<td style="text-align: center;"></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td style="text-align: center;"><a class="uibutton" />Proses</a></td>
-						</tr>
+					<?php 
+						$index++;
+						endforeach;
+					?>
 					</tbody>
 				</table>
 			</div>
@@ -104,16 +102,18 @@
 					<thead>
 						<tr>
 							<th style="width: 50px;">No</th>
-							<th style="width: 150px;">Nomor Kontrak</th>
+							<th style="width: 125px;">Nomor Kontrak</th>
 							<th>Deskripsi Pekerjaan</th>
 							<th style="width: 200px;">Vendor</th>
 							<th style="width: 200px;">Status</th>
+							<th style="width: 125px;">Tgl Mulai</th>
 							<th style="width: 75px;">Aksi</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
 							<td style="text-align: center;"></td>
+							<td></td>
 							<td></td>
 							<td></td>
 							<td></td>
@@ -137,16 +137,18 @@
 					<thead>
 						<tr>
 							<th style="width: 50px;">No</th>
-							<th style="width: 150px;">Nomor Kontrak</th>
+							<th style="width: 125px;">Nomor Kontrak</th>
 							<th>Deskripsi Work Order</th>
 							<th style="width: 200px;">Vendor</th>
 							<th style="width: 200px;">Status</th>
+							<th style="width: 125px;">Tgl Mulai</th>
 							<th style="width: 75px;">Aksi</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
 							<td style="text-align: center;"></td>
+							<td></td>
 							<td></td>
 							<td></td>
 							<td></td>
@@ -170,11 +172,12 @@
 					<thead>
 						<tr>
 							<th style="width: 50px;">No</th>
-							<th style="width: 150px;">Nomor Kontrak</th>
+							<th style="width: 125px;">Nomor Kontrak</th>
 							<th>Deskripsi</th>
 							<th style="width: 200px;">Vendor</th>
 							<th style="width: 100px;">Persentase</th>
 							<th style="width: 200px;">Status</th>
+							<th style="width: 200px;">Tgl Mulai</th>
 							<th style="width: 75px;">Aksi</th>
 						</tr>
 					</thead>
@@ -185,6 +188,7 @@
 							<td></td>
 							<td></td>
 							<td style="text-align: right;"></td>
+							<td></td>
 							<td></td>
 							<td style="text-align: center;"><a class="uibutton" />Proses</a></td>
 						</tr>
@@ -205,7 +209,7 @@
 					<thead>
 						<tr>
 							<th style="width: 50px;">No</th>
-							<th style="width: 150px;">Nomor Kontrak</th>
+							<th style="width: 125px;">Nomor Kontrak</th>
 							<th style="width: 150px;">Nomor Tagihan</th>
 							<th style="width: 200px;">Tanggal Pembuatan</th>
 							<th style="width: 200px;">Tanggal Tagihan</th>
