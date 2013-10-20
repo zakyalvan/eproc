@@ -12,14 +12,16 @@ $this->headTitle($title);
 			</div>
 			<div class="content">
 				<?php
+				echo $this->flashMessenger()->render();
+				
 				$form = $this->loginForm;
 				$form->prepare();
 				
 				echo $this->form()->openTag($form);
 				echo $this->formElementErrors($form);
-				echo $this->formRow($form->get('username'));
-				echo $this->formRow($form->get('password'));
-				echo $this->formRow($form->get('security'));
+				echo $this->formInput($form->get('username'));
+				echo $this->formInput($form->get('password'));
+				echo $this->formElement($form->get('security'));
 				echo $this->formSubmit($form->get('submit'));
 				echo $this->form()->closeTag();
 				?>

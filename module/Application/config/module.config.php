@@ -159,6 +159,13 @@ return array(
             ),
         )
     ),
+    // Valid role untuk aplikasi ini. Atau role-role user yang dapat mengakses aplikasi ini.
+    'valid_roles' => array(
+    	'401', // User pengguna barang dan jasa.
+    	'402', // Approval atau kadivisi user pengguna barang dan jasa.
+    	'408', // Pengelola kontrak.
+    	'410', // Ka Pengelola kontrak.
+    ),
     'doctrine' => array(
     	'driver' => array(
     		__NAMESPACE__ . '_driver' => array(

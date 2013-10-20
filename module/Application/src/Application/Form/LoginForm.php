@@ -52,7 +52,7 @@ class LoginForm extends Form implements InputFilterProviderInterface {
 	public function getInputFilterSpecification() {
 		return array(
 			'username' => array(
-				'required' => false
+				'required' => true
 			),
 			'password' => array(
 				'required' => false

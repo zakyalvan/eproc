@@ -49,11 +49,10 @@ class AuthController extends AbstractActionController {
 				$result = $authService->authenticate();
 				
 				if($result->isValid()) {
-					// Berhasil, redirect ke home.
 					$this->redirect()->toRoute('role');
 				}
 				else {
-					// Tampilin error di sini.
+					$this->flashMessenger()->addMessage($result->getMessages());
 				}
 			}
 			// Jika form yang disubmit tidak valid.

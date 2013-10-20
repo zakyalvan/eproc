@@ -12,16 +12,11 @@ use Application\Entity\UserRole;
  * @author zakyalvan
  */
 class SecurityContext {
-	public function __construct(User $loggedinUser, Role $activeRole = null) {
+	public function __construct(User $loggedinUser, $availableRoles, Role $activeRole = null, \DateTime $loggedinTime = null) {
 		$this->loggedinUser = $loggedinUser;
-		$this->availableRoles = new ArrayCollection();
-		
-		foreach ($loggedinUser->getListUserRole() as $userRole) {
-			$this->availableRoles->add($userRole->getRole());
-		}
-		
+		$this->availableRoles = $availableRoles;
 		$this->activeRole = $activeRole;
-		$this->loggedinTime = new \DateTime(null, null);
+		$this->loggedinTime = ($loggedinTime == null) ? new \DateTime(null, null) : $loggedinTime;
 	}
 	
 	/**
@@ -35,14 +30,13 @@ class SecurityContext {
 	}
 	
 	/**
+	 * Daftar role yang valid dari user yang sedang login.
+	 * 
 	 * @var ArrayCollection
 	 */
 	private $availableRoles;
 	public function getAvailableRoles() {
 		return $this->availableRoles;
-	}
-	public function setAvailableRoles($availableRoles) {
-		$this->availableRoles = $availableRoles;
 	}
 	
 	/**
@@ -55,6 +49,7 @@ class SecurityContext {
 		return $this->activeRole;
 	}
 	public function setActiveRole(Role $activeRole) {
+		
 		$this->activeRole = $activeRole;
 	}
 	public function hasActiveRole() {
@@ -62,6 +57,7 @@ class SecurityContext {
 	}
 	
 	/**
+	 * Kapan user ini login.
 	 * 
 	 * @var \DateTime
 	 */

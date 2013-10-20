@@ -15,7 +15,7 @@ use Zend\Cache\Pattern\ObjectCache;
  */
 class User {
 	public function __construct() {
-		$this->roles = new ArrayCollection();
+		$this->listUserRole = new ArrayCollection();
 	}
 	
 	/**
@@ -84,7 +84,9 @@ class User {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_MULAI_STATUS", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_MULAI_STATUS", type="datetime", nullable=true)
+	 * 
+	 * @var \DateTime
 	 */
 	protected $tanggalMulaiStatus;
 	public function getTanggalMulaiStatus() {
@@ -92,7 +94,9 @@ class User {
 	}
 	
 	/**
-	 * @Orm\Column(name="TGL_AKHIR_STATUS", type="date", nullable=true)
+	 * @Orm\Column(name="TGL_AKHIR_STATUS", type="datetime", nullable=true)
+	 * 
+	 * @var \DateTime
 	 */
 	protected $tanggalAkhirStatus;
 	public function getTanggalAkhirStatus() {

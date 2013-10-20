@@ -14,10 +14,15 @@ use Doctrine\ORM\Query\Expr\Join;
  * @author zakyalvan
  */
 class AuthenticationStorage implements Storage {
-	const SESSION_NAMESPACE = 'security_context';
+	const SESSION_NAMESPACE = 'security_context_container';
 	
-	const STORAGE_KEY = 'login_info';
+	const STORAGE_KEY = 'login_info_custom';
 	
+	/**
+	 * Cached sercurity context.
+	 * 
+	 * @var SecurityContext
+	 */
 	private $cachedSecurityContext;
 	
 	/**
@@ -30,10 +35,18 @@ class AuthenticationStorage implements Storage {
 	 */
 	private $sessionContainer;
 	
+	/**
+	 * Nama key (dalam container namespace untuk menyimpan informasi login)
+	 * 
+	 * @var string
+	 */
 	private $storageKey;
+	
+	private $dateTimeFormat = 'd/m/Y H:i:s';
 	
 	public function __construct(ServiceLocator $serviceLocator) {
 		$this->serviceLocator = $serviceLocator;
+		
 		$this->sessionContainer = new Container(self::SESSION_NAMESPACE);
 		$this->storageKey = self::STORAGE_KEY;
 	}
@@ -55,32 +68,48 @@ class AuthenticationStorage implements Storage {
 		
 		/* @var $entityManager EntityManager */ 
 		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
+		$userQueryBuilder = $entityManager->createQueryBuilder();
 		
-		$queryBuilder = $entityManager->createQueryBuilder();
-		
-		/* @var $securityContext SecurityContext */
-		$user = $queryBuilder->select(array('user', 'kantor', 'listUserRole'))
+		/* @var $user User */
+		$user = $userQueryBuilder->select(array('user', 'kantor'))
 			->from('Application\Entity\User', 'user')
 			->innerJoin('user.kantor', 'kantor')
-			->innerJoin('user.listUserRole', 'listUserRole')
-			->innerJoin('listUserRole.role', 'role')
-			->where($queryBuilder->expr()->eq('user.kode', ':kodeUser'))
+			->where($userQueryBuilder->expr()->eq('user.kode', ':kodeUser'))
 			->setParameter('kodeUser', $securityContextArray['loggedinUser'])
 			->getQuery()
 			->getSingleResult();
+		
+		$rolesQueryBuilder = $entityManager->createQueryBuilder();
+		$availableRoles = $rolesQueryBuilder->select('role')
+			->from('Application\Entity\Role', 'role')
+			->innerJoin('role.listUserRole', 'listUserRole')
+			->innerJoin('listUserRole.kantor', 'kantor', Join::WITH, $rolesQueryBuilder->expr()->eq('kantor.kode', ':kodeKantor'))
+			->where($rolesQueryBuilder->expr()->in('role.kode', ':availableRoles'))
+			->setParameter('kodeKantor', $user->getKantor()->getKode())
+			->setParameter('availableRoles', $securityContextArray['availableRoles'])
+			->getQuery()
+			->getResult();
+		
+		$loggedinTime = \DateTime::createFromFormat($this->dateTimeFormat, $securityContextArray['loggedinTime']);
 		
 		if($securityContextArray['activeRole'] != null) {
 			$roleQueryBuilder = $entityManager->createQueryBuilder();
 			$activeRole = $roleQueryBuilder->select('role')
 				->from('Application\Entity\Role', 'role')
-				->where($queryBuilder->expr()->eq('role.kode', ':kodeRole'))
+				->where($roleQueryBuilder->expr()->eq('role.kode', ':kodeRole'))
 				->setParameter('kodeRole', $securityContextArray['activeRole'])
 				->getQuery()
 				->getSingleResult();
-			return new SecurityContext($user, $activeRole);
+			$securityContext = new SecurityContext($user, $availableRoles, $activeRole, $loggedinTime);
+			$this->cachedSecurityContext = $securityContext;
+			
+			return $securityContext;
 		}
 		
-		return new SecurityContext($user);
+		$securityContext = new SecurityContext($user, $availableRoles, null, $loggedinTime);
+		$this->cachedSecurityContext = $securityContext;
+		
+		return $securityContext;
 	}
 	
 	public function write($contents) {
@@ -88,11 +117,19 @@ class AuthenticationStorage implements Storage {
 			throw new \InvalidArgumentException(sprintf('Parameter dalam penulisan ke auth storage harus berupa object security context'), 100, null);
 		}
 		
+		// Kosongkan cached security context.
 		$this->cachedSecurityContext = null;
 		
+		$availableRoles = array();
+		
+		foreach ($contents->getAvailableRoles() as $role) {
+			$availableRoles[] = $role->getKode();
+		}
+		
 		$securityContextArray['loggedinUser']  = $contents->getLoggedinUser()->getKode();
+		$securityContextArray['availableRoles'] = $availableRoles;
 		$securityContextArray['activeRole'] = $contents->hasActiveRole() ? $contents->getActiveRole()->getKode() : null;
-		$securityContextArray['loggedinTime'] = $contents->getLoggedinTime()->format('d M Y');
+		$securityContextArray['loggedinTime'] = $contents->getLoggedinTime()->format($this->dateTimeFormat);
 		
 		$this->sessionContainer->{$this->storageKey} = $securityContextArray;
 	}
