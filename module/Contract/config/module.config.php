@@ -81,15 +81,19 @@ return array(
 					'create' => array(
 						'type' => 'Zend\Mvc\Router\Http\Segment',
 						'options' => array(
-							'route' => '/create/:action/:kantor/:tender',
+							'route' => '/create/:action/:kantor/:tender/:instance/:workitem',
 							'constraints' => array(
 								'tender' => '[\\.a-zA-Z0-9_-]+',
-								'kantor' => '[a-zA-Z0-9]+'
+								'kantor' => '[a-zA-Z0-9]+',
+								'instance' => '[0-9]+',
+								'workitem' => '[0-9]+'
 							),
 							'defaults' => array(
 								'__NAMESPACE__' => 'Contract\Controller',
 								'controller' => 'create',
-								'action' => 'index'
+								'action' => 'index',
+								'instance' => 0,
+								'workitem' => 0
 							)
 						)
 					),
@@ -225,7 +229,8 @@ return array(
 			'Contract\Todo\ContractInit' => 'Contract\Todo\ContractInitTodoListProvider',
 			'Contract\Todo\ContractCreate' => 'Contract\Todo\ContractCreateTodoListProvider',
 			'Contract\Todo\ContractAmend' => 'Contract\Todo\ContractAmendTodoListProvider',
-			'Contract\Todo\WorkOrder' => 'Contract\Todo\WorkOrderTodoListProvider'
+			'Contract\Todo\WorkOrder' => 'Contract\Todo\WorkOrderTodoListProvider',
+			'Contract\Todo\ContractInvoice' => 'Contract\Todo\ContractInvoiceTodoListProvider'
 		)
 	),
 	'workflow' => array(

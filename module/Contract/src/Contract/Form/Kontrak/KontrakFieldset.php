@@ -149,10 +149,26 @@ class KontrakFieldset extends Fieldset implements InputFilterProvider {
 				'required' => false
 			),
 			'tanggalMulaiKontrak' => array(
-				'required' => false
+				'required' => false,
+				'filters' => array(
+// 					array(
+// 						'name' => 'DateTimeFormatter',
+// 						'options' => array(
+// 							'format' => 'd/m/Y'
+// 						)
+// 					)
+				)
 			),
 			'tanggalAkhirKontrak' => array(
-				'required' => false
+				'required' => false,
+				'filters' => array(
+// 					array(
+// 						'name' => 'DateTimeFormatter',
+// 						'options' => array(
+// 							'format' => 'd/m/Y'
+// 						)
+// 					)
+				)
 			),
 			'judulPekerjaan' => array(
 				'required' => false

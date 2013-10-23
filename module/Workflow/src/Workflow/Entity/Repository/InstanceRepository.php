@@ -8,18 +8,26 @@ use Workflow\Entity\InstanceData;
 use Doctrine\ORM\Query\Expr\Join;
 use Workflow\Entity\Workflow;
 use Doctrine\ORM\UnitOfWork;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * Custom repository untuk entity Instance
  * 
  * @author zakyalvan
  */
-class InstanceRepository extends EntityRepository {	
+class InstanceRepository extends EntityRepository {
+	/**
+	 * 
+	 * @param unknown $workflow
+	 * @param unknown $datas
+	 * @return array
+	 */
 	public function getActiveInstances($workflow, $datas = array()) {
 		$workflowId = $workflow;
 		if($workflow instanceof Workflow) {
-			$workflowId = $workflow->getId();
 			$workflow = $this->ensureManagedEntity($workflow);
+			$workflowId = $workflow->getId();
 		}
 		
 		$queryBuilder = $this->_em->createQueryBuilder();
@@ -42,9 +50,12 @@ class InstanceRepository extends EntityRepository {
 			$index += 1;
 		}
 		
-		return $queryBuilder
+		$instances = $queryBuilder
 			->setParameter('workflowId', $workflowId)
-			->getQuery()->getResult();
+			->getQuery()
+			->getResult();
+		
+		return $instances;
 	}
 	
 	/**

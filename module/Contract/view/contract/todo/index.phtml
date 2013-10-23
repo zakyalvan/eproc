@@ -1,9 +1,11 @@
 <?php 
 use Contract\Todo\ContractCreateTodoItem;
+use Application\Entity\Role;
 ?>
 <div id="right">
 	<div class="section">
 		<!-- Start Initiation Todo -->
+		<?php if($this->identity()->getActiveRole()->getKode() === Role::KODE_APPROVAL_KONTRAK_DAN_VENDOR) : ?>
 		<div class="box">
 			<div class="title">
 				DAFTAR HASIL PENGADAAN UNTUK DIBUAT KONTRAK
@@ -26,7 +28,7 @@ use Contract\Todo\ContractCreateTodoItem;
 					<?php 
 						$index = 1;
 						/* @var $initTodoItem Contract\Todo\ContractInitTodoItem */ 
-						foreach ($this->initTodoList as $initTodoItem) : 
+						foreach ($this->initTodoListProvider->getListData(1, 10000) as $initTodoItem) : 
 					?>
 						<tr>
 							<td style="text-align: center;"><?php echo $index ?></td>
@@ -45,9 +47,11 @@ use Contract\Todo\ContractCreateTodoItem;
 				</table>
 			</div>
 		</div>
+		<?php endif; ?>
 		<!-- End Initiation Todo -->
 		
 		<!-- Start Contract Todo -->
+		<?php if($this->identity()->getActiveRole()->getKode() === Role::KODE_PELAKSANA_KONTRAK) : ?>
 		<div class="box">
 			<div class="title">
 				DAFTAR PEKERJAAN PEMBUATAN KONTRAK
@@ -70,7 +74,7 @@ use Contract\Todo\ContractCreateTodoItem;
 					<?php 
 						$index = 1;
 						/* @var $createTodoItem ContractCreateTodoItem */ 
-						foreach ($createTodoList as $createTodoItem) :
+						foreach ($createTodoListProvider->getListData(1, 1000) as $createTodoItem) :
 					?>
 						<tr>
 							<td style="text-align: center;"><?php echo $index ?></td>
@@ -89,6 +93,7 @@ use Contract\Todo\ContractCreateTodoItem;
 				</table>
 			</div>
 		</div>
+		<?php endif; ?>
 		<!-- End Initiation Todo -->
 		
 		<!-- Start Amend Todo -->

@@ -10,6 +10,10 @@ use Doctrine\ORM\QueryBuilder;
  * @author zakyalvan
  */
 class ContractAmendTodoListProvider extends AbstractTodoListProvider {
+	const KODE_KANTOR_CONTEXT_KEY = 'kodeKantor';
+	const KODE_KONTRAK_CONTEXT_KEY = 'kodeKontrak';
+	const KODE_ROLE_CONTEXT_KEY = 'kodeRole';
+	
 	/**
 	 * (non-PHPdoc)
 	 * @see \Application\Common\AbstractListProvider::init()

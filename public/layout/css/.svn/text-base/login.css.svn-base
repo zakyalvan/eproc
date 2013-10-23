@@ -1,0 +1,89 @@
+html,body {
+	font-size:13px;
+	padding : 0;
+    background : url(../images/login/bg.png) repeat left top #FFF;
+   	margin:0 auto;
+  	font-family:Arial;
+  	color:#333;
+  	font-family:"lucida grande", tahoma, verdana, arial, sans-serif;
+}
+
+/* Content */
+#wrapper {
+	margin : 60px auto 0px auto;
+	min-width : 900px;
+	width: 900px;
+	height: 540px;
+	position: relative;
+	top: -12px;
+	z-index: 1;
+	top: 1px; 
+}
+
+#wrapper #container {
+	-webkit-box-shadow: rgba(0,0,0,0.35) 0 1px 3px; -moz-box-shadow: rgba(0,0,0,0.35) 0 1px 3px; box-shadow: rgba(0,0,0,0.35) 0 1px 3px;/*  */
+	border-left: 1px solid #dfdfdf\9;
+	border-right: 1px solid #dfdfdf\9;
+	width : 100%;
+	height : auto !important;
+	min-height : 100%; 
+	
+	/* Fallback for web browsers that doesn't support RGBa */
+	/* background: rgb(255, 255, 255); */
+	/* RGBa with 0.6 opacity */
+	/* background: rgba( 255, 255, 255, 0.9);  */
+	background: url(../images/login/login_bg.png);
+		
+	-webkit-border-radius:8px;
+  	-moz-border-radius:8px;
+  	border-radius:8px;
+  	z-index: -2;
+}
+
+.form_login{
+	padding: 50px 30px 20px 30px;
+	width: 340px;
+	height: 404px
+	-webkit-border-radius:8px;
+  	-moz-border-radius:8px;
+  	border-radius:8px;
+  	margin: 0px auto;
+}
+
+.form_login input[type=text], .form_login input[type=password]{
+	font : 15px/1.2em Arial;
+	width : 260px;
+	min-height : 26px; 
+	border : 1px solid #CCC;
+	padding-left: 5px;
+}
+
+.login_header{
+	height: 120px;	
+	padding: 10px;
+}
+
+.login_header .logo{
+	float: right;
+	margin-top: 55px;
+}
+
+.login_content{
+	height: 250px;
+	width: 100%;
+}
+
+.helpdesk{
+	text-align: center;
+	font-size: 11pt;
+}
+
+.login_footer{
+	padding: 0px 30px 0px 30px;
+	/* border-top: 1px solid #CCC; */
+	text-align: center;
+	margin: 10px 30px 7px 30px;
+	font-weight:bold;
+	font-size: 10pt;
+}
+

@@ -132,7 +132,7 @@ $(function(){
 								<!-- Datepicker tanggal berakhir kontrak -->
 								<?php
 									/* @var $tanggalAkhirText Element */
-									$tanggalAkhirText = $form->get(KontrakFieldset::DEFAULT_NAME)->get('tanggalMulaiKontrak');
+									$tanggalAkhirText = $form->get(KontrakFieldset::DEFAULT_NAME)->get('tanggalAkhirKontrak');
 									$tanggalAkhirText->setValue($kontrak->getTanggalAkhir()->format('d/m/Y'));
 									echo $this->formInput($tanggalAkhirText);
 								?>

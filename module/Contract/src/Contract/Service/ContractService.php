@@ -168,8 +168,9 @@ class ContractService implements ContractServiceInterface, ServiceLocatorAware {
 	public function saveDraft(Kontrak $kontrak, $final) {
 		$this->entityManager()->beginTransaction();
 		try {
-			$this->persistKontrak($kontrak);
+			$kontrak = $this->persistKontrak($kontrak);
 			$this->entityManager()->commit();
+			return $kontrak;
 		}
 		catch(\Exception $e) {
 			$this->entityManager()->rollback();
@@ -249,25 +250,32 @@ class ContractService implements ContractServiceInterface, ServiceLocatorAware {
 				
 // 		}
 			
-// 		/* @var $dokumen Dokumen */
-// 		foreach ($kontrak->getListDokumen() as $dokumen) {
-// 			$dokumenState = $entityManager->getUnitOfWork()->getEntityState($dokumen);
-// 			if($dokumenState = UnitOfWork::STATE_NEW) {
-// 				$dokumen->setKode($this->keyGenerator()->generateNextKey($dokumen, 'kode'));
-// 				$dokumen->setKontrak($kontrak);
-// 				$dokumen->setTanggalRekam(new \DateTime(null, null));
-// 				$entityManager->persist($dokumen);
-// 			}
-// 			else if($dokumenState == UnitOfWork::STATE_MANAGED || UnitOfWork::STATE_DETACHED) {
-// 				$dokumenChangeset = $entityManager->getUnitOfWork()->getEntityChangeSet($dokumen);
-// 				if($dokumenChangeset) {
-// 					$dokumen->setTanggalUbah(new \DateTime(null, null));
-// 					$entityManager->merge($dokumen);
-// 				}
-// 			}
-// 		}
+		/* @var $dokumen Dokumen */
+		foreach ($kontrak->getListDokumen() as $dokumen) {
+			$dokumenState = $entityManager->getUnitOfWork()->getEntityState($dokumen);
+			if($dokumenState = UnitOfWork::STATE_NEW) {
+				if($dokumen->getKodeKategori() == null) {
+					$kontrak->getListDokumen()->removeElement($dokumen);
+				}
+				else {
+					$dokumen->setKode($this->keyGenerator()->generateNextKey($dokumen, 'kode'));
+					$dokumen->setKontrak($kontrak);
+					$dokumen->setTanggalRekam(new \DateTime());
+					$entityManager->persist($dokumen);
+				}
+			}
+			else if($dokumenState == UnitOfWork::STATE_MANAGED || UnitOfWork::STATE_DETACHED) {
+				$dokumenChangeset = $entityManager->getUnitOfWork()->getEntityChangeSet($dokumen);
+				//print_r($dokumenChangeset);
+				//exit();
+				if($dokumenChangeset) {
+					$dokumen->setTanggalUbah(new \DateTime(null, null));
+					$entityManager->merge($dokumen);
+				}
+			}
+		}
 			
-// 		/* @var $item Item */ 
+		/* @var $item Item */
 // 		foreach ($kontrak->getListItem() as $item) {
 // 			$itemState = $entityManager->getUnitOfWork()->getEntityState($item);
 // 			if($itemState == UnitOfWork::STATE_NEW) {
@@ -277,19 +285,21 @@ class ContractService implements ContractServiceInterface, ServiceLocatorAware {
 // 			}
 // 		}
 			
-// 		/* @var $komentar Komentar */ 
-// 		foreach ($kontrak->getListKomentar() as $komentar) {
-// 			// Hanya komentar baru yang disimpan.
-// 			if($entityManager->getUnitOfWork()->getEntityState($komentar) == UnitOfWork::STATE_NEW) {
-// 				$komentar->setKode($this->keyGenerator()->generateNextKey($komentar, 'kode'));
-// 				$komentar->setKontrak($kontrak);
-// 				$komentar->setTanggalRekam(new \DateTime(null, null));
-// 				$entityManager->persist($komentar);
-// 			}
-// 		}
+		/* @var $komentar Komentar */ 
+		foreach ($kontrak->getListKomentar() as $komentar) {
+			// Hanya komentar baru yang disimpan.
+			if($entityManager->getUnitOfWork()->getEntityState($komentar) == UnitOfWork::STATE_NEW) {
+				$komentar->setKode($this->keyGenerator()->generateNextKey($komentar, 'kode'));
+				$komentar->setKontrak($kontrak);
+				$komentar->setTanggalRekam(new \DateTime(null, null));
+				$entityManager->persist($komentar);
+			}
+		}
 
-		$entityManager->persist($kontrak);
+		$kontrak = $entityManager->merge($kontrak);
 		$entityManager->flush();
+		
+		return $kontrak;
 	}
 	
 	/**

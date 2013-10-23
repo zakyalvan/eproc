@@ -2,12 +2,15 @@
 namespace Contract\Entity\Kontrak;
 
 use Doctrine\ORM\Mapping as Orm;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 
 /**
  * Entity komentar kontrak.
  * 
  * @Orm\Entity
  * @Orm\Table(name="EP_KTR_KONTRAK_KOMENTAR")
+ * @Orm\HasLifecycleCallbacks
  * 
  * @author zakyalvan
  */
@@ -214,5 +217,23 @@ class Komentar {
 	}
 	public function setPetugasUbah($petugasUbah) {
 		$this->petugasUbah = $petugasUbah;
+	}
+	
+	/**
+	 * @Orm\PrePersist
+	 */
+	public function prePersist(LifecycleEventArgs $event) {
+		if($this->kontrak !== null) {
+			$this->kodeKantor = $this->kontrak->getKantor()->getKode();
+			$this->kodeKontrak = $this->kontrak->getKode();
+			$this->setTanggalRekam(new \DateTime());
+		}
+	}
+	
+	/**
+	 * @Orm\PreUpdate
+	 */
+	public function preUpdate(PreUpdateEventArgs $event) {
+		$this->tanggalUbah = new \DateTime();
 	}
 }

@@ -82,7 +82,7 @@ abstract class AbstractDumbTodoListProvider implements TodoListProviderInterface
 		/* @var $entityManager EntityManager */
 		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
 		
-		$paginatorAdapter = new ArrayAdapter($this->buildArrayOfObject($entityManager));
+		$paginatorAdapter = new ArrayAdapter($this->buildArrayOfObjects($entityManager));
 		$paginator = new Paginator($paginatorAdapter);
 		$paginator->setCurrentPageNumber($pageNumber);
 		$paginator->setItemCountPerPage($itemCountPerPage);
@@ -94,7 +94,7 @@ abstract class AbstractDumbTodoListProvider implements TodoListProviderInterface
 	 * @param EntityManager $entityManager
 	 * @return array
 	 */
-	abstract protected function buildArrayOfObject(EntityManager $entityManager);
+	abstract protected function buildArrayOfObjects(EntityManager $entityManager);
 	
 	/**
 	 * Validate contect datas yang diberikan. Apakah sesuai dengan konteks data yang diberikan atau tidak.

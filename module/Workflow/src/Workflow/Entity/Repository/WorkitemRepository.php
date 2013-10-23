@@ -65,7 +65,7 @@ class WorkitemRepository extends EntityRepository {
 	 * @throws \InvalidArgumentException
 	 * @return integer
 	 */
-	public function countEnabledWorkitem(Instance $instance, Transition $transition) {
+	public function countEnabledWorkitems(Instance $instance, Transition $transition) {
 		$instance = $this->ensureManagedEntity($instance);
 		$transition = $this->ensureManagedEntity($transition);
 		

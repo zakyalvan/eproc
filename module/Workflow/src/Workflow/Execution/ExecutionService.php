@@ -167,6 +167,15 @@ class ExecutionService implements ExecutionServiceInterface, ServiceLocatorAware
 		return $instanceRepository->getActiveInstances($workflow, $datas);
 	}
 	
+	public function getExecutableWorkitem(Instance $instance, $workitemId) {
+		/* @var $entityManager EntityManager */
+		$entityManager = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
+		
+		/* @var $workitemRepository WorkitemRepository */ 
+		$workitemRepository = $entityManager->getRepository('Workflow\Entity\Workitem');
+		
+	}
+	
 	/**
 	 * (non-PHPdoc)
 	 * @see \Workflow\Execution\ExecutionServiceInterface::canExecuteWorkitem()

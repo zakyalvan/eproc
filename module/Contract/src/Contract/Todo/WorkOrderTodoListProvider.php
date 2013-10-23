@@ -10,12 +10,18 @@ use Doctrine\ORM\QueryBuilder;
  * @author zakyalvan
  */
 class WorkOrderTodoListProvider extends AbstractTodoListProvider {
+	const KODE_KANTOR_CONTEXT_KEY = 'kodeKantor';
+	const KODE_USER_CONTEXT_KEY = 'kodeUser';
+	const KODE_FUNGSI_CONTEXT_KEY = 'kodeFungsi';
+	
 	/**
 	 * (non-PHPdoc)
 	 * @see \Application\Common\AbstractListProvider::init()
 	 */
 	public function init() {
-		
+		$this->requiredContextDataKeys = array(
+			
+		);
 	}
 	/**
 	 * (non-PHPdoc)

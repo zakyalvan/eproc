@@ -5,6 +5,9 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Contract\Todo\ContractInitTodoListProvider;
 use Contract\Todo\ContractCreateTodoListProvider;
+use Zend\Authentication\AuthenticationService;
+use Application\Todo\TodoListProviderInterface;
+use Application\Security\SecurityContext;
 
 /**
  * Kelas index dari module Contract.
@@ -28,30 +31,43 @@ class TodoController extends AbstractActionController {
 	 * Tampilin todo list untuk seluruh seluruh proses manajemen kontrak.
 	 */
 	public function indexAction() {
+		/* @var $securityContext SecurityContext */ 
+		$securityContext = $this->identity();
+		
+		if($securityContext == null) {
+			$this->redirect()->toRoute('login');
+		}
+		
 		$pageNumber = $this->params()->fromRoute('page');
 		$itemCountPerPage = $this->params()->fromRoute('rows');
 		
 		/* @var $initTodoListProvider ContractInitTodoListProvider */
-		$initTodoListProvider = $this->getServiceLocator()->get(self::CONTRACT_INIT_TODO_LIST_PROVIDER);
+		$initTodoListProvider = $this->getTodoListProvider(self::CONTRACT_INIT_TODO_LIST_PROVIDER);
 		$initTodoListProvider->setContextDatas(array(
-			ContractInitTodoListProvider::KODE_FUNGSI_CONTEXT_KEY => '410',
-			ContractInitTodoListProvider::KODE_KANTOR_CONTEXT_KEY => '44A'
+			ContractInitTodoListProvider::KODE_KANTOR_CONTEXT_KEY => $securityContext->getLoggedinUser()->getKantor()->getKode(),
+			ContractInitTodoListProvider::KODE_FUNGSI_CONTEXT_KEY => $securityContext->getActiveRole()->getKode()
 		));
 		
 		/* @var $createTodoListProvider ContractCreateTodoListProvider */ 
-		$createTodoListProvider = $this->getServiceLocator()->get(self::CONTRACT_CREATE_TODO_LIST_PROVIDER);
+		$createTodoListProvider = $this->getTodoListProvider(self::CONTRACT_CREATE_TODO_LIST_PROVIDER);
 		$createTodoListProvider->setContextDatas(array(
-			ContractCreateTodoListProvider::KODE_KANTOR_CONTEXT_KEY => '44A',
-			ContractCreateTodoListProvider::KODE_ROLE_CONTEXT_KEY => '410',
-			ContractCreateTodoListProvider::KODE_USER_CONTEXT_KEY => '33'
+			ContractCreateTodoListProvider::KODE_KANTOR_CONTEXT_KEY => $securityContext->getLoggedinUser()->getKantor()->getKode(),
+			ContractCreateTodoListProvider::KODE_ROLE_CONTEXT_KEY => $securityContext->getActiveRole()->getKode(),
+			ContractCreateTodoListProvider::KODE_USER_CONTEXT_KEY => $securityContext->getLoggedinUser()->getKode()
 		));
 		
+		$amendTodoListProvider = $this->getTodoListProvider(self::CONTRACT_AMEND_TODO_LIST_PROVIDER);
+		
+		$workorderTodoListProvider = $this->getTodoListProvider(self::WORK_ORDER_TODO_LIST_PROVIDER);
+		
+		$invoiceTodoListProvider = $this->getTodoListProvider(self::CONTRACT_INVOICE_TODO_LIST_PROVIDER);
+		
 		/**
-		 * @TODO Pagination ini masih abal-abal, masih dilkukan disisi browser. Fix it!
+		 * @TODO Pagination ini masih abal-abal, masih dilakukan disisi browser. Fix it!
 		 */
 		return array(
-			'initTodoList' => $initTodoListProvider->getListData(1, 10000),
-			'createTodoList' => $createTodoListProvider->getListData(1, 10000)
+			'initTodoListProvider' => $initTodoListProvider,
+			'createTodoListProvider' => $createTodoListProvider
 		);
 	}
 	
@@ -105,7 +121,11 @@ class TodoController extends AbstractActionController {
 			return $viewModel;
 		}
 	}
-	
+	/**
+	 * Penyedia data list pekerjaan pemantauan progress kontrak.
+	 * 
+	 * @return \Zend\View\Model\JsonModel
+	 */
 	public function progressAction() {
 		$viewModel = $this->acceptableViewModelSelector($this->acceptCriteria);
 		if($viewModel instanceof JsonModel) {
@@ -113,7 +133,6 @@ class TodoController extends AbstractActionController {
 			return $viewModel;
 		}
 	}
-	
 	/**
 	 * Penyedia data item pekerjaan pembuatan dan pemrosesan tagihan (invoice).
 	 * 
@@ -126,7 +145,12 @@ class TodoController extends AbstractActionController {
 			return $viewModel;
 		}
 	}
-	
+	/**
+	 * Retrieve todo list object.
+	 * 
+	 * @param string $name
+	 * @return TodoListProviderInterface
+	 */
 	private function getTodoListProvider($name) {
 		return $this->serviceLocator->get($name);
 	}

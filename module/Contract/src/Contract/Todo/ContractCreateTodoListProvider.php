@@ -37,7 +37,7 @@ class ContractCreateTodoListProvider extends AbstractDumbTodoListProvider {
 		$this->requiredContextDataKeys = array(self::KODE_ROLE_CONTEXT_KEY, self::KODE_KANTOR_CONTEXT_KEY, self::KODE_USER_CONTEXT_KEY);
 	}
 	
-	protected function buildArrayOfObject(EntityManager $entityManager) {
+	protected function buildArrayOfObjects(EntityManager $entityManager) {
 		$workflowRepository = $entityManager->getRepository('Workflow\Entity\Workflow');
 		$workflow = $workflowRepository->find(self::PEMBUATAN_KONTRAK_WORKFLOW_ID);
 		
@@ -82,6 +82,9 @@ class ContractCreateTodoListProvider extends AbstractDumbTodoListProvider {
 			
 			/* @var $taskRepository TaskRepository */ 
 			$taskRepository = $entityManager->getRepository('Workflow\Entity\Task');
+			$taskParameters = $taskRepository->getTaskParameters($task);
+			
+			$actionRouteParameters = array_merge($taskParameters, array('instance' => $workitem->getInstance()->getId(), 'workitem' => $workitem->getId()));
 			
 			$todoItem = new ContractCreateTodoItem(
 				$tender->getKode(), 
@@ -92,45 +95,10 @@ class ContractCreateTodoListProvider extends AbstractDumbTodoListProvider {
 				$transition->getName(),
 				$workitem->getEnabledDate(),
 				$task->getAddress(),
-				$taskRepository->getTaskParameters($task)
+				$actionRouteParameters
 			);
 			$todoItemArray[] = $todoItem;
 		}
 		return $todoItemArray;
-	}
-	
-	/**
-	 * (non-PHPdoc)
-	 * @see \Application\Common\AbstractListProvider::buildQuery()
-	 */
-	protected function buildQuery(QueryBuilder $queryBuilder, $contextDatas = array(), $criterias = array()) {
-		/* @var $entityManager EntityManager */ 
-		$entityManager = $queryBuilder->getEntityManager();
-		
-		$workflowRepository = $entityManager->getRepository('Workflow\Entity\Workflow');
-		$workflow = $workflowRepository->find(self::PEMBUATAN_KONTRAK_WORKFLOW_ID);
-		
-		/* @var $workitemRepository WorkitemRepository */ 
-		$workitemRepository = $entityManager->getRepository('Workflow\Entity\Workitem');
-		$workitems = $workitemRepository->getEnabledWorkitemsForUser($workflow, 'INTERNAL', $this->contexDatas[self::KODE_ROLE_CONTEXT_KEY], $this->contexDatas[self::KODE_USER_CONTEXT_KEY]);
-		$queryBuilder->select(array('tender', 'kantor'))
-			->from('Procurement\Entity\Tender\Tender', 'tender')
-			->innerJoin('tender.kantor', 'kantor');
-		
-		/* @var $instanceRepository InstanceRepository */
-		$instanceRepository = $entityManager->getRepository('Workflow\Entity\Instance');
-		
-		/* @var $workitem Workitem */
-		foreach ($workitems as $index => $workitem) {
-			$instanceDatas = $instanceRepository->getInstanceDatas($workitem->getInstance());
-			$queryBuilder->orWhere($queryBuilder->expr()->andX(
-				$queryBuilder->expr()->eq('tender.kode', sprintf(':kodeTender%s', $index)),
-				$queryBuilder->expr()->eq('kantor.kode', sprintf(':kodeKantor%s', $index))
-			))
-			->setParameter(sprintf('kodeTender%s', $index), $instanceDatas['KODE_TENDER'])
-			->setParameter(sprintf('kodeKantor%s', $index), $instanceDatas['KODE_KANTOR']);
-		}
-		
-		return $queryBuilder;
 	}
 }

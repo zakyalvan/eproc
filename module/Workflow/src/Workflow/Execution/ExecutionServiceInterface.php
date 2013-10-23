@@ -49,6 +49,14 @@ interface ExecutionServiceInterface {
 	public function getActiveInstances(Workflow $workflow, $datas = array());
 	
 	/**
+	 * Ambil workitem yang executable.
+	 * 
+	 * @param Instance $instance
+	 * @param $workitemId
+	 */
+	public function getExecutableWorkitem(Instance $instance, $workitemId);
+	
+	/**
 	 * Apakah workitem dapat dieksekusi dengan parameter yang diberikan.
 	 * 
 	 * @param Workitem $workitem

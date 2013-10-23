@@ -1,0 +1,62 @@
+/*Basic Panel Matriks*/
+.panel{
+  	width:80px;
+  	height:80px;
+	border:solid 1px #000;
+	padding:0px;
+	text-decoration:none;
+	display:block;
+}
+.panel table tr td{
+	border-collapse:collapse;
+}
+.row-matriks{
+	font-size: 12px;
+	font-weight: normal;
+}
+.col{
+	font-size: 12px;
+	font-weight: normal;
+	float:right;
+}
+.rotate_text{
+	margin: 0 -25px 0 0;
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+}
+
+/*Color Picker*/
+div.colorPicker-picker {
+  height: 16px;
+  width: 16px;
+  padding: 0 !important;
+  border: 1px solid #ccc;
+  background: url(../../extra/images/arrow.gif) no-repeat top right;
+  cursor: pointer;
+  line-height: 16px;
+}
+
+div.colorPicker-palette {
+  width: 110px;
+  position: absolute;
+  border: 1px solid #598FEF;
+  background-color: #EFEFEF;
+  padding: 2px;
+  z-index: 9999;
+}
+  div.colorPicker_hexWrap {width: 100%; float:left }
+  div.colorPicker_hexWrap label {font-size: 95%; color: #2F2F2F; margin: 5px 2px; width: 25%}
+  div.colorPicker_hexWrap input {margin: 5px 2px; padding: 0; font-size: 95%; border: 1px solid #000; width: 65%; }
+
+div.colorPicker-swatch {
+  height: 12px;
+  width: 12px;
+  border: 1px solid #000;
+  margin: 2px;
+  float: left;
+  cursor: pointer;
+  line-height: 12px;
+}

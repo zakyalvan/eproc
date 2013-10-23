@@ -7,6 +7,9 @@ use Contract\Form\DelegateCreationForm;
 use Contract\Form\Kontrak\PembuatanForm;
 use Contract\Entity\Kontrak\Kontrak;
 use Contract\Entity\Kontrak\Komentar;
+use Workflow\Execution\ExecutionServiceInterface;
+use Workflow\Definition\DefinitionServiceInterface;
+use Workflow\Execution\ExecutionService;
 
 /**
  * Kelas kontroler ini mewakili aktifitas-aktifitas dalam proses flow 
@@ -53,6 +56,12 @@ class CreateController extends AbstractActionController {
 		$kodeTender = $this->params()->fromRoute('tender');
 		$kodeKantor = $this->params()->fromRoute('kantor');
 		
+		$instance = $this->params()->fromRoute('instance');
+		$workitem = $this->params()->fromRoute('workitem');
+		$workflow = 'PEMBUATAN_KONTRAK';
+		
+		
+		
 		$form = new PembuatanForm($this->getServiceLocator());
 		$form->setValidationGroup(array('kontrak' => array()));
 		
@@ -62,7 +71,15 @@ class CreateController extends AbstractActionController {
 		if($this->request->isPost()) {
 			$form->setData($this->request->getPost());
 			if($form->isValid()) {
-				$this->contractService()->saveDraft($form->getData(), true);
+				$kontrak = $this->contractService()->saveDraft($form->getData());
+				
+				$workflow = $this->definitionService()->getWorkflow('PEMBUATAN_KONTRAK');
+				$executionDatas = array(
+					'JENIS_KONTRAK' => $kontrak->getJenisKontrak()
+				);
+				
+				
+
 				$this->redirect()->toRoute('contract/todo');
 			}
 		}
@@ -143,5 +160,19 @@ class CreateController extends AbstractActionController {
 	 */
 	public function contractService() {
 		return $this->getServiceLocator()->get('Contract\Service\ContractService');
+	}
+	
+	/**
+	 * @return DefinitionServiceInterface
+	 */
+	protected function definitionService() {
+		return $this->serviceLocator->get('Workflow\Definition\DefinitionService');
+	}
+	
+	/**
+	 * @return ExecutionServiceInterface
+	 */
+	protected function executionService() {
+		return $this->serviceLocator->get('Workflow\Execution\ExecutionService');
 	}
 }
